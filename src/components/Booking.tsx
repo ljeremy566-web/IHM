@@ -1,0 +1,786 @@
+import { useState, useRef, useEffect } from 'react';
+import type { ReactNode } from 'react';
+import { 
+  FaWifi, 
+  FaTv, 
+  FaBath, 
+  FaWind, 
+  FaCoffee, 
+  FaSearch, 
+  FaRegCalendar, 
+  FaInfoCircle,
+  FaUserFriends
+} from 'react-icons/fa';
+import type { CartItem } from '../App';
+import './Booking.css';
+
+interface Room {
+  id: number;
+  title: string;
+  desc: string;
+  image: string;
+  price: string;
+  availableCount: number;
+  icons: ReactNode[];
+}
+interface BookingProps {
+  onAddToCart?: (roomTitle: string, price: number, image: string, quantity: number) => void;
+  cart?: CartItem[];
+  initialStep?: 'fecha' | 'pago';
+  initialCheckoutType?: 'single' | 'cart';
+}
+
+export function Booking({ 
+  onAddToCart, 
+  cart = [], 
+  initialStep = 'fecha', 
+  initialCheckoutType = 'single'
+}: BookingProps) {
+  const [step, setStep] = useState<'fecha' | 'habitacion' | 'pago' | 'finalizado'>('fecha');
+  const [checkoutType, setCheckoutType] = useState<'single' | 'cart'>('single');
+
+  useEffect(() => {
+    if (initialStep) {
+      setStep(initialStep);
+    }
+  }, [initialStep]);
+
+  useEffect(() => {
+    if (initialCheckoutType) {
+      setCheckoutType(initialCheckoutType);
+    }
+  }, [initialCheckoutType]);
+  const [fechaLlegada, setFechaLlegada] = useState('2025-10-20');
+  const [fechaSalida, setFechaSalida] = useState('2025-10-25');
+
+  // Modal states
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [modalType, setModalType] = useState<'book' | 'cart'>('book');
+  const [selectedRoom, setSelectedRoom] = useState<Room | null>(null);
+  const [huesped1, setHuesped1] = useState('');
+  const [huesped2, setHuesped2] = useState('');
+
+  // Payment states
+  const [paymentMethod, setPaymentMethod] = useState<'card' | 'yape'>('card');
+  const [yapeTab, setYapeTab] = useState<'num' | 'qr'>('qr');
+  const [docType, setDocType] = useState('Documento');
+  const [docId, setDocId] = useState('');
+  const [email, setEmail] = useState('');
+  const [name, setName] = useState('');
+  const [phone, setPhone] = useState('');
+  const [yapeCode, setYapeCode] = useState(['', '', '', '', '', '']);
+
+  const handleYapeCodeChange = (index: number, val: string) => {
+    if (/^[0-9]?$/.test(val)) {
+      const nextCode = [...yapeCode];
+      nextCode[index] = val;
+      setYapeCode(nextCode);
+      if (val && index < 5) {
+        const nextInput = document.getElementById(`yape-code-${index + 1}`);
+        if (nextInput) (nextInput as HTMLInputElement).focus();
+      }
+    }
+  };
+  const [cardNumber, setCardNumber] = useState('');
+  const [expDate, setExpDate] = useState('');
+  const [cvv, setCvv] = useState('');
+  const [cardName, setCardName] = useState('');
+
+  // Success states
+  const [copied, setCopied] = useState(false);
+
+  const llegadaRef = useRef<HTMLInputElement>(null);
+  const salidaRef = useRef<HTMLInputElement>(null);
+
+  const openModal = (type: 'book' | 'cart', room: Room) => {
+    setModalType(type);
+    setSelectedRoom(room);
+    setHuesped2('');
+    if (type === 'book') {
+      setHuesped1('Jorge Gonzalo Nina Retamozo');
+    } else {
+      setHuesped1('Carlos Alberto Reyes Casusol');
+    }
+    setIsModalOpen(true);
+  };
+
+  const closeModal = () => {
+    setIsModalOpen(false);
+    setSelectedRoom(null);
+  };
+
+  const handleConfirmModal = () => {
+    if (modalType === 'cart' && selectedRoom && onAddToCart) {
+      const qty = huesped2.trim() ? 2 : 1;
+      onAddToCart(selectedRoom.title, parseFloat(selectedRoom.price), selectedRoom.image, qty);
+    }
+    closeModal();
+    if (modalType === 'book') {
+      setStep('pago');
+    }
+  };
+
+  // Format YYYY-MM-DD to DD/MM/YYYY for display
+  const formatDateForDisplay = (dateStr: string) => {
+    if (!dateStr) return '';
+    const [year, month, day] = dateStr.split('-');
+    return `${day}/${month}/${year}`;
+  };
+
+  const handleSearch = (e: React.FormEvent) => {
+    e.preventDefault();
+    setStep('habitacion');
+  };
+
+  const handleLlegadaClick = () => {
+    llegadaRef.current?.showPicker();
+  };
+
+  const handleSalidaClick = () => {
+    salidaRef.current?.showPicker();
+  };
+
+  const ROOMS: Room[] = [
+    {
+      id: 1,
+      title: "Habitación Simple",
+      desc: "Pensada para quienes buscan comodidad y funcionalidad, nuestra Habitación Simple ofrece un espacio acogedor y bien equipado para disfrutar de una estadía tranquila. Perfecta para viajeros solos o estancias cortas.",
+      image: "https://images.unsplash.com/photo-1520250497591-112f2f40a3f4?q=80&w=2070&auto=format&fit=crop",
+      price: "70.00",
+      availableCount: 10,
+      icons: [
+        <FaWifi key="wifi" title="Wi-Fi de alta velocidad" />,
+        <FaTv key="tv" title="Televisor LED" />,
+        <FaBath key="bath" title="Ducha con agua caliente" />
+      ]
+    },
+    {
+      id: 2,
+      title: "Habitación Matrimonial",
+      desc: "Diseñada para ofrecer confort y privacidad, nuestra Habitación Matrimonial es el espacio perfecto para parejas o viajeros que buscan un ambiente acogedor y relajante. Ideal para disfrutar de momentos de descanso.",
+      image: "https://images.unsplash.com/photo-1611892440504-42a792e24d32?q=80&w=2070&auto=format&fit=crop",
+      price: "90.00",
+      availableCount: 10,
+      icons: [
+        <FaWifi key="wifi" title="Wi-Fi de alta velocidad" />,
+        <FaTv key="tv" title="Televisor LED" />,
+        <FaBath key="bath" title="Ducha con agua caliente" />,
+        <FaWind key="wind" title="Aire acondicionado" />
+      ]
+    },
+    {
+      id: 3,
+      title: "Habitación Doble",
+      desc: "Nuestra Habitación Doble está diseñada para ofrecer comodidad y amplitud, ideal para dos o hasta tres personas que buscan un espacio acogedor y funcional ya sea para amigos, familiares o pequeños grupos que viajan juntos.",
+      image: "https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?q=80&w=2070&auto=format&fit=crop",
+      price: "120.00",
+      availableCount: 10,
+      icons: [
+        <FaWifi key="wifi" title="Wi-Fi de alta velocidad" />,
+        <FaTv key="tv" title="Televisor LED" />,
+        <FaBath key="bath" title="Ducha con agua caliente" />,
+        <FaWind key="wind" title="Aire acondicionado" />,
+        <FaCoffee key="coffee" title="Cafetera / Desayuno" />
+      ]
+    }
+  ];
+
+  return (
+    <div className="booking-page">
+      {/* Hero Section */}
+      <div className="booking-hero">
+        <div className="booking-hero-overlay"></div>
+        <div className="booking-hero-content">
+          <h1 className="booking-hero-title">Reserva</h1>
+          <div className="booking-hero-divider"></div>
+          <p className="booking-hero-subtitle">
+            "Te ofrecemos la mejor experiencia que puedes imaginar"
+          </p>
+        </div>
+      </div>
+
+      {/* Timeline Steps */}
+      <div className="container">
+        <div className="booking-timeline">
+          <div className="timeline-line">
+            <div 
+              className="timeline-line-active" 
+              style={{ width: step === 'fecha' ? '12.5%' : step === 'habitacion' ? '37.5%' : step === 'pago' ? '62.5%' : '87.5%' }}
+            ></div>
+          </div>
+          
+          <div className="timeline-steps">
+            <div className={`timeline-step ${step === 'fecha' || step === 'habitacion' || step === 'pago' || step === 'finalizado' ? 'active' : ''} ${step !== 'fecha' ? 'completed' : ''}`}>
+              <span className="step-label">Fecha</span>
+              <div className="step-circle"></div>
+            </div>
+            
+            <div className={`timeline-step ${step === 'habitacion' || step === 'pago' || step === 'finalizado' ? 'active' : ''} ${step !== 'fecha' && step !== 'habitacion' ? 'completed' : ''}`}>
+              <span className="step-label">Habitación</span>
+              <div className="step-circle"></div>
+            </div>
+            
+            <div className={`timeline-step ${step === 'pago' || step === 'finalizado' ? 'active' : ''} ${step === 'finalizado' ? 'completed' : ''}`}>
+              <span className="step-label">Pago</span>
+              <div className="step-circle"></div>
+            </div>
+            
+            <div className={`timeline-step ${step === 'finalizado' ? 'active' : ''}`}>
+              <span className="step-label">Finalizado</span>
+              <div className="step-circle"></div>
+            </div>
+          </div>
+        </div>
+
+        {/* Search Bar Container - Hidden in Step Finalizado */}
+        {step !== 'finalizado' && (
+          <div className="booking-search-card">
+            <form className="booking-search-form" onSubmit={handleSearch}>
+              <div className="search-field">
+                <label>Fecha de Llegada</label>
+                <div className="search-input-wrapper" onClick={handleLlegadaClick}>
+                  <span className="date-text-display">{formatDateForDisplay(fechaLlegada)}</span>
+                  <FaRegCalendar className="search-calendar-icon" />
+                  <input 
+                    type="date" 
+                    ref={llegadaRef} 
+                    value={fechaLlegada} 
+                    onChange={(e) => setFechaLlegada(e.target.value)} 
+                    className="hidden-date-input"
+                  />
+                </div>
+              </div>
+
+              <div className="search-field">
+                <label>Fecha de Salida</label>
+                <div className="search-input-wrapper" onClick={handleSalidaClick}>
+                  <span className="date-text-display">{formatDateForDisplay(fechaSalida)}</span>
+                  <FaRegCalendar className="search-calendar-icon" />
+                  <input 
+                    type="date" 
+                    ref={salidaRef} 
+                    value={fechaSalida} 
+                    onChange={(e) => setFechaSalida(e.target.value)} 
+                    className="hidden-date-input"
+                  />
+                </div>
+              </div>
+
+              <button type="submit" className="booking-search-btn">
+                <span>Buscar</span>
+                <FaSearch size={12} />
+              </button>
+            </form>
+          </div>
+        )}
+
+        {/* Results / Payment / Success Area */}
+        <div className="booking-results-area">
+          {step === 'fecha' && (
+            <div className="booking-initial-message">
+              <p>Rellena tus datos y realiza la búsqueda</p>
+            </div>
+          )}
+
+          {step === 'habitacion' && (
+            <div className="room-results-list">
+              {ROOMS.map((room) => (
+                <div key={room.id} className="room-result-card">
+                  {/* Left Column: Image */}
+                  <div className="room-card-image-col">
+                    <img src={room.image} alt={room.title} className="room-card-image" />
+                    <FaInfoCircle className="room-card-info-icon" />
+                  </div>
+
+                  {/* Middle Column: Details */}
+                  <div className="room-card-details-col">
+                    <h2 className="room-card-title">{room.title}</h2>
+                    <p className="room-card-desc">{room.desc}</p>
+                    <div className="room-card-footer">
+                      <div className="room-card-icons">
+                        {room.icons.map((icon, idx) => (
+                          <span key={idx} className="room-card-feature-icon">{icon}</span>
+                        ))}
+                      </div>
+                      <span className="room-card-availability">
+                        {room.availableCount} habitaciones disponibles
+                      </span>
+                    </div>
+                  </div>
+
+                  {/* Right Column: Price & Actions */}
+                  <div className="room-card-pricing-col">
+                    <span className="room-status-badge">DISPONIBLE</span>
+                    <div className="room-price-container">
+                      <span className="room-price-value">S/ {room.price}</span>
+                    </div>
+                    <span className="room-urgency-badge">¡Ultimas Habitaciones!</span>
+                    <div className="room-card-actions">
+                      <button 
+                        className="room-btn-book" 
+                        type="button"
+                        onClick={() => openModal('book', room)}
+                      >
+                        RESERVA AHORA
+                      </button>
+                      <button 
+                        className="room-btn-cart" 
+                        type="button"
+                        onClick={() => openModal('cart', room)}
+                      >
+                        AÑADIR AL CARRITO
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+
+          {step === 'pago' && (() => {
+            const room = selectedRoom || ROOMS[1];
+            const nights = 5;
+            let totalVal = 0;
+            let sumPerNight = 0;
+
+            if (checkoutType === 'cart') {
+              sumPerNight = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+              totalVal = sumPerNight * nights;
+            } else {
+              const priceVal = parseFloat(room.price);
+              totalVal = priceVal * nights;
+            }
+            
+            return (
+              <div className="payment-grid-layout fade-in">
+                {/* Left Column: Summary Card */}
+                {checkoutType === 'cart' ? (
+                  <div className="payment-summary-card">
+                    <div className="summary-header">
+                      <h2 style={{ fontSize: '1.6rem', color: '#151414', fontFamily: 'var(--font-condensed)', fontWeight: '700' }}>Resumen de los gastos</h2>
+                      <div className="cart-modal-divider" style={{ margin: '0.8rem 0' }}></div>
+                    </div>
+                    
+                    <div className="summary-body">
+                      <h4 style={{ fontFamily: 'var(--font-base)', textDecoration: 'underline', fontWeight: '800', color: '#151414', fontSize: '0.9rem', marginBottom: '1.2rem', textTransform: 'none' }}>Precio de Habitaciones por noche</h4>
+                      {cart.map((item) => (
+                        <div key={item.id} className="summary-row" style={{ border: 'none', borderBottom: '1px dashed #f2f1ec', paddingBottom: '0.6rem', marginBottom: '1.2rem' }}>
+                          <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start' }}>
+                            <span style={{ fontWeight: '700', color: '#151414', fontSize: '0.95rem' }}>{item.title}</span>
+                            <span style={{ color: '#8f8d87', fontSize: '0.85rem' }}>Cantidad: {item.quantity}</span>
+                          </div>
+                          <span style={{ fontFamily: 'var(--font-condensed)', fontWeight: '700', color: '#151414', fontSize: '1.05rem', alignSelf: 'center' }}>S/ {(item.price * item.quantity).toFixed(2)}</span>
+                        </div>
+                      ))}
+                      
+                      <h4 style={{ fontFamily: 'var(--font-base)', textDecoration: 'underline', fontWeight: '800', color: '#151414', fontSize: '0.9rem', marginTop: '1.8rem', marginBottom: '1rem', textTransform: 'none' }}>Tiempo de Estancia</h4>
+                      <div className="summary-row">
+                        <span>Total de noches</span>
+                        <span style={{ fontWeight: '800' }}>{nights}</span>
+                      </div>
+                      <div className="summary-row" style={{ fontSize: '0.85rem', color: '#8f8d87', border: 'none', marginTop: '-0.5rem', marginBottom: '1.2rem' }}>
+                        <span>({formatDateForDisplay(fechaLlegada)} - {formatDateForDisplay(fechaSalida)})</span>
+                      </div>
+                      
+                      <div className="summary-total-row" style={{ borderTop: '1px solid #e5e3de', paddingTop: '1.2rem' }}>
+                        <span style={{ fontSize: '1.1rem', fontWeight: '800' }}>Total a pagar</span>
+                        <span className="total-price-highlight" style={{ fontSize: '1.95rem' }}>S/ {totalVal.toFixed(2)}</span>
+                      </div>
+                    </div>
+                  </div>
+                ) : (
+                  <div className="payment-summary-card">
+                    <div className="summary-header">
+                      <h2>{room.title}</h2>
+                      <p className="summary-dates">{formatDateForDisplay(fechaLlegada)} - {formatDateForDisplay(fechaSalida)}</p>
+                      <div className="summary-guest-pill-wrapper">
+                        <span className="summary-guest-pill">
+                          <FaUserFriends className="guest-pill-icon" />
+                          1 PERSONA
+                        </span>
+                      </div>
+                    </div>
+
+                    <div className="summary-body">
+                      <h3>Resumen de los gastos</h3>
+                      <div className="summary-row">
+                        <span>Precio de habitacion por noche</span>
+                        <span>S/ {(parseFloat(room.price) * 0.82).toFixed(2)}</span>
+                      </div>
+                      <div className="summary-row">
+                        <span>Total de noches</span>
+                        <span>{nights}</span>
+                      </div>
+                      <div className="summary-row">
+                        <span>Total de habitaciones</span>
+                        <span>1</span>
+                      </div>
+                      <div className="summary-row">
+                        <span>IGV(18%)</span>
+                        <span>S/ {(parseFloat(room.price) * 0.18).toFixed(2)}</span>
+                      </div>
+                      <div className="summary-total-row">
+                        <span>TOTAL A PAGAR</span>
+                        <span className="total-price-highlight">S/ {totalVal.toFixed(2)}</span>
+                      </div>
+                    </div>
+                  </div>
+                )}
+
+                {/* Right Column: Payment Form */}
+                <div className="payment-form-card">
+                  <div className="form-section-header">
+                    <h3>Datos del titular</h3>
+                    <span className="mandatory-label">Campos marcados con (*) son obligatorios</span>
+                  </div>
+
+                  <div className="holder-form-grid">
+                    <div className="form-field">
+                      <label>Documento de Identidad*</label>
+                      <div className="doc-input-wrapper">
+                        <select 
+                          value={docType} 
+                          onChange={(e) => setDocType(e.target.value)} 
+                          className="doc-select"
+                        >
+                          <option value="Documento">Documento</option>
+                          <option value="DNI">DNI</option>
+                          <option value="C.E.">C.E.</option>
+                        </select>
+                        <input 
+                          type="text" 
+                          placeholder="Ej: 12345678" 
+                          value={docId} 
+                          onChange={(e) => setDocId(e.target.value)}
+                          className="doc-input"
+                        />
+                      </div>
+                    </div>
+
+                    <div className="form-field">
+                      <label>Email</label>
+                      <input 
+                        type="email" 
+                        placeholder="ejemplo@gmail.com" 
+                        value={email} 
+                        onChange={(e) => setEmail(e.target.value)}
+                      />
+                    </div>
+
+                    <div className="form-field">
+                      <label>Nombre*</label>
+                      <input 
+                        type="text" 
+                        placeholder="Ej: John Alexander" 
+                        value={name} 
+                        onChange={(e) => setName(e.target.value)}
+                      />
+                    </div>
+
+                    <div className="form-field">
+                      <label>Numero</label>
+                      <input 
+                        type="text" 
+                        placeholder="Ej: 932527449" 
+                        value={phone} 
+                        onChange={(e) => setPhone(e.target.value)}
+                      />
+                    </div>
+                  </div>
+
+                  {/* Payment Methods */}
+                  <div className="payment-methods-section">
+                    <h3>Metodos de pago</h3>
+                    <div className="methods-selector-row">
+                      <button 
+                        type="button" 
+                        className={`method-logo-btn ${paymentMethod === 'card' ? 'active' : ''}`}
+                        onClick={() => setPaymentMethod('card')}
+                      >
+                        <span className="visa-text">VISA</span>
+                      </button>
+                      <button 
+                        type="button" 
+                        className={`method-logo-btn ${paymentMethod === 'card' ? 'active' : ''}`}
+                        onClick={() => setPaymentMethod('card')}
+                      >
+                        <span className="mastercard-circles">
+                          <span className="circle-red"></span>
+                          <span className="circle-orange"></span>
+                        </span>
+                      </button>
+                      <button 
+                        type="button" 
+                        className={`method-logo-btn ${paymentMethod === 'yape' ? 'active' : ''}`}
+                        onClick={() => setPaymentMethod('yape')}
+                      >
+                        <span className="yape-pill-text">yape</span>
+                      </button>
+                    </div>
+                  </div>
+
+                  {/* Payment Info Card Details */}
+                  {paymentMethod === 'card' ? (
+                    <div className="card-payment-details-section">
+                      <h3>Informacion de pago</h3>
+                      
+                      <div className="form-field">
+                        <label>Numero de tarjeta</label>
+                        <input 
+                          type="text" 
+                          placeholder="0000 0000 0000 0000" 
+                          value={cardNumber}
+                          onChange={(e) => setCardNumber(e.target.value)}
+                        />
+                      </div>
+
+                      <div className="card-row-fields">
+                        <div className="form-field flex-2">
+                          <label>Fecha de vencimiento</label>
+                          <input 
+                            type="text" 
+                            placeholder="MM / AA" 
+                            value={expDate}
+                            onChange={(e) => setExpDate(e.target.value)}
+                          />
+                        </div>
+                        <div className="form-field flex-1">
+                          <label>CVV</label>
+                          <input 
+                            type="text" 
+                            placeholder="CVC" 
+                            value={cvv}
+                            onChange={(e) => setCvv(e.target.value)}
+                          />
+                        </div>
+                      </div>
+
+                      <div className="form-field">
+                        <label>Nombre del titular</label>
+                        <input 
+                          type="text" 
+                          value={cardName}
+                          onChange={(e) => setCardName(e.target.value)}
+                        />
+                      </div>
+                    </div>
+                  ) : (
+                    <div className="yape-payment-details-section">
+                      <div className="yape-tab-header">
+                        <button 
+                          type="button" 
+                          className={`yape-tab-btn ${yapeTab === 'num' ? 'active' : ''}`}
+                          onClick={() => setYapeTab('num')}
+                        >
+                          Numero
+                        </button>
+                        <button 
+                          type="button" 
+                          className={`yape-tab-btn ${yapeTab === 'qr' ? 'active' : ''}`}
+                          onClick={() => setYapeTab('qr')}
+                        >
+                          Codigo QR
+                        </button>
+                      </div>
+
+                      {yapeTab === 'qr' ? (
+                        <div className="yape-qr-content">
+                          <p className="yape-instruction">Escanee el codigo QR y complete el pago</p>
+                          <div className="yape-qr-box">
+                            <svg className="yape-qr-svg" viewBox="0 0 100 100">
+                              <rect width="100" height="100" fill="white" />
+                              {/* QR Code corners */}
+                              <rect x="10" y="10" width="25" height="25" fill="#151414" />
+                              <rect x="15" y="15" width="15" height="15" fill="white" />
+                              <rect x="18" y="18" width="9" height="9" fill="#151414" />
+                              
+                              <rect x="65" y="10" width="25" height="25" fill="#151414" />
+                              <rect x="70" y="15" width="15" height="15" fill="white" />
+                              <rect x="73" y="18" width="9" height="9" fill="#151414" />
+                              
+                              <rect x="10" y="65" width="25" height="25" fill="#151414" />
+                              <rect x="15" y="70" width="15" height="15" fill="white" />
+                              <rect x="18" y="73" width="9" height="9" fill="#151414" />
+                              
+                              {/* QR Code random points */}
+                              <rect x="45" y="20" width="10" height="10" fill="#151414" />
+                              <rect x="40" y="40" width="20" height="20" fill="#151414" />
+                              <rect x="45" y="45" width="10" height="10" fill="white" />
+                              <rect x="75" y="45" width="10" height="15" fill="#151414" />
+                              <rect x="15" y="45" width="15" height="10" fill="#151414" />
+                              <rect x="70" y="70" width="15" height="15" fill="#151414" />
+                              <rect x="75" y="75" width="5" height="5" fill="white" />
+                            </svg>
+                          </div>
+                        </div>
+                      ) : (
+                        <div className="yape-num-content">
+                          <h4 className="yape-num-heading">Ingresa tu numero de telefono</h4>
+                          
+                          <div className="form-field" style={{ marginBottom: '1.2rem' }}>
+                            <label>Telefono</label>
+                            <input 
+                              type="text" 
+                              placeholder="Ej: 940 930 037" 
+                              value={phone}
+                              onChange={(e) => setPhone(e.target.value)}
+                            />
+                          </div>
+                          
+                          <div className="form-field">
+                            <label>Código de aprobación</label>
+                            <div className="yape-code-grid">
+                              {yapeCode.map((digit, idx) => (
+                                <input
+                                  key={idx}
+                                  id={`yape-code-${idx}`}
+                                  type="text"
+                                  maxLength={1}
+                                  value={digit}
+                                  onChange={(e) => handleYapeCodeChange(idx, e.target.value)}
+                                  className="yape-code-box"
+                                  placeholder="•"
+                                />
+                              ))}
+                            </div>
+                          </div>
+                        </div>
+                      )}
+                    </div>
+                  )}
+
+                  <button 
+                    type="button" 
+                    className="pay-now-btn"
+                    onClick={() => setStep('finalizado')}
+                  >
+                    Pagar S/{totalVal.toFixed(0)}
+                  </button>
+                </div>
+              </div>
+            );
+          })()}
+
+          {step === 'finalizado' && (
+            <div className="success-container-card success-fade-in">
+              <div className="success-icon-wrapper check-draw">
+                <div className="success-circle">
+                  <svg className="success-checkmark" viewBox="0 0 52 52">
+                    <circle className="success-checkmark-circle" cx="26" cy="26" r="25" fill="none" />
+                    <path className="success-checkmark-check" fill="none" d="M14.1 27.2l7.1 7.2 16.7-16.8" />
+                  </svg>
+                </div>
+              </div>
+
+              <h2 className="success-title text-stagger">Reserva Exitosa</h2>
+              
+              <div className="success-code-box text-stagger">
+                <span className="code-box-label">Tu codigo de reserva es</span>
+                <span className="code-box-value">9XY384-586KLM</span>
+                <button 
+                  type="button" 
+                  className={`copy-code-btn ${copied ? 'copied' : ''}`}
+                  onClick={() => {
+                    navigator.clipboard.writeText('9XY384-586KLM');
+                    setCopied(true);
+                    setTimeout(() => setCopied(false), 2000);
+                  }}
+                >
+                  <svg className="copy-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                    <rect x="9" y="9" width="13" height="13" rx="2" ry="2" />
+                    <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1" />
+                  </svg>
+                  <span>{copied ? '¡Copiado!' : 'Copiar código'}</span>
+                </button>
+              </div>
+
+              <p className="success-description text-stagger">
+                Con este codigo podras visualizar los detalles de tu reserva
+              </p>
+              <p className="success-urgency-note text-stagger">
+                ¡No lo olvides!
+              </p>
+
+              <div className="success-actions-row buttons-stagger">
+                <button 
+                  className="success-btn-outline" 
+                  type="button"
+                  onClick={() => setStep('fecha')}
+                >
+                  Descargar
+                </button>
+                <button 
+                  className="success-btn-solid" 
+                  type="button"
+                  onClick={() => setStep('fecha')}
+                >
+                  Ver mi reserva
+                </button>
+                <button 
+                  className="success-btn-outline" 
+                  type="button"
+                  onClick={() => setStep('fecha')}
+                >
+                  Volver
+                </button>
+              </div>
+            </div>
+          )}
+        </div>
+      </div>
+
+      {/* Guest Configuration Modal */}
+      {isModalOpen && selectedRoom && (
+        <div className="booking-modal-overlay" onClick={closeModal}>
+          <div className="booking-modal-content" onClick={(e) => e.stopPropagation()}>
+            <div className="modal-icon-container">
+              <div className="modal-icon-circle">
+                <FaUserFriends className="modal-users-icon" />
+              </div>
+            </div>
+
+            <h2 className="modal-title">
+              {modalType === 'book' ? 'Registro de huespedes' : `Configurar ${selectedRoom.title}`}
+            </h2>
+            <p className="modal-subtitle">
+              {modalType === 'book' 
+                ? 'Ingresa el nombre de los huespedes de la habitacion' 
+                : 'Ingrese el nombre de los huespedes de la habitacion'}
+            </p>
+
+            <div className="modal-form">
+              <div className="modal-input-field">
+                <label>Huesped 1</label>
+                <input 
+                  type="text" 
+                  value={huesped1} 
+                  onChange={(e) => setHuesped1(e.target.value)} 
+                  placeholder="Ingrese DNI o Nombre Completo"
+                />
+              </div>
+
+              <div className="modal-input-field">
+                <label>Huesped 2</label>
+                <input 
+                  type="text" 
+                  value={huesped2} 
+                  onChange={(e) => setHuesped2(e.target.value)} 
+                  placeholder="Ingrese DNI o Nombre Completo"
+                />
+              </div>
+            </div>
+
+            <div className="modal-actions">
+              <button className="modal-btn-cancel" onClick={closeModal} type="button">
+                CANCELAR
+              </button>
+              <button className="modal-btn-confirm" onClick={handleConfirmModal} type="button">
+                {modalType === 'book' ? 'CONTINUAR' : 'GUARDAR'}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}

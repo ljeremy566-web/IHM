@@ -1,0 +1,497 @@
+.rooms-section {
+  position: relative;
+  padding: 5rem 0;
+  overflow: hidden;
+  isolation: isolate;
+}
+
+/* ── Background image crossfade ── */
+
+.rooms-bg-layer {
+  position: absolute;
+  inset: 0;
+  background-size: cover;
+  background-position: center;
+  opacity: 0;
+  animation: crossfade-bg 18s ease-in-out infinite;
+}
+
+.rooms-bg-1 { animation-delay: 0s; }
+.rooms-bg-2 { animation-delay: 6s; }
+.rooms-bg-3 { animation-delay: 12s; }
+
+@keyframes crossfade-bg {
+  0%        { opacity: 0; }
+  8%        { opacity: 1; }
+  30%       { opacity: 1; }
+  38%       { opacity: 0; }
+  100%      { opacity: 0; }
+}
+
+.rooms-bg-color {
+  position: absolute;
+  inset: 0;
+  background: #66634F;
+  opacity: 0.78;
+  z-index: 1;
+}
+
+/* ── Content ── */
+
+.rooms-container {
+  position: relative;
+  z-index: 2;
+}
+
+.rooms-heading {
+  color: var(--color-light);
+  font-family: var(--font-elegant);
+  font-size: var(--text-h2);
+  font-weight: 700;
+  text-align: center;
+  margin-bottom: 0.5rem;
+}
+
+.rooms-subtitle {
+  color: rgba(242, 241, 236, 0.78);
+  font-family: var(--font-base);
+  font-size: var(--text-base);
+  text-align: center;
+  max-width: 540px;
+  margin: 0 auto 3.5rem;
+  line-height: 1.6;
+}
+
+/* ══════════════════════════════════════════
+   Fish-eye Carousel
+   ══════════════════════════════════════════ */
+
+.fisheye-wrapper {
+  position: relative;
+  z-index: 2;
+  padding: 1rem 0 2rem;
+  width: 100%;
+}
+
+.fisheye-layout {
+  position: relative;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 4rem;
+}
+
+.fisheye-swiper {
+  width: 100%;
+  padding: 2.5rem 0;
+  overflow: hidden;
+}
+
+.fisheye-swiper .swiper-wrapper {
+  align-items: center;
+}
+
+/* ── Slides ── */
+
+.fisheye-swiper .swiper-slide {
+  width: 380px;
+  transition: all 0.6s cubic-bezier(0.22, 1, 0.36, 1);
+  opacity: 0.4;
+  filter: blur(3px) saturate(0.5) brightness(0.7);
+  transform: scale(0.75);
+  flex-shrink: 0;
+}
+
+.fisheye-swiper .swiper-slide-prev,
+.fisheye-swiper .swiper-slide-next {
+  opacity: 0.7;
+  filter: blur(1.5px) saturate(0.75) brightness(0.85);
+  transform: scale(0.86);
+}
+
+.fisheye-swiper .swiper-slide-active {
+  opacity: 1;
+  filter: blur(0) saturate(1) brightness(1);
+  transform: scale(1);
+  z-index: 3;
+}
+
+/* ── Navigation arrows ── */
+
+.fisheye-nav {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 10;
+  width: 60px;
+  height: 60px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  background: rgba(21, 20, 20, 0.5);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  color: rgba(242, 241, 236, 0.85);
+  cursor: pointer;
+  transition: all 0.4s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.fisheye-nav-prev {
+  left: 0;
+}
+
+.fisheye-nav-next {
+  right: 0;
+}
+
+.fisheye-nav:hover {
+  color: var(--color-light);
+  background: rgba(21, 20, 20, 0.85);
+  border-color: rgba(255, 255, 255, 0.25);
+  transform: translateY(-50%) scale(1.05);
+}
+
+.fisheye-nav:active {
+  transform: translateY(-50%) scale(0.95);
+}
+
+/* ══════════════════════════════════════════
+   Card
+   ══════════════════════════════════════════ */
+
+.fisheye-card {
+  position: relative;
+  border-radius: 20px;
+  overflow: hidden;
+  cursor: pointer;
+  height: 440px;
+  box-shadow:
+    0 8px 32px rgba(0, 0, 0, 0.35),
+    0 2px 8px rgba(0, 0, 0, 0.2);
+  transition: box-shadow 0.5s ease, transform 0.5s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.fisheye-card:hover {
+  box-shadow:
+    0 12px 48px rgba(0, 0, 0, 0.45),
+    0 4px 12px rgba(0, 0, 0, 0.25);
+}
+
+/* ── Card: Full-bleed image ── */
+
+.fisheye-card-img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  transition: transform 0.8s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.fisheye-card:hover .fisheye-card-img {
+  transform: scale(1.06);
+}
+
+/* ── Card: Gradient overlay (smooth, no seam) ── */
+
+.fisheye-card-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    to top,
+    rgba(21, 20, 20, 0.95) 0%,
+    rgba(21, 20, 20, 0.7) 30%,
+    rgba(21, 20, 20, 0.15) 55%,
+    transparent 70%
+  );
+  pointer-events: none;
+  z-index: 1;
+}
+
+/* ── Card: Info (overlaid at bottom) ── */
+
+.fisheye-card-info {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+  padding: 1.4rem 1.8rem 1.6rem;
+}
+
+.fisheye-card-title {
+  color: var(--color-light);
+  font-family: var(--font-elegant);
+  font-size: 1.4rem;
+  font-weight: 700;
+  line-height: 1.25;
+}
+
+.fisheye-card-desc {
+  color: rgba(242, 241, 236, 0.7);
+  font-family: var(--font-base);
+  font-size: 0.88rem;
+  line-height: 1.55;
+  margin-top: 0.15rem;
+}
+
+.fisheye-card-cta {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  margin-top: 0.8rem;
+  color: rgba(242, 241, 236, 0.5);
+  font-family: var(--font-condensed);
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  transition: color 0.3s ease, gap 0.3s ease;
+}
+
+.fisheye-card:hover .fisheye-card-cta {
+  color: rgba(242, 241, 236, 0.85);
+  gap: 0.6rem;
+}
+
+/* ══════════════════════════════════════════
+   Modal overlay
+   ══════════════════════════════════════════ */
+
+.fisheye-modal-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0, 0, 0, 0.7);
+  backdrop-filter: blur(6px);
+  animation: modal-fade-in 0.35s ease forwards;
+  padding: 2rem;
+}
+
+@keyframes modal-fade-in {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+.fisheye-modal {
+  position: relative;
+  width: 100%;
+  max-width: 560px;
+  max-height: 85vh;
+  border-radius: 20px;
+  overflow: hidden;
+  background: #151414;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow:
+    0 24px 80px rgba(0, 0, 0, 0.6),
+    0 8px 24px rgba(0, 0, 0, 0.3);
+  display: flex;
+  flex-direction: column;
+  animation: modal-slide-up 0.45s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+
+@keyframes modal-slide-up {
+  from {
+    opacity: 0;
+    transform: translateY(30px) scale(0.96);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.fisheye-modal-close {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  z-index: 5;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  background: rgba(0, 0, 0, 0.45);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: var(--color-light);
+  cursor: pointer;
+  transition: background 0.3s ease, transform 0.3s ease;
+}
+
+.fisheye-modal-close:hover {
+  background: rgba(0, 0, 0, 0.65);
+  transform: rotate(90deg);
+}
+
+/* ── Modal: Image ── */
+
+.fisheye-modal-image {
+  position: relative;
+  width: 100%;
+  height: 260px;
+  flex-shrink: 0;
+  overflow: hidden;
+}
+
+.fisheye-modal-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.fisheye-modal-image-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to bottom, transparent 40%, #151414 100%);
+}
+
+.fisheye-modal-title {
+  position: absolute;
+  bottom: 1.2rem;
+  left: 1.8rem;
+  right: 1.8rem;
+  color: var(--color-light);
+  font-family: var(--font-elegant);
+  font-size: 1.6rem;
+  font-weight: 700;
+}
+
+/* ── Modal: Body ── */
+
+.fisheye-modal-body {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  padding: 1.6rem 1.8rem 2rem;
+  overflow-y: auto;
+}
+
+.fisheye-modal-desc {
+  color: rgba(242, 241, 236, 0.6);
+  font-family: var(--font-base);
+  font-size: 0.95rem;
+  line-height: 1.6;
+  margin-bottom: 1rem;
+}
+
+.fisheye-modal-divider {
+  width: 40px;
+  height: 1px;
+  background: rgba(255, 255, 255, 0.12);
+  margin-bottom: 1.2rem;
+}
+
+.fisheye-modal-details {
+  color: rgba(242, 241, 236, 0.8);
+  font-family: var(--font-base);
+  font-size: 0.92rem;
+  line-height: 1.7;
+}
+
+/* ══════════════════════════════════════════
+   Mobile
+   ══════════════════════════════════════════ */
+
+@media (max-width: 768px) {
+  .rooms-section {
+    padding: 3.5rem 0;
+  }
+
+  .rooms-heading {
+    font-size: var(--text-h3);
+  }
+
+  .fisheye-layout {
+    padding: 0 3rem;
+  }
+
+  .fisheye-swiper {
+    padding: 2rem 0;
+  }
+
+  .fisheye-swiper .swiper-slide {
+    width: 280px;
+  }
+
+  .fisheye-swiper .swiper-slide-active {
+    transform: scale(1);
+  }
+
+  .fisheye-swiper .swiper-slide-prev,
+  .fisheye-swiper .swiper-slide-next {
+    transform: scale(0.88);
+  }
+
+  .fisheye-nav {
+    width: 36px;
+    height: 36px;
+    border-radius: 8px;
+  }
+
+  .fisheye-nav-prev {
+    left: -0.2rem;
+  }
+
+  .fisheye-nav-next {
+    right: -0.2rem;
+  }
+
+  .fisheye-nav svg {
+    width: 14px;
+    height: 14px;
+  }
+
+  .fisheye-card-frame {
+    height: 230px;
+  }
+
+  .fisheye-card-info {
+    padding: 1.1rem 1.4rem 1.3rem;
+  }
+
+  .fisheye-card-title {
+    font-size: 1.15rem;
+  }
+
+  .fisheye-card-desc {
+    font-size: 0.82rem;
+  }
+
+  .fisheye-modal {
+    max-height: 90vh;
+    border-radius: 16px;
+  }
+
+  .fisheye-modal-image {
+    height: 200px;
+  }
+
+  .fisheye-modal-title {
+    font-size: 1.3rem;
+    left: 1.4rem;
+    right: 1.4rem;
+    bottom: 1rem;
+  }
+
+  .fisheye-modal-body {
+    padding: 1.2rem 1.4rem 1.6rem;
+  }
+
+  .fisheye-modal-desc {
+    font-size: 0.85rem;
+  }
+
+  .fisheye-modal-details {
+    font-size: 0.85rem;
+  }
+}
+

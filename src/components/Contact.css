@@ -1,0 +1,424 @@
+.contact-hero {
+  position: relative;
+  height: 320px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-image: url('https://images.unsplash.com/photo-1566073771259-6a8506099945?q=80&w=2070&auto=format&fit=crop');
+  background-size: cover;
+  background-position: center;
+  text-align: center;
+  color: #ffffff;
+  padding: 0 1rem;
+  margin-bottom: 2rem;
+}
+
+.contact-hero-overlay {
+  position: absolute;
+  inset: 0;
+  background-color: rgba(21, 20, 20, 0.55);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+}
+
+.contact-hero-content {
+  position: relative;
+  z-index: 1;
+  max-width: 800px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.contact-hero-title {
+  font-family: var(--font-elegant);
+  font-size: var(--text-h1);
+  font-weight: 700;
+  margin-bottom: 0.8rem;
+  letter-spacing: 2px;
+}
+
+.contact-hero-divider {
+  width: 250px;
+  height: 2px;
+  background-color: #ffffff;
+  margin-bottom: 1.2rem;
+}
+
+.contact-hero-subtitle {
+  font-family: var(--font-base);
+  font-size: 1.1rem;
+  font-weight: 400;
+  max-width: 600px;
+  line-height: 1.5;
+}
+
+/* ── Main Grid Layout ── */
+.contact-body-container {
+  max-width: 1200px;
+  margin: 3rem auto 6rem;
+  padding: 0 1.5rem;
+}
+
+.contact-layout-grid {
+  display: flex;
+  gap: 3rem;
+  align-items: flex-start;
+}
+
+/* ── Sidebar ── */
+.contact-sidebar {
+  width: 260px;
+  display: flex;
+  flex-direction: column;
+  flex-shrink: 0;
+  background-color: #ffffff;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 4px 15px rgba(21, 20, 20, 0.03);
+  border: 1px solid #e5e3de;
+}
+
+.contact-tab-btn {
+  background: none;
+  border: none;
+  outline: none;
+  font-family: var(--font-base);
+  font-size: 1.05rem;
+  font-weight: 500;
+  color: #151414;
+  padding: 1.1rem 1.5rem;
+  text-align: left;
+  cursor: pointer;
+  transition: all 0.25s cubic-bezier(0.32, 0.72, 0, 1);
+  border-bottom: 1px solid rgba(229, 227, 222, 0.6);
+}
+
+.contact-tab-btn:last-child {
+  border-bottom: none;
+}
+
+.contact-tab-btn:hover {
+  background-color: #fcfbf9;
+  color: var(--color-brown);
+}
+
+.contact-tab-btn.active {
+  background-color: var(--color-brown);
+  color: #ffffff;
+  font-weight: 700;
+}
+
+/* ── Content Card ── */
+.contact-content-card {
+  flex: 1;
+  border-radius: 16px;
+  overflow: hidden;
+  background-color: #ffffff;
+  box-shadow: 
+    inset 0 1px 1px rgba(255, 255, 255, 0.8),
+    0 12px 35px rgba(21, 20, 20, 0.04);
+}
+
+.contact-content-header {
+  background-color: var(--color-brown);
+  padding: 1.2rem 2.2rem;
+}
+
+.contact-content-header h2 {
+  font-family: var(--font-condensed);
+  color: #ffffff;
+  font-size: 1.45rem;
+  font-weight: 700;
+  margin: 0;
+  letter-spacing: 0.5px;
+}
+
+.contact-content-body {
+  border: 1px solid #e5e3de;
+  border-top: none;
+  border-radius: 0 0 16px 16px;
+  padding: 2.5rem;
+  min-height: 400px;
+}
+
+/* ── Tab Content Typography ── */
+.contact-tab-content p {
+  font-family: var(--font-base);
+  font-size: 1rem;
+  line-height: 1.7;
+  color: #4a4a4a;
+  margin-bottom: 1.5rem;
+}
+
+.contact-tab-content p:last-of-type {
+  margin-bottom: 0;
+}
+
+/* ── About Us Logo ── */
+.about-logo-wrapper {
+  display: flex;
+  justify-content: center;
+  margin-top: 3.5rem;
+}
+
+.about-logo {
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+}
+
+.about-logo-mark {
+  background-color: var(--color-primary);
+  width: 68px;
+  height: 68px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 2px solid var(--color-dark);
+  box-shadow: 0 4px 15px rgba(179, 0, 6, 0.15);
+}
+
+.about-logo-symbol {
+  font-family: var(--font-logo);
+  font-size: 2rem;
+  color: var(--color-dark);
+}
+
+.about-logo-text {
+  font-family: var(--font-elegant);
+  color: var(--color-primary);
+  font-size: 3.5rem;
+  letter-spacing: 2px;
+  font-weight: 800;
+}
+
+/* ── Contact Details Grid ── */
+.contact-details-grid {
+  display: flex;
+  gap: 2.5rem;
+  margin-bottom: 2.5rem;
+}
+
+.contact-info-col {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 1.8rem;
+}
+
+.contact-info-item {
+  display: flex;
+  align-items: center;
+  gap: 1.2rem;
+}
+
+.contact-info-icon-wrapper {
+  background-color: #f2f1ec;
+  color: var(--color-brown);
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.3rem;
+  flex-shrink: 0;
+}
+
+.contact-info-text h3 {
+  font-family: var(--font-condensed);
+  font-size: 1.15rem;
+  color: #151414;
+  font-weight: 700;
+  margin-bottom: 0.2rem;
+}
+
+.contact-info-text p {
+  font-family: var(--font-base);
+  font-size: 1rem;
+  color: #4a4a4a;
+  margin: 0;
+}
+
+/* ── Socials Section ── */
+.contact-socials-section {
+  border-top: 1px solid #f2f1ec;
+  padding-top: 1.8rem;
+  margin-top: 0.5rem;
+}
+
+.contact-socials-header {
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+  color: var(--color-brown);
+  font-size: 1.25rem;
+  margin-bottom: 1.2rem;
+}
+
+.contact-socials-header h3 {
+  font-family: var(--font-condensed);
+  font-size: 1.2rem;
+  color: #151414;
+  font-weight: 700;
+  margin: 0;
+}
+
+.contact-socials-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.8rem;
+}
+
+.social-link {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  font-family: var(--font-base);
+  font-size: 0.95rem;
+  color: #4a4a4a;
+  text-decoration: none;
+  transition: color 0.2s;
+}
+
+.social-link:hover {
+  color: var(--color-brown);
+}
+
+.social-link svg {
+  font-size: 1.2rem;
+}
+
+.facebook-icon { color: #1877f2; }
+.instagram-icon { color: #e4405f; }
+.whatsapp-icon { color: #25d366; }
+.tiktok-icon { color: #000000; }
+
+/* ── Map Col ── */
+.contact-map-col {
+  flex: 1.2;
+  min-height: 280px;
+  height: 320px;
+  border-radius: 12px;
+  overflow: hidden;
+  border: 1px solid #e5e3de;
+}
+
+.map-container {
+  width: 100%;
+  height: 100%;
+}
+
+/* ── Video Section ── */
+.contact-video-section {
+  width: 100%;
+  border-radius: 12px;
+  overflow: hidden;
+  border: 1px solid #e5e3de;
+  box-shadow: 0 8px 25px rgba(21, 20, 20, 0.04);
+}
+
+.facade-video {
+  display: block;
+  width: 100%;
+  height: auto;
+  max-height: 480px;
+  object-fit: cover;
+}
+
+/* ── FAQ ── */
+.faq-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1.6rem;
+  margin-bottom: 2rem;
+}
+
+.faq-item h3 {
+  font-family: var(--font-base);
+  font-size: 1.05rem;
+  color: #151414;
+  font-weight: 700;
+  margin-bottom: 0.4rem;
+}
+
+.faq-item p {
+  font-family: var(--font-base);
+  font-size: 0.95rem;
+  color: #4a4a4a;
+  line-height: 1.6;
+  margin: 0;
+}
+
+.faq-footer-note {
+  font-family: var(--font-base);
+  font-size: 1rem;
+  color: #151414;
+  font-weight: 700;
+  text-align: center;
+  border-top: 1px solid #f2f1ec;
+  padding-top: 1.5rem;
+  margin-top: 2rem;
+}
+
+/* ── Tab Animations ── */
+.fade-in {
+  animation: fadeInTab 0.35s ease-out forwards;
+}
+
+@keyframes fadeInTab {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* ── Responsive Styling ── */
+@media (max-width: 991px) {
+  .contact-layout-grid {
+    flex-direction: column;
+    gap: 2rem;
+  }
+  
+  .contact-sidebar {
+    width: 100%;
+    flex-direction: row;
+    flex-wrap: wrap;
+  }
+  
+  .contact-tab-btn {
+    flex: 1;
+    min-width: 160px;
+    text-align: center;
+    border-bottom: none;
+    border-right: 1px solid rgba(229, 227, 222, 0.6);
+  }
+  
+  .contact-tab-btn:last-child {
+    border-right: none;
+  }
+  
+  .contact-details-grid {
+    flex-direction: column;
+    gap: 2rem;
+  }
+  
+  .contact-map-col {
+    height: 250px;
+  }
+}
+
+@media (max-width: 768px) {
+  .contact-sidebar {
+    flex-direction: column;
+  }
+  
+  .contact-tab-btn {
+    border-right: none;
+    border-bottom: 1px solid rgba(229, 227, 222, 0.6);
+  }
+  
+  .contact-content-body {
+    padding: 1.5rem;
+  }
+}

@@ -1,0 +1,15 @@
+.divider-container {
+  display: flex; align-items: center; justify-content: center;
+  margin: 3rem auto; width: 100%; max-width: 400px;
+}
+.divider-line {
+  flex: 1; height: 1px; background-color: #ccc;
+}
+.divider-diamond {
+  width: 20px; height: 20px; border: 1px solid #ccc;
+  transform: rotate(45deg); margin: 0 1rem;
+  display: flex; align-items: center; justify-content: center;
+}
+.divider-diamond-inner {
+  width: 12px; height: 12px; border: 1px solid #ccc;
+}

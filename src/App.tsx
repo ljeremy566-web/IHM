@@ -1,0 +1,129 @@
+import { useState } from 'react';
+import { Header } from './components/Header';
+import { Hero } from './components/Hero';
+import { Divider } from './components/Divider';
+import { Services } from './components/Services';
+import { Rooms } from './components/Rooms';
+import { Footer } from './components/Footer';
+import { Booking } from './components/Booking';
+import { Contact } from './components/Contact';
+
+export interface CartItem {
+  id: number;
+  title: string;
+  image: string;
+  price: number;
+  quantity: number;
+}
+
+function App() {
+  const [currentView, setCurrentView] = useState<'home' | 'booking' | 'contact'>('home');
+  const [cart, setCart] = useState<CartItem[]>([
+    {
+      id: 1,
+      title: 'Habitación simple',
+      image: 'https://images.unsplash.com/photo-1520250497591-112f2f40a3f4?q=80&w=2070&auto=format&fit=crop',
+      price: 70,
+      quantity: 1
+    },
+    {
+      id: 2,
+      title: 'Habitación matrimonial',
+      image: 'https://images.unsplash.com/photo-1611892440504-42a792e24d32?q=80&w=2070&auto=format&fit=crop',
+      price: 90,
+      quantity: 2
+    },
+    {
+      id: 3,
+      title: 'Habitación doble',
+      image: 'https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?q=80&w=2070&auto=format&fit=crop',
+      price: 120,
+      quantity: 2
+    }
+  ]);
+
+  const [bookingInitialStep, setBookingInitialStep] = useState<'fecha' | 'pago'>('fecha');
+  const [checkoutType, setCheckoutType] = useState<'single' | 'cart'>('single');
+
+  const navigateToHome = () => {
+    setCurrentView('home');
+    setCheckoutType('single');
+    setBookingInitialStep('fecha');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
+  const navigateToBooking = () => {
+    setCheckoutType('single');
+    setBookingInitialStep('fecha');
+    setCurrentView('booking');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
+  const navigateToContact = () => {
+    setCurrentView('contact');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
+  const handleCheckoutCart = () => {
+    setCheckoutType('cart');
+    setBookingInitialStep('pago');
+    setCurrentView('booking');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
+  const addToCart = (roomTitle: string, price: number, image: string, quantity: number) => {
+    setCart((prev) => {
+      const existing = prev.find(item => item.title.toLowerCase() === roomTitle.toLowerCase());
+      if (existing) {
+        return prev.map(item => 
+          item.title.toLowerCase() === roomTitle.toLowerCase()
+            ? { ...item, quantity: item.quantity + quantity }
+            : item
+        );
+      }
+      return [...prev, { id: Date.now(), title: roomTitle, price, image, quantity }];
+    });
+  };
+
+  const removeFromCart = (id: number) => {
+    setCart(prev => prev.filter(item => item.id !== id));
+  };
+
+  return (
+    <div className="app">
+      <Header 
+        currentView={currentView} 
+        onNavigateHome={navigateToHome} 
+        onNavigateBooking={navigateToBooking} 
+        onNavigateContact={navigateToContact}
+        cart={cart}
+        onRemoveFromCart={removeFromCart}
+        onCheckoutCart={handleCheckoutCart}
+      />
+      <main style={{ minHeight: '80vh' }}>
+        {currentView === 'home' && (
+          <>
+            <Hero onBookingClick={navigateToBooking} />
+            <Divider />
+            <Services />
+            <Divider />
+            <Rooms />
+            <Divider />
+          </>
+        )}
+        {currentView === 'booking' && (
+          <Booking 
+            onAddToCart={addToCart} 
+            cart={cart}
+            initialStep={bookingInitialStep}
+            initialCheckoutType={checkoutType}
+          />
+        )}
+        {currentView === 'contact' && <Contact />}
+      </main>
+      <Footer />
+    </div>
+  );
+}
+
+export default App;
