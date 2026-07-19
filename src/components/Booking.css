@@ -159,7 +159,7 @@
   border-radius: 50px;
   border: 1px solid rgba(21, 20, 20, 0.05);
   box-shadow: 0 16px 35px rgba(21, 20, 20, 0.04);
-  overflow: hidden;
+  overflow: visible;
 }
 
 .booking-search-form {
@@ -179,6 +179,7 @@
   display: flex;
   align-items: center;
   gap: 1.2rem;
+  position: relative;
 }
 
 .search-field label {
@@ -221,18 +222,17 @@
   font-weight: 500;
 }
 
+.date-text-display.placeholder {
+  color: #9a9893;
+  font-style: italic;
+  font-weight: 400;
+  font-size: 0.85rem;
+}
+
 .search-calendar-icon {
   color: var(--color-brown);
   font-size: 1.1rem;
   flex-shrink: 0;
-}
-
-.hidden-date-input {
-  position: absolute;
-  opacity: 0;
-  pointer-events: none;
-  width: 0;
-  height: 0;
 }
 
 .booking-search-btn {
@@ -1626,4 +1626,193 @@
 .yape-code-box::placeholder {
   color: #c5c3bd;
   opacity: 0.5;
+}
+
+/* ── Date Picker Dropdown ── */
+.date-picker-dropdown {
+  position: absolute;
+  top: calc(100% + 8px);
+  left: 0;
+  z-index: 100;
+  background: #ffffff;
+  border: 1px solid #d5d3ce;
+  border-radius: 16px;
+  padding: 1rem;
+  box-shadow: 0 12px 35px rgba(21, 20, 20, 0.12);
+  width: 100%;
+  animation: fadeSlideDown 0.2s ease-out;
+}
+
+@keyframes fadeSlideDown {
+  from { opacity: 0; transform: translateY(-6px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* Header with year & month navigation */
+.dp-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.8rem;
+  gap: 0.5rem;
+}
+
+.dp-header-section {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+}
+
+.dp-arrow-btn {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--color-dark);
+  transition: background 0.15s;
+  flex-shrink: 0;
+}
+
+.dp-arrow-btn:hover {
+  background: var(--color-light);
+}
+
+.dp-header-label {
+  font-family: var(--font-condensed);
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: var(--color-dark);
+  padding: 0.3rem 0.5rem;
+  border-radius: 8px;
+  transition: background 0.15s;
+  white-space: nowrap;
+}
+
+.dp-header-label:hover {
+  background: var(--color-light);
+}
+
+.dp-header-label.active {
+  background: var(--color-dark);
+  color: #ffffff;
+}
+
+/* Year picker grid */
+.dp-year-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 4px;
+  margin-bottom: 0.5rem;
+}
+
+.dp-year-btn {
+  padding: 0.55rem 0;
+  border-radius: 10px;
+  font-family: var(--font-condensed);
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: #66634F;
+  transition: all 0.15s;
+}
+
+.dp-year-btn:hover:not(.disabled) {
+  background: var(--color-light);
+}
+
+.dp-year-btn.selected {
+  background: var(--color-dark);
+  color: #ffffff;
+}
+
+.dp-year-btn.disabled {
+  color: #c5c3bd;
+  cursor: not-allowed;
+}
+
+/* Month picker grid */
+.dp-month-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 4px;
+  margin-bottom: 0.5rem;
+}
+
+.dp-month-btn {
+  padding: 0.55rem 0;
+  border-radius: 10px;
+  font-family: var(--font-condensed);
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: #66634F;
+  transition: all 0.15s;
+}
+
+.dp-month-btn:hover:not(.disabled) {
+  background: var(--color-light);
+}
+
+.dp-month-btn.selected {
+  background: var(--color-brown);
+  color: #ffffff;
+}
+
+.dp-month-btn.disabled {
+  color: #c5c3bd;
+  cursor: not-allowed;
+}
+
+/* Day grid */
+.dp-day-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 2px;
+}
+
+.dp-day-label {
+  text-align: center;
+  font-family: var(--font-condensed);
+  font-size: 0.65rem;
+  font-weight: 700;
+  color: #9a9893;
+  text-transform: uppercase;
+  padding: 0.3rem 0;
+  letter-spacing: 0.05em;
+}
+
+.dp-day-empty {
+  aspect-ratio: 1;
+}
+
+.dp-day-btn {
+  aspect-ratio: 1;
+  border-radius: 10px;
+  font-family: var(--font-condensed);
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--color-dark);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.15s;
+}
+
+.dp-day-btn:hover:not(.disabled):not(.selected) {
+  background: var(--color-light);
+}
+
+.dp-day-btn.selected {
+  background: var(--color-brown);
+  color: #ffffff;
+}
+
+.dp-day-btn.today:not(.selected) {
+  border: 1.5px solid var(--color-brown);
+  color: var(--color-brown);
+}
+
+.dp-day-btn.disabled {
+  color: #d5d3ce;
+  cursor: not-allowed;
 }

@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import type { ReactNode } from 'react';
 import { 
   FaWifi, 
@@ -7,11 +7,11 @@ import {
   FaWind, 
   FaCoffee, 
   FaSearch, 
-  FaRegCalendar, 
   FaInfoCircle,
   FaUserFriends
 } from 'react-icons/fa';
 import type { CartItem } from '../App';
+import DatePicker from './DatePicker';
 import './Booking.css';
 
 interface Room {
@@ -50,8 +50,17 @@ export function Booking({
       setCheckoutType(initialCheckoutType);
     }
   }, [initialCheckoutType]);
-  const [fechaLlegada, setFechaLlegada] = useState('2025-10-20');
-  const [fechaSalida, setFechaSalida] = useState('2025-10-25');
+  const today = new Date();
+  const todayStr = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, '0')}-${String(today.getDate()).padStart(2, '0')}`;
+
+  const [fechaLlegada, setFechaLlegada] = useState('');
+  const [fechaSalida, setFechaSalida] = useState('');
+
+  useEffect(() => {
+    if (fechaLlegada && fechaSalida && fechaSalida < fechaLlegada) {
+      setFechaSalida(fechaLlegada);
+    }
+  }, [fechaLlegada]);
 
   // Modal states
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -95,9 +104,6 @@ export function Booking({
   // Success states
   const [copied, setCopied] = useState(false);
 
-  const llegadaRef = useRef<HTMLInputElement>(null);
-  const salidaRef = useRef<HTMLInputElement>(null);
-
   const openModal = (type: 'book' | 'cart', room: Room) => {
     setModalType(type);
     setSelectedRoom(room);
@@ -136,14 +142,6 @@ export function Booking({
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
     setStep('habitacion');
-  };
-
-  const handleLlegadaClick = () => {
-    llegadaRef.current?.showPicker();
-  };
-
-  const handleSalidaClick = () => {
-    salidaRef.current?.showPicker();
   };
 
   const ROOMS: Room[] = [
@@ -219,7 +217,7 @@ export function Booking({
             <div className="timeline-line">
               <div 
                 className="timeline-line-active" 
-                style={{ width: step === 'fecha' ? '0%' : step === 'habitacion' ? '37.5%' : step === 'pago' ? '62.5%' : '87.5%' }}
+                style={{ width: step === 'fecha' ? '12.5%' : step === 'habitacion' ? '37.5%' : step === 'pago' ? '62.5%' : '87.5%' }}
               ></div>
             </div>
             <div className="timeline-circles">
@@ -235,35 +233,21 @@ export function Booking({
         {step !== 'finalizado' && (
           <div className="booking-search-card">
             <form className="booking-search-form" onSubmit={handleSearch}>
-              <div className="search-field">
-                <label>Fecha de Llegada</label>
-                <div className="search-input-wrapper" onClick={handleLlegadaClick}>
-                  <span className="date-text-display">{formatDateForDisplay(fechaLlegada)}</span>
-                  <FaRegCalendar className="search-calendar-icon" />
-                  <input 
-                    type="date" 
-                    ref={llegadaRef} 
-                    value={fechaLlegada} 
-                    onChange={(e) => setFechaLlegada(e.target.value)} 
-                    className="hidden-date-input"
-                  />
-                </div>
-              </div>
+              <DatePicker
+                label="Fecha de Llegada"
+                value={fechaLlegada}
+                onChange={setFechaLlegada}
+                minDate={todayStr}
+                placeholder="Seleccionar fecha"
+              />
 
-              <div className="search-field">
-                <label>Fecha de Salida</label>
-                <div className="search-input-wrapper" onClick={handleSalidaClick}>
-                  <span className="date-text-display">{formatDateForDisplay(fechaSalida)}</span>
-                  <FaRegCalendar className="search-calendar-icon" />
-                  <input 
-                    type="date" 
-                    ref={salidaRef} 
-                    value={fechaSalida} 
-                    onChange={(e) => setFechaSalida(e.target.value)} 
-                    className="hidden-date-input"
-                  />
-                </div>
-              </div>
+              <DatePicker
+                label="Fecha de Salida"
+                value={fechaSalida}
+                onChange={setFechaSalida}
+                minDate={fechaLlegada || todayStr}
+                placeholder="Seleccionar fecha"
+              />
 
               <button type="submit" className="booking-search-btn">
                 <span>Buscar</span>
