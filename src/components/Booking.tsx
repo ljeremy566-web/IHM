@@ -230,7 +230,7 @@ export function Booking({
         </div>
 
         {/* Search Bar Container - Hidden in Step Finalizado */}
-        {step !== 'finalizado' && (
+        {(step === 'fecha' || step === 'habitacion') && (
           <div className="booking-search-card">
             <form className="booking-search-form" onSubmit={handleSearch}>
               <DatePicker
