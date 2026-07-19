@@ -78,7 +78,8 @@ export function Booking({
   // Payment states
   const [paymentMethod, setPaymentMethod] = useState<'card' | 'yape'>('card');
   const [yapeTab, setYapeTab] = useState<'num' | 'qr'>('qr');
-  const [docType, setDocType] = useState('Documento');
+  const [docType, setDocType] = useState('DNI');
+  const [docOpen, setDocOpen] = useState(false);
   const [docId, setDocId] = useState('');
   const [email, setEmail] = useState('');
   const [name, setName] = useState('');
@@ -427,17 +428,18 @@ export function Booking({
 
                   <div className="holder-form-grid">
                     <div className="form-field">
-                      <label>Documento de Identidad*</label>
+                      <label style={{ color: '#c53030' }}>Documento de Identidad*</label>
                       <div className="doc-input-wrapper">
-                        <select 
-                          value={docType} 
-                          onChange={(e) => setDocType(e.target.value)} 
-                          className="doc-select"
-                        >
-                          <option value="Documento">Documento</option>
-                          <option value="DNI">DNI</option>
-                          <option value="C.E.">C.E.</option>
-                        </select>
+                        <div className="doc-custom-select" onClick={() => setDocOpen(!docOpen)}>
+                          <span className="doc-selected-value">{docType}</span>
+                          <span className="doc-arrow">▾</span>
+                          {docOpen && (
+                            <div className="doc-dropdown">
+                              <div className="doc-option" onClick={() => { setDocType('DNI'); setDocOpen(false); }}>DNI</div>
+                              <div className="doc-option" onClick={() => { setDocType('RUC'); setDocOpen(false); }}>RUC</div>
+                            </div>
+                          )}
+                        </div>
                         <input 
                           type="text" 
                           placeholder="Ej: 12345678" 
@@ -459,7 +461,7 @@ export function Booking({
                     </div>
 
                     <div className="form-field">
-                      <label>Nombre*</label>
+                      <label style={{ color: '#c53030' }}>Nombre*</label>
                       <input 
                         type="text" 
                         placeholder="Ej: John Alexander" 
@@ -479,6 +481,8 @@ export function Booking({
                     </div>
                   </div>
 
+                  <div className="summary-divider"></div>
+
                   {/* Payment Methods */}
                   <div className="payment-methods-section">
                     <h3>Metodos de pago</h3>
@@ -488,17 +492,7 @@ export function Booking({
                         className={`method-logo-btn ${paymentMethod === 'card' ? 'active' : ''}`}
                         onClick={() => setPaymentMethod('card')}
                       >
-                        <span className="visa-text">VISA</span>
-                      </button>
-                      <button 
-                        type="button" 
-                        className={`method-logo-btn ${paymentMethod === 'card' ? 'active' : ''}`}
-                        onClick={() => setPaymentMethod('card')}
-                      >
-                        <span className="mastercard-circles">
-                          <span className="circle-red"></span>
-                          <span className="circle-orange"></span>
-                        </span>
+                        <span className="method-btn-text">Tarjeta</span>
                       </button>
                       <button 
                         type="button" 
@@ -510,10 +504,12 @@ export function Booking({
                     </div>
                   </div>
 
+                  <div className="summary-divider"></div>
+
                   {/* Payment Info Card Details */}
                   {paymentMethod === 'card' ? (
-                    <div className="card-payment-details-section">
-                      <h3>Informacion de pago</h3>
+                    <>
+                      <h3 className="payment-section-title">Informacion de pago</h3>
                       
                       <div className="form-field">
                         <label>Numero de tarjeta</label>
@@ -554,20 +550,20 @@ export function Booking({
                           onChange={(e) => setCardName(e.target.value)}
                         />
                       </div>
-                    </div>
+                    </>
                   ) : (
-                    <div className="yape-payment-details-section">
-                      <div className="yape-tab-header">
+                    <>
+                      <div className={`yape-segmented ${yapeTab === 'qr' ? 'qr-active' : ''}`}>
                         <button 
                           type="button" 
-                          className={`yape-tab-btn ${yapeTab === 'num' ? 'active' : ''}`}
+                          className={`yape-seg-btn ${yapeTab === 'num' ? 'active' : ''}`}
                           onClick={() => setYapeTab('num')}
                         >
                           Numero
                         </button>
                         <button 
                           type="button" 
-                          className={`yape-tab-btn ${yapeTab === 'qr' ? 'active' : ''}`}
+                          className={`yape-seg-btn ${yapeTab === 'qr' ? 'active' : ''}`}
                           onClick={() => setYapeTab('qr')}
                         >
                           Codigo QR
@@ -608,7 +604,7 @@ export function Booking({
                         <div className="yape-num-content">
                           <h4 className="yape-num-heading">Ingresa tu numero de telefono</h4>
                           
-                          <div className="form-field" style={{ marginBottom: '1.2rem' }}>
+                          <div className="form-field">
                             <label>Telefono</label>
                             <input 
                               type="text" 
@@ -637,16 +633,18 @@ export function Booking({
                           </div>
                         </div>
                       )}
-                    </div>
+                    </>
                   )}
 
-                  <button 
-                    type="button" 
-                    className="pay-now-btn"
-                    onClick={() => setStep('finalizado')}
-                  >
-                    Pagar S/{totalVal.toFixed(0)}
-                  </button>
+                  {!(paymentMethod === 'yape' && yapeTab === 'qr') && (
+                    <button 
+                      type="button" 
+                      className="pay-now-btn"
+                      onClick={() => setStep('finalizado')}
+                    >
+                      Pagar S/{totalVal.toFixed(0)}
+                    </button>
+                  )}
                 </div>
               </div>
             );

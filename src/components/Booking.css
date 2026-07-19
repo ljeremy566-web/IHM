@@ -949,6 +949,7 @@
   border: 1px solid #e5e3de;
   border-radius: 16px;
   padding: 1.6rem;
+  box-shadow: 0 8px 24px rgba(21, 20, 20, 0.06);
 }
 
 .summary-header h2 {
@@ -1019,7 +1020,7 @@
 }
 
 .summary-divider {
-  border-bottom: 1px solid #e5e3de;
+  border-bottom: 1px solid #d5d3cc;
   margin: 0.8rem 0;
 }
 
@@ -1045,18 +1046,18 @@
 /* ── Payment Form Card ── */
 .payment-form-card {
   flex: 1.4;
-  background-color: #ffffff;
+  background-color: #faf9f6;
   border: 1px solid #e5e3de;
   border-radius: 16px;
   padding: 1.6rem;
-  box-shadow: 0 12px 35px rgba(21, 20, 20, 0.04);
+  box-shadow: 0 8px 24px rgba(21, 20, 20, 0.06);
 }
 
 .form-section-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  border-bottom: 1px solid #f2f1ec;
+  border-bottom: 1px solid #d5d3cc;
   padding-bottom: 0.8rem;
   margin-bottom: 1.5rem;
 }
@@ -1094,7 +1095,7 @@
 .form-field label {
   font-family: var(--font-base);
   font-size: 0.9rem;
-  font-weight: 700;
+  font-weight: 400;
   color: #151414;
 }
 
@@ -1119,24 +1120,74 @@
 .doc-input-wrapper {
   display: flex;
   width: 100%;
-  gap: 0.5rem;
 }
 
-.doc-select {
+.doc-input-wrapper .doc-select {
+  border-radius: 8px 0 0 8px;
+  border-right: none;
+}
+
+.doc-input-wrapper .doc-input {
+  border-radius: 0 8px 8px 0;
+}
+
+.doc-custom-select {
+  position: relative;
+  display: flex;
+  align-items: center;
   background-color: #fcfbf9;
   border: 1px solid #d5d3ce;
-  border-radius: 8px;
-  padding: 0 0.5rem;
-  font-family: var(--font-base);
-  font-size: 0.9rem;
-  color: #151414;
-  outline: none;
+  border-right: none;
+  border-radius: 8px 0 0 8px;
+  padding: 0 0.6rem;
+  height: 100%;
   cursor: pointer;
+  min-width: 80px;
+  user-select: none;
   transition: border-color 0.2s;
 }
 
-.doc-select:focus {
+.doc-custom-select:focus-within {
   border-color: var(--color-brown);
+}
+
+.doc-selected-value {
+  font-family: var(--font-base);
+  font-size: 0.9rem;
+  color: #151414;
+  flex: 1;
+}
+
+.doc-arrow {
+  font-size: 0.7rem;
+  color: #66634F;
+  margin-left: 0.3rem;
+}
+
+.doc-dropdown {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  width: 100%;
+  background: #ffffff;
+  border: 1px solid #d5d3ce;
+  border-radius: 0 0 8px 8px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+  z-index: 10;
+  overflow: hidden;
+}
+
+.doc-option {
+  padding: 0.5rem 0.6rem;
+  font-family: var(--font-base);
+  font-size: 0.9rem;
+  color: #151414;
+  cursor: pointer;
+  transition: background-color 0.15s;
+}
+
+.doc-option:hover {
+  background-color: #f2f1ec;
 }
 
 .doc-input {
@@ -1185,6 +1236,13 @@
   border-color: var(--color-brown);
   background-color: #fbf9f6;
   box-shadow: 0 0 0 3px rgba(115, 53, 39, 0.1);
+}
+
+.method-btn-text {
+  font-family: var(--font-condensed);
+  font-weight: 700;
+  font-size: 1rem;
+  color: #151414;
 }
 
 .visa-text {
@@ -1236,28 +1294,19 @@
 }
 
 /* ── Card/Yape Detailed Payment Section ── */
-.card-payment-details-section,
-.yape-payment-details-section {
-  background-color: #faf9f6;
-  border: 1px dashed #d5d3ce;
-  border-radius: 12px;
-  padding: 1.5rem;
-  margin-bottom: 2rem;
-  animation: fadeIn 0.25s ease-out;
-}
-
-.card-payment-details-section h3 {
+.payment-section-title {
   font-family: var(--font-condensed);
-  font-size: 1.15rem;
+  font-size: 1.2rem;
   color: #151414;
   font-weight: 700;
-  margin-bottom: 1.2rem;
+  margin-bottom: 1rem;
 }
 
 .card-row-fields {
   display: flex;
   gap: 1rem;
   margin-top: 1rem;
+  margin-bottom: 1rem;
 }
 
 .flex-2 {
@@ -1268,31 +1317,52 @@
   flex: 1;
 }
 
-.yape-tab-header {
+.yape-segmented {
   display: flex;
-  gap: 0.5rem;
-  margin-bottom: 1.5rem;
-  border-bottom: 1px solid #f2f1ec;
-  padding-bottom: 0.5rem;
+  position: relative;
+  background-color: #e5e3de;
+  border-radius: 14px;
+  padding: 3px;
+  width: fit-content;
+  margin: 0 auto 1.5rem;
 }
 
-.yape-tab-btn {
-  background: none;
+.yape-seg-btn {
+  position: relative;
+  z-index: 1;
+  flex: 1;
+  padding: 0.5rem 1.5rem;
   border: none;
+  background: transparent;
   font-family: var(--font-condensed);
-  font-size: 1rem;
-  font-weight: 600;
+  font-size: 0.9rem;
+  font-weight: 700;
   color: #66634F;
-  padding: 0.4rem 1.2rem;
   cursor: pointer;
-  border-radius: 6px;
-  transition: all 0.2s;
+  transition: color 0.3s ease;
+  border-radius: 12px;
+  text-align: center;
+  white-space: nowrap;
 }
 
-.yape-tab-btn.active {
-  background-color: var(--color-brown);
+.yape-seg-btn.active {
   color: #ffffff;
-  font-weight: 700;
+}
+
+.yape-segmented::before {
+  content: '';
+  position: absolute;
+  top: 3px;
+  left: 3px;
+  width: calc(50% - 3px);
+  height: calc(100% - 6px);
+  background-color: var(--color-brown);
+  border-radius: 12px;
+  transition: transform 0.3s cubic-bezier(0.32, 0.72, 0, 1);
+}
+
+.yape-segmented.qr-active::before {
+  transform: translateX(100%);
 }
 
 .yape-instruction {
@@ -1323,6 +1393,7 @@
 
 .pay-now-btn {
   width: 100%;
+  margin-top: 1.5rem;
   background-color: var(--color-brown);
   color: #ffffff;
   border: 1px solid rgba(255, 255, 255, 0.15);
@@ -1594,7 +1665,7 @@
   display: flex;
   flex-direction: column;
   align-items: stretch;
-  gap: 1.2rem;
+  gap: 0.8rem;
   animation: fadeIn 0.2s ease-out;
 }
 
