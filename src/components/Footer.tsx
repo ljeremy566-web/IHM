@@ -17,7 +17,19 @@ const COMPANY_LINKS = [
   { label: 'Sobre nosotros', href: '#' },
 ];
 
-export function Footer() {
+interface FooterProps {
+  onNavigateHome: () => void;
+  onNavigateBooking: () => void;
+  onNavigateSearchBooking: () => void;
+  onNavigateContact: () => void;
+}
+
+export function Footer({
+  onNavigateHome,
+  onNavigateBooking,
+  onNavigateSearchBooking,
+  onNavigateContact
+}: FooterProps) {
   const [isMobile, setIsMobile] = useState(false);
 
   useEffect(() => {
@@ -27,6 +39,15 @@ export function Footer() {
     mq.addEventListener('change', handler);
     return () => mq.removeEventListener('change', handler);
   }, []);
+
+  const handleLinkClick = (label: string, e: React.MouseEvent) => {
+    e.preventDefault();
+    if (label === 'Inicio') onNavigateHome();
+    else if (label === 'Reservar ahora') onNavigateBooking();
+    else if (label === 'Buscar Reserva') onNavigateSearchBooking();
+    else if (label === 'Contactanos') onNavigateContact();
+    else if (label === 'Ubicacion') onNavigateContact();
+  };
 
   return (
     <footer className="footer">
@@ -50,7 +71,9 @@ export function Footer() {
               <summary className="footer-heading">Accesos rapidos</summary>
               <ul>
                 {QUICK_LINKS.map(link => (
-                  <li key={link.label}><a href={link.href}>{link.label}</a></li>
+                  <li key={link.label}>
+                    <a href="#" onClick={(e) => handleLinkClick(link.label, e)}>{link.label}</a>
+                  </li>
                 ))}
               </ul>
             </details>
@@ -59,7 +82,9 @@ export function Footer() {
               <h4 className="footer-heading">Accesos rapidos</h4>
               <ul>
                 {QUICK_LINKS.map(link => (
-                  <li key={link.label}><a href={link.href}>{link.label}</a></li>
+                  <li key={link.label}>
+                    <a href="#" onClick={(e) => handleLinkClick(link.label, e)}>{link.label}</a>
+                  </li>
                 ))}
               </ul>
             </>

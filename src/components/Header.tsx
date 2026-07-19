@@ -4,10 +4,10 @@ import type { CartItem } from '../App';
 import './Header.css';
 
 interface HeaderProps {
-  currentView: 'home' | 'booking' | 'contact';
+  currentView: 'home' | 'booking' | 'contact' | 'searchBooking';
   onNavigateHome: () => void;
-  onNavigateBooking: () => void;
   onNavigateContact: () => void;
+  onNavigateSearchBooking: () => void;
   cart: CartItem[];
   onRemoveFromCart: (id: number) => void;
   onCheckoutCart: () => void;
@@ -16,8 +16,8 @@ interface HeaderProps {
 export function Header({ 
   currentView, 
   onNavigateHome, 
-  onNavigateBooking, 
   onNavigateContact,
+  onNavigateSearchBooking,
   cart,
   onRemoveFromCart,
   onCheckoutCart
@@ -49,8 +49,8 @@ export function Header({
           </a>
           <a 
             href="#" 
-            className={currentView === 'booking' ? 'active' : ''} 
-            onClick={(e) => { e.preventDefault(); onNavigateBooking(); }}
+            className={currentView === 'searchBooking' ? 'active' : ''} 
+            onClick={(e) => { e.preventDefault(); onNavigateSearchBooking(); }}
           >
             Buscar Reserva
           </a>
@@ -150,7 +150,7 @@ export function Header({
       {menuOpen && (
         <nav className="mobile-dropdown" onClick={() => setMenuOpen(false)}>
           <a onClick={() => { onNavigateHome(); setMenuOpen(false); }}>Inicio</a>
-          <a onClick={() => { onNavigateBooking(); setMenuOpen(false); }}>Buscar Reserva</a>
+          <a onClick={() => { onNavigateSearchBooking(); setMenuOpen(false); }}>Buscar Reserva</a>
           <a onClick={() => { onNavigateContact(); setMenuOpen(false); }}>Contactanos</a>
           <a onClick={() => { onNavigateContact(); setMenuOpen(false); }}>Ubicación</a>
         </nav>

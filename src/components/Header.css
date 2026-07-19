@@ -1,6 +1,6 @@
 .header {
   position: absolute;
-  top: 0; left: 0; width: 100%; z-index: 10;
+  top: 0; left: 0; width: 100%; z-index: 100;
   background: rgba(21, 20, 20, 0.85);
   padding: 1rem 0;
 }

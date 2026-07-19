@@ -7,6 +7,7 @@ import { Rooms } from './components/Rooms';
 import { Footer } from './components/Footer';
 import { Booking } from './components/Booking';
 import { Contact } from './components/Contact';
+import { SearchBooking } from './components/SearchBooking';
 
 export interface CartItem {
   id: number;
@@ -17,7 +18,7 @@ export interface CartItem {
 }
 
 function App() {
-  const [currentView, setCurrentView] = useState<'home' | 'booking' | 'contact'>('home');
+  const [currentView, setCurrentView] = useState<'home' | 'booking' | 'contact' | 'searchBooking'>('home');
   const [cart, setCart] = useState<CartItem[]>([
     {
       id: 1,
@@ -64,6 +65,11 @@ function App() {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
+  const navigateToSearchBooking = () => {
+    setCurrentView('searchBooking');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
   const handleCheckoutCart = () => {
     setCheckoutType('cart');
     setBookingInitialStep('pago');
@@ -94,8 +100,8 @@ function App() {
       <Header 
         currentView={currentView} 
         onNavigateHome={navigateToHome} 
-        onNavigateBooking={navigateToBooking} 
         onNavigateContact={navigateToContact}
+        onNavigateSearchBooking={navigateToSearchBooking}
         cart={cart}
         onRemoveFromCart={removeFromCart}
         onCheckoutCart={handleCheckoutCart}
@@ -120,8 +126,14 @@ function App() {
           />
         )}
         {currentView === 'contact' && <Contact />}
+        {currentView === 'searchBooking' && <SearchBooking />}
       </main>
-      <Footer />
+      <Footer 
+        onNavigateHome={navigateToHome}
+        onNavigateBooking={navigateToBooking}
+        onNavigateSearchBooking={navigateToSearchBooking}
+        onNavigateContact={navigateToContact}
+      />
     </div>
   );
 }
