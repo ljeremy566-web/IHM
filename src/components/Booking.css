@@ -939,7 +939,7 @@
   display: flex;
   gap: 2.2rem;
   align-items: flex-start;
-  max-width: 1000px;
+  max-width: 1100px;
   margin: 0 auto;
 }
 
@@ -948,7 +948,7 @@
   background-color: #faf9f6;
   border: 1px solid #e5e3de;
   border-radius: 16px;
-  padding: 2rem;
+  padding: 1.6rem;
 }
 
 .summary-header h2 {
@@ -992,22 +992,35 @@
 .summary-body h3 {
   font-family: var(--font-condensed);
   font-size: 1.3rem;
-  color: #151414;
+  color: var(--color-brown);
   font-weight: 700;
-  border-bottom: 1px solid #f2f1ec;
-  padding-bottom: 0.8rem;
-  margin-bottom: 1.2rem;
+  margin-bottom: 1rem;
 }
 
 .summary-row {
   display: flex;
   justify-content: space-between;
   font-family: var(--font-base);
-  font-size: 0.95rem;
+  font-size: 0.88rem;
   color: #4a4a4a;
-  margin-bottom: 1rem;
-  border-bottom: 1px dashed #f2f1ec;
-  padding-bottom: 0.5rem;
+  margin-bottom: 0.8rem;
+  border-bottom: 1px solid #e5e3de;
+  padding-bottom: 0.6rem;
+}
+
+.summary-detail-row {
+  color: #66634F;
+  font-size: 0.83rem;
+}
+
+.summary-detail-row:last-of-type {
+  border-bottom: none;
+  margin-bottom: 0.6rem;
+}
+
+.summary-divider {
+  border-bottom: 1px solid #e5e3de;
+  margin: 0.8rem 0;
 }
 
 .summary-total-row {
@@ -1015,17 +1028,17 @@
   justify-content: space-between;
   align-items: center;
   font-family: var(--font-condensed);
-  font-size: 1.35rem;
+  font-size: 1.15rem;
   font-weight: 700;
   color: #151414;
-  border-top: 1px solid #f2f1ec;
-  padding-top: 1.2rem;
-  margin-top: 1.5rem;
+  border-top: 2px solid #d5d3cc;
+  padding-top: 1rem;
+  margin-top: 0.8rem;
 }
 
 .total-price-highlight {
   color: #B30006;
-  font-size: 1.95rem;
+  font-size: 1.6rem;
   font-weight: 800;
 }
 
@@ -1035,7 +1048,7 @@
   background-color: #ffffff;
   border: 1px solid #e5e3de;
   border-radius: 16px;
-  padding: 2rem;
+  padding: 1.6rem;
   box-shadow: 0 12px 35px rgba(21, 20, 20, 0.04);
 }
 
@@ -1313,7 +1326,7 @@
   background-color: var(--color-brown);
   color: #ffffff;
   border: 1px solid rgba(255, 255, 255, 0.15);
-  border-radius: 50px;
+  border-radius: 10px;
   padding: 0.9rem 0;
   font-family: var(--font-condensed);
   font-size: 1.2rem;

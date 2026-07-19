@@ -324,7 +324,11 @@ export function Booking({
 
           {step === 'pago' && (() => {
             const room = selectedRoom || ROOMS[1];
-            const nights = 5;
+            const nights = fechaLlegada && fechaSalida
+              ? Math.max(1, Math.ceil(
+                  (new Date(fechaSalida).getTime() - new Date(fechaLlegada).getTime()) / (1000 * 60 * 60 * 24)
+                ))
+              : 1;
             let totalVal = 0;
             let sumPerNight = 0;
 
@@ -342,34 +346,34 @@ export function Booking({
                 {checkoutType === 'cart' ? (
                   <div className="payment-summary-card">
                     <div className="summary-header">
-                      <h2 style={{ fontSize: '1.6rem', color: '#151414', fontFamily: 'var(--font-condensed)', fontWeight: '700' }}>Resumen de los gastos</h2>
+                      <h2 style={{ fontSize: '1.4rem', color: '#151414', fontFamily: 'var(--font-condensed)', fontWeight: '700' }}>Resumen de los gastos</h2>
                       <div className="cart-modal-divider" style={{ margin: '0.8rem 0' }}></div>
                     </div>
                     
                     <div className="summary-body">
-                      <h4 style={{ fontFamily: 'var(--font-base)', textDecoration: 'underline', fontWeight: '800', color: '#151414', fontSize: '0.9rem', marginBottom: '1.2rem', textTransform: 'none' }}>Precio de Habitaciones por noche</h4>
+                      <h4 style={{ fontFamily: 'var(--font-base)', textDecoration: 'underline', fontWeight: '800', color: '#151414', fontSize: '0.82rem', marginBottom: '1rem', textTransform: 'none' }}>Precio de Habitaciones por noche</h4>
                       {cart.map((item) => (
-                        <div key={item.id} className="summary-row" style={{ border: 'none', borderBottom: '1px dashed #f2f1ec', paddingBottom: '0.6rem', marginBottom: '1.2rem' }}>
+                        <div key={item.id} className="summary-row" style={{ border: 'none', borderBottom: '1px solid #d5d3cc', paddingBottom: '0.6rem', marginBottom: '1.2rem' }}>
                           <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start' }}>
-                            <span style={{ fontWeight: '700', color: '#151414', fontSize: '0.95rem' }}>{item.title}</span>
-                            <span style={{ color: '#8f8d87', fontSize: '0.85rem' }}>Cantidad: {item.quantity}</span>
+                            <span style={{ fontWeight: '700', color: '#151414', fontSize: '0.88rem' }}>{item.title}</span>
+                            <span style={{ color: '#8f8d87', fontSize: '0.78rem' }}>Cantidad: {item.quantity}</span>
                           </div>
-                          <span style={{ fontFamily: 'var(--font-condensed)', fontWeight: '700', color: '#151414', fontSize: '1.05rem', alignSelf: 'center' }}>S/ {(item.price * item.quantity).toFixed(2)}</span>
+                          <span style={{ fontFamily: 'var(--font-condensed)', fontWeight: '700', color: '#151414', fontSize: '0.95rem', alignSelf: 'center' }}>S/ {(item.price * item.quantity).toFixed(2)}</span>
                         </div>
                       ))}
                       
-                      <h4 style={{ fontFamily: 'var(--font-base)', textDecoration: 'underline', fontWeight: '800', color: '#151414', fontSize: '0.9rem', marginTop: '1.8rem', marginBottom: '1rem', textTransform: 'none' }}>Tiempo de Estancia</h4>
+                      <h4 style={{ fontFamily: 'var(--font-base)', textDecoration: 'underline', fontWeight: '800', color: '#151414', fontSize: '0.82rem', marginTop: '1.4rem', marginBottom: '0.8rem', textTransform: 'none' }}>Tiempo de Estancia</h4>
                       <div className="summary-row">
                         <span>Total de noches</span>
                         <span style={{ fontWeight: '800' }}>{nights}</span>
                       </div>
-                      <div className="summary-row" style={{ fontSize: '0.85rem', color: '#8f8d87', border: 'none', marginTop: '-0.5rem', marginBottom: '1.2rem' }}>
+                      <div className="summary-row" style={{ fontSize: '0.78rem', color: '#8f8d87', border: 'none', marginTop: '-0.5rem', marginBottom: '1.2rem' }}>
                         <span>({formatDateForDisplay(fechaLlegada)} - {formatDateForDisplay(fechaSalida)})</span>
                       </div>
                       
-                      <div className="summary-total-row" style={{ borderTop: '1px solid #e5e3de', paddingTop: '1.2rem' }}>
-                        <span style={{ fontSize: '1.1rem', fontWeight: '800' }}>Total a pagar</span>
-                        <span className="total-price-highlight" style={{ fontSize: '1.95rem' }}>S/ {totalVal.toFixed(2)}</span>
+                      <div className="summary-total-row" style={{ borderTop: '1px solid #d5d3cc', paddingTop: '1.2rem' }}>
+                        <span style={{ fontSize: '1rem', fontWeight: '800' }}>Total a pagar</span>
+                        <span className="total-price-highlight" style={{ fontSize: '1.6rem' }}>S/ {totalVal.toFixed(2)}</span>
                       </div>
                     </div>
                   </div>
@@ -384,25 +388,27 @@ export function Booking({
                           1 PERSONA
                         </span>
                       </div>
+                      <div className="summary-divider"></div>
                     </div>
 
                     <div className="summary-body">
-                      <h3>Resumen de los gastos</h3>
-                      <div className="summary-row">
-                        <span>Precio de habitacion por noche</span>
+                      <h3>Resumen de la reserva</h3>
+                      <div className="summary-divider"></div>
+                      <div className="summary-row summary-detail-row">
+                        <span>Precio por noche</span>
                         <span>S/ {(parseFloat(room.price) * 0.82).toFixed(2)}</span>
                       </div>
-                      <div className="summary-row">
-                        <span>Total de noches</span>
+                      <div className="summary-row summary-detail-row">
+                        <span>Cantidad de noches</span>
                         <span>{nights}</span>
                       </div>
                       <div className="summary-row">
-                        <span>Total de habitaciones</span>
-                        <span>1</span>
+                        <span>Subtotal</span>
+                        <span>S/ {(parseFloat(room.price) * 0.82 * nights).toFixed(2)}</span>
                       </div>
                       <div className="summary-row">
-                        <span>IGV(18%)</span>
-                        <span>S/ {(parseFloat(room.price) * 0.18).toFixed(2)}</span>
+                        <span>IGV (18%)</span>
+                        <span>S/ {(parseFloat(room.price) * 0.18 * nights).toFixed(2)}</span>
                       </div>
                       <div className="summary-total-row">
                         <span>TOTAL A PAGAR</span>
