@@ -15,6 +15,7 @@ export interface CartItem {
   image: string;
   price: number;
   quantity: number;
+  nights?: number;
 }
 
 function App() {
@@ -25,21 +26,24 @@ function App() {
       title: 'Habitación simple',
       image: 'https://images.unsplash.com/photo-1520250497591-112f2f40a3f4?q=80&w=2070&auto=format&fit=crop',
       price: 70,
-      quantity: 1
+      quantity: 1,
+      nights: 2
     },
     {
       id: 2,
       title: 'Habitación matrimonial',
       image: 'https://images.unsplash.com/photo-1611892440504-42a792e24d32?q=80&w=2070&auto=format&fit=crop',
       price: 90,
-      quantity: 2
+      quantity: 2,
+      nights: 3
     },
     {
       id: 3,
       title: 'Habitación doble',
       image: 'https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?q=80&w=2070&auto=format&fit=crop',
       price: 120,
-      quantity: 2
+      quantity: 1,
+      nights: 1
     }
   ]);
 

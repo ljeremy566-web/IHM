@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { FaShoppingCart, FaTimesCircle, FaBars } from 'react-icons/fa';
+import { FaShoppingCart, FaBars, FaBed, FaCalendarAlt, FaTrashAlt } from 'react-icons/fa';
 import type { CartItem } from '../App';
 import './Header.css';
 
@@ -93,22 +93,32 @@ export function Header({
                   <p className="empty-cart-message">No tienes reservas activas</p>
                 ) : (
                   cart.map((item) => (
-                    <div key={item.id} className="cart-modal-item">
-                      <img src={item.image} alt={item.title} className="cart-item-image" />
-                      <div className="cart-item-info">
+                    <div key={item.id} className="cart-modal-item restructured">
+                      <div className="cart-item-header">
                         <h3>{item.title}</h3>
-                        <div className="cart-item-price-row">
-                          <span className="cart-item-qty">{item.quantity} X</span>
-                          <span className="cart-item-price">S/ {(item.price * item.quantity).toFixed(2)}</span>
+                        <button 
+                          type="button" 
+                          className="cart-item-remove-btn"
+                          onClick={() => onRemoveFromCart(item.id)}
+                          title="Eliminar reserva"
+                        >
+                          <FaTrashAlt />
+                        </button>
+                      </div>
+                      <div className="cart-item-meta">
+                        <div className="cart-meta-pill">
+                          <FaBed className="pill-icon" />
+                          <span>{item.quantity} {item.quantity === 1 ? 'habitación' : 'habitaciones'}</span>
+                        </div>
+                        <div className="cart-meta-pill">
+                          <FaCalendarAlt className="pill-icon" />
+                          <span>{item.nights || 1} {item.nights === 1 ? 'noche' : 'noches'}</span>
                         </div>
                       </div>
-                      <button 
-                        type="button" 
-                        className="cart-item-remove-btn"
-                        onClick={() => onRemoveFromCart(item.id)}
-                      >
-                        <FaTimesCircle />
-                      </button>
+                      <div className="cart-item-footer">
+                        <span className="cart-item-rate">S/ {item.price.toFixed(2)} x noche</span>
+                        <span className="cart-item-total">S/ {(item.price * item.quantity * (item.nights || 1)).toFixed(2)}</span>
+                      </div>
                     </div>
                   ))
                 )}
@@ -119,7 +129,7 @@ export function Header({
               <div className="cart-modal-subtotal">
                 <span>Subtotal</span>
                 <span className="cart-subtotal-value">
-                  S/ {cart.reduce((sum, item) => sum + (item.price * item.quantity), 0).toFixed(2)}
+                  S/ {cart.reduce((sum, item) => sum + (item.price * item.quantity * (item.nights || 1)), 0).toFixed(2)}
                 </span>
               </div>
               
@@ -133,7 +143,7 @@ export function Header({
                 </button>
                 <button 
                   type="button" 
-                  className="cart-btn-outline"
+                  className="cart-btn-primary"
                   onClick={() => {
                     setIsCartOpen(false);
                     onCheckoutCart();
