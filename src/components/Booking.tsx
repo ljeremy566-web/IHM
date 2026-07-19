@@ -202,32 +202,25 @@ export function Booking({
       {/* Timeline Steps */}
       <div className="container">
         <div className="booking-timeline">
-          <div className="timeline-line">
-            <div 
-              className="timeline-line-active" 
-              style={{ width: step === 'fecha' ? '12.5%' : step === 'habitacion' ? '37.5%' : step === 'pago' ? '62.5%' : '87.5%' }}
-            ></div>
+          <div className="timeline-labels">
+            <span className={`step-label ${step === 'fecha' || step === 'habitacion' || step === 'pago' || step === 'finalizado' ? 'active' : ''} ${step !== 'fecha' ? 'completed' : ''}`}>Fecha</span>
+            <span className={`step-label ${step === 'habitacion' || step === 'pago' || step === 'finalizado' ? 'active' : ''} ${step !== 'fecha' && step !== 'habitacion' ? 'completed' : ''}`}>Habitación</span>
+            <span className={`step-label ${step === 'pago' || step === 'finalizado' ? 'active' : ''} ${step === 'finalizado' ? 'completed' : ''}`}>Pago</span>
+            <span className={`step-label ${step === 'finalizado' ? 'active' : ''}`}>Finalizado</span>
           </div>
-          
-          <div className="timeline-steps">
-            <div className={`timeline-step ${step === 'fecha' || step === 'habitacion' || step === 'pago' || step === 'finalizado' ? 'active' : ''} ${step !== 'fecha' ? 'completed' : ''}`}>
-              <span className="step-label">Fecha</span>
-              <div className="step-circle"></div>
+
+          <div className="timeline-track">
+            <div className="timeline-line">
+              <div 
+                className="timeline-line-active" 
+                style={{ width: step === 'fecha' ? '0%' : step === 'habitacion' ? '37.5%' : step === 'pago' ? '62.5%' : '87.5%' }}
+              ></div>
             </div>
-            
-            <div className={`timeline-step ${step === 'habitacion' || step === 'pago' || step === 'finalizado' ? 'active' : ''} ${step !== 'fecha' && step !== 'habitacion' ? 'completed' : ''}`}>
-              <span className="step-label">Habitación</span>
-              <div className="step-circle"></div>
-            </div>
-            
-            <div className={`timeline-step ${step === 'pago' || step === 'finalizado' ? 'active' : ''} ${step === 'finalizado' ? 'completed' : ''}`}>
-              <span className="step-label">Pago</span>
-              <div className="step-circle"></div>
-            </div>
-            
-            <div className={`timeline-step ${step === 'finalizado' ? 'active' : ''}`}>
-              <span className="step-label">Finalizado</span>
-              <div className="step-circle"></div>
+            <div className="timeline-circles">
+              <div className={`step-circle ${step === 'fecha' || step === 'habitacion' || step === 'pago' || step === 'finalizado' ? 'active' : ''} ${step !== 'fecha' ? 'completed' : ''}`}></div>
+              <div className={`step-circle ${step === 'habitacion' || step === 'pago' || step === 'finalizado' ? 'active' : ''} ${step !== 'fecha' && step !== 'habitacion' ? 'completed' : ''}`}></div>
+              <div className={`step-circle ${step === 'pago' || step === 'finalizado' ? 'active' : ''} ${step === 'finalizado' ? 'completed' : ''}`}></div>
+              <div className={`step-circle ${step === 'finalizado' ? 'active' : ''}`}></div>
             </div>
           </div>
         </div>
