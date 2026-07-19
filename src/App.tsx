@@ -45,6 +45,7 @@ function App() {
 
   const [bookingInitialStep, setBookingInitialStep] = useState<'fecha' | 'pago'>('fecha');
   const [checkoutType, setCheckoutType] = useState<'single' | 'cart'>('single');
+  const [lastBooking, setLastBooking] = useState<any>(null);
 
   const navigateToHome = () => {
     setCurrentView('home');
@@ -123,10 +124,16 @@ function App() {
             cart={cart}
             initialStep={bookingInitialStep}
             initialCheckoutType={checkoutType}
+            onBookingSuccess={(details) => setLastBooking(details)}
           />
         )}
         {currentView === 'contact' && <Contact />}
-        {currentView === 'searchBooking' && <SearchBooking />}
+        {currentView === 'searchBooking' && (
+          <SearchBooking 
+            lastBooking={lastBooking} 
+            onNavigateHome={navigateToHome} 
+          />
+        )}
       </main>
       <Footer 
         onNavigateHome={navigateToHome}

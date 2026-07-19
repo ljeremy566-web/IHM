@@ -28,13 +28,15 @@ interface BookingProps {
   cart?: CartItem[];
   initialStep?: 'fecha' | 'pago';
   initialCheckoutType?: 'single' | 'cart';
+  onBookingSuccess?: (details: any) => void;
 }
 
 export function Booking({ 
   onAddToCart, 
   cart = [], 
   initialStep = 'fecha', 
-  initialCheckoutType = 'single'
+  initialCheckoutType = 'single',
+  onBookingSuccess
 }: BookingProps) {
   const [step, setStep] = useState<'fecha' | 'habitacion' | 'pago' | 'finalizado'>('fecha');
   const [checkoutType, setCheckoutType] = useState<'single' | 'cart'>('single');
@@ -642,7 +644,24 @@ export function Booking({
                     <button 
                       type="button" 
                       className="pay-now-btn"
-                      onClick={() => setStep('finalizado')}
+                      onClick={() => {
+                        setStep('finalizado');
+                        if (onBookingSuccess) {
+                          const room = selectedRoom || ROOMS[1];
+                          onBookingSuccess({
+                            code: '9XY384-586KLM',
+                            roomTitle: checkoutType === 'cart' ? 'Habitación Matrimonial' : room.title,
+                            roomDesc: checkoutType === 'cart' 
+                              ? 'Diseñada para ofrecer confort y privacidad, nuestra Habitación Matrimonial es el espacio perfecto para parejas o viajeros que buscan un ambiente acogedor y relajante. Ideal para disfrutar de momentos de descanso.' 
+                              : room.desc,
+                            roomImage: checkoutType === 'cart' ? cart[0]?.image || room.image : room.image,
+                            checkIn: formatDateForDisplay(fechaLlegada) || '20/10/2025',
+                            checkOut: formatDateForDisplay(fechaSalida) || '25/10/2025',
+                            guests: huespedes.filter(h => h.trim()).length > 0 ? huespedes.filter(h => h.trim()) : ['Jorge Gonzalo Nina Retamozo'],
+                            total: totalVal
+                          });
+                        }
+                      }}
                     >
                       Pagar S/{totalVal.toFixed(0)}
                     </button>

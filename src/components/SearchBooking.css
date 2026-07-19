@@ -4,16 +4,17 @@
 }
 
 .search-container-main {
-  max-width: 900px;
+  max-width: 1100px; /* Wider layout */
   margin: 0 auto;
-  padding: 0 1rem;
+  padding: 0 1.5rem;
 }
 
+/* ── Search Bar Card ── */
 .search-bar-card {
-  max-width: 100%;
+  max-width: 900px;
   margin: 3.5rem auto 2rem; /* Positioned below hero */
-  background-color: #f2f1ec; /* Match hotel light grey/beige color palette */
-  padding: 16px 20px;
+  background-color: #f4f3ef; /* Match hotel light grey/beige color palette */
+  padding: 18px 24px;
   border-radius: 20px;
   border: 1px solid rgba(21, 20, 20, 0.08);
   box-shadow: 0 16px 35px rgba(21, 20, 20, 0.06);
@@ -91,8 +92,7 @@
 
 /* ── Results Area ── */
 .search-results-area {
-  text-align: center;
-  padding: 4rem 0;
+  padding: 2rem 0;
 }
 
 .initial-search-message {
@@ -100,93 +100,211 @@
   font-size: 1.6rem;
   color: #8f8d87;
   font-weight: 500;
+  text-align: center;
   max-width: 600px;
-  margin: 0 auto;
+  margin: 3rem auto;
   line-height: 1.4;
 }
 
-/* ── Search Result Card Details ── */
-.search-result-card-details {
-  background-color: #ffffff;
+.search-result-container-card {
+  background-color: #f7f6f2; /* Cream background like the image */
   border: 1px solid #e5e3de;
-  border-radius: 16px;
-  padding: 2.2rem;
-  max-width: 650px;
+  border-radius: 24px;
+  padding: 1.8rem;
+  box-shadow: 0 12px 40px rgba(21, 20, 20, 0.04);
+  max-width: 1050px; /* Wider card */
   margin: 0 auto;
-  text-align: left;
-  box-shadow: 0 8px 24px rgba(21, 20, 20, 0.05);
 }
 
-.result-header {
+.search-result-main-layout {
+  display: flex;
+  gap: 2.2rem;
+  align-items: stretch;
+}
+
+/* Left side: Image */
+.search-result-image-wrapper {
+  flex: 1.1;
+  max-width: 48%;
+  display: flex;
+}
+
+.search-result-room-image {
+  width: 100%;
+  object-fit: cover;
+  border-radius: 20px; /* Rounded corners on all sides */
+  display: block;
+}
+
+/* Right side: Details */
+.search-result-details-wrapper {
+  flex: 1.2;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  text-align: left;
+}
+
+.search-result-room-title {
+  font-family: var(--font-condensed);
+  font-size: 1.8rem;
+  color: #151414;
+  font-weight: 800;
+  margin: 0 0 0.8rem 0;
+}
+
+.search-result-room-desc {
+  font-family: var(--font-base);
+  font-size: 0.95rem;
+  color: #555555;
+  line-height: 1.55;
+  margin: 0 0 1.2rem 0;
+}
+
+.search-result-section-heading {
+  font-family: var(--font-condensed);
+  font-size: 1.25rem;
+  color: #151414;
+  font-weight: 700;
+  margin: 0 0 0.6rem 0;
+  text-transform: none;
+}
+
+.search-result-icons-list {
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 1.2rem;
+}
+
+.search-icon-circle-wrapper {
+  color: var(--color-brown);
+  font-size: 1.6rem; /* Clean large size as in the image */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.search-result-meta-info {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  margin-bottom: 1.2rem;
+}
+
+.guests-registered-count {
+  font-family: var(--font-base);
+  font-size: 1rem;
+  color: #151414;
+  margin: 0;
+}
+
+.dates-stay-info {
+  font-family: var(--font-base);
+  font-size: 1rem;
+  color: #151414;
+  margin: 0;
+}
+
+.bold-highlight {
+  font-weight: 700;
+}
+
+.search-result-divider {
+  border-bottom: 1px solid #dcdad5;
+  margin: 0.5rem 0 1rem;
+}
+
+.search-result-price-row {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 0.5rem;
+  margin-bottom: 0.8rem;
 }
 
-.result-header h2 {
+.price-row-label {
   font-family: var(--font-condensed);
-  font-size: 1.6rem;
-  color: #151414;
+  font-size: 1.25rem;
   font-weight: 700;
-}
-
-.result-status-badge {
-  font-family: var(--font-condensed);
-  font-size: 1.05rem;
-  font-weight: 800;
-  color: #276749;
-  letter-spacing: 0.5px;
-}
-
-.result-divider {
-  border-bottom: 1px solid #e5e3de;
-  margin: 1rem 0 1.5rem;
-}
-
-.result-body-grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 1.5rem;
-}
-
-.result-field {
-  display: flex;
-  flex-direction: column;
-  gap: 0.3rem;
-}
-
-.result-field.full-width {
-  grid-column: 1 / -1;
-}
-
-.field-label {
-  font-family: var(--font-base);
-  font-size: 0.85rem;
-  color: #8f8d87;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-}
-
-.field-value {
-  font-family: var(--font-base);
-  font-size: 1.05rem;
   color: #151414;
+}
+
+.price-row-value {
+  font-family: var(--font-condensed);
+  font-size: 1.65rem;
+  font-weight: 800;
+  color: #151414;
+}
+
+.hotel-day-note-text {
+  font-family: var(--font-base);
+  font-size: 0.88rem;
+  color: #c53030; /* Red note */
   font-weight: 600;
+  margin: 0 auto 1.5rem; /* Centered */
+  text-align: center; /* Centered */
 }
 
-.field-value.highlight {
+/* Actions Buttons Row */
+.search-result-actions-row {
+  display: flex;
+  gap: 1rem;
+  justify-content: flex-end;
+  width: 100%;
+}
+
+.btn-outline-brown,
+.btn-solid-brown {
+  height: 44px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+  padding: 0 1.2rem;
   font-family: var(--font-condensed);
-  font-size: 1.2rem;
-  color: var(--color-brown);
+  font-size: 1rem;
   font-weight: 700;
+  cursor: pointer;
+  border-radius: 10px;
+  text-transform: none;
+  transition: all 0.25s cubic-bezier(0.32, 0.72, 0, 1);
+  text-align: center;
+  white-space: nowrap;
+  flex: 1;
+  max-width: 180px; /* Equalized width */
+  min-width: 140px; /* Equalized width */
 }
 
-.field-value.price {
-  color: #B30006;
-  font-family: var(--font-condensed);
-  font-size: 1.3rem;
-  font-weight: 800;
+.btn-outline-brown {
+  background-color: transparent;
+  color: var(--color-brown);
+  border: 1.5px solid var(--color-brown);
+}
+
+.btn-outline-brown:hover {
+  background-color: #ffffff;
+  box-shadow: 0 4px 10px rgba(115, 53, 39, 0.05);
+}
+
+.btn-outline-brown:active {
+  transform: scale(0.97);
+}
+
+.btn-solid-brown {
+  background-color: var(--color-brown);
+  color: #ffffff;
+  border: 1.5px solid var(--color-brown);
+  box-shadow: 0 4px 12px rgba(115, 53, 39, 0.2);
+}
+
+.btn-solid-brown:hover {
+  background-color: #8c4232;
+  border-color: #8c4232;
+  box-shadow: 0 6px 16px rgba(115, 53, 39, 0.3);
+  transform: translateY(-1px);
+}
+
+.btn-solid-brown:active {
+  transform: scale(0.97);
 }
 
 /* ── No Results Card ── */
@@ -196,7 +314,8 @@
   border-radius: 16px;
   padding: 2.2rem;
   max-width: 500px;
-  margin: 0 auto;
+  margin: 3rem auto;
+  text-align: center;
   box-shadow: 0 8px 24px rgba(21, 20, 20, 0.05);
 }
 
@@ -215,8 +334,14 @@
   line-height: 1.5;
 }
 
-/* Responsive */
-@media (max-width: 768px) {
+/* ── Media Queries (Responsive) ── */
+
+/* Tablet & Mobile responsive layout */
+@media (max-width: 1024px) {
+  .search-result-container-card {
+    padding: 1.5rem;
+  }
+
   .search-bar-card {
     margin: 2rem auto;
     padding: 16px;
@@ -234,8 +359,69 @@
     justify-content: center;
   }
 
-  .result-body-grid {
-    grid-template-columns: 1fr;
-    gap: 1.2rem;
+  /* Stack image on top of info starting at 1024px */
+  .search-result-main-layout {
+    flex-direction: column;
+    gap: 1.5rem;
+  }
+
+  .search-result-image-wrapper {
+    max-width: 100%;
+    width: 100%;
+    height: 350px !important;
+    max-height: 350px !important;
+    margin: 0;
+    overflow: hidden;
+  }
+
+  .search-result-room-image {
+    height: 100% !important;
+    max-height: 350px !important;
+    width: 100%;
+    object-fit: cover;
+    border-radius: 16px;
+  }
+
+  .search-result-room-title {
+    font-size: 1.6rem;
+  }
+
+  .search-result-room-desc {
+    font-size: 0.9rem;
+    margin-bottom: 1rem;
+  }
+
+  .hotel-day-note-text {
+    text-align: center;
+    margin: 0 auto 1.5rem;
+  }
+
+  /* Actions Buttons stack full width */
+  .search-result-actions-row {
+    flex-direction: column;
+    gap: 1.5rem; /* Increased gap */
+    align-items: center;
+  }
+
+  .search-result-actions-row > button:nth-child(1) {
+    order: 3; /* Volver al inicio */
+  }
+
+  .search-result-actions-row > button:nth-child(2) {
+    order: 1; /* Imprimir */
+  }
+
+  .search-result-actions-row > button:nth-child(3) {
+    order: 2; /* Ayuda */
+  }
+
+  .search-result-actions-row .btn-outline-brown,
+  .search-result-actions-row .btn-solid-brown {
+    max-width: none !important;
+    width: 100% !important;
+    height: 55px !important;
+    min-height: 55px !important;
+    font-size: 1.15rem !important;
+    border-radius: 14px !important;
   }
 }
