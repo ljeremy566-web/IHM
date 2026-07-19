@@ -46,7 +46,7 @@ html { font-size: var(--text-base); }
 body {
   font-family: var(--font-base);
   color: var(--color-text-dark);
-  background-color: var(--color-bg-light);
+  background-color: #ffffff;
   overflow-x: hidden;
   font-size: var(--text-base);
 }

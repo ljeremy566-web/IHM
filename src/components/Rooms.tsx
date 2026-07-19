@@ -44,11 +44,15 @@ export function Rooms() {
             modules={[Navigation, Autoplay]}
             grabCursor
             centeredSlides
-            slidesPerView="auto"
+            slidesPerView={1.5}
             spaceBetween={20}
             loop
             autoplay={{ delay: 5000, disableOnInteraction: false }}
             navigation={{ prevEl: '.fisheye-nav-prev', nextEl: '.fisheye-nav-next' }}
+            breakpoints={{
+              769: { slidesPerView: 1.5, spaceBetween: 20 },
+              0: { slidesPerView: 1.2, spaceBetween: 15 }
+            }}
             className="fisheye-swiper"
           >
             {[...ROOMS, ...ROOMS].map((room, i) => (
