@@ -50,7 +50,7 @@ export default function DatePicker({ value, onChange, minDate, label, placeholde
   const currentYear = new Date().getFullYear();
   const { year: selYear, month: selMonth, day: selDay } = value
     ? parseDate(value)
-    : { year: currentYear, month: new Date().getMonth() + 1, day: new Date().getDate() };
+    : { year: currentYear, month: new Date().getMonth() + 1, day: 0 };
 
   const minParsed = minDate ? parseDate(minDate) : null;
 

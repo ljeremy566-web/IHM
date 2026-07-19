@@ -213,21 +213,21 @@ export function Booking({
             <span className={`step-label ${step === 'fecha' || step === 'habitacion' || step === 'pago' || step === 'finalizado' ? 'active' : ''} ${step !== 'fecha' ? 'completed' : ''}`}>Fecha</span>
             <span className={`step-label ${step === 'habitacion' || step === 'pago' || step === 'finalizado' ? 'active' : ''} ${step !== 'fecha' && step !== 'habitacion' ? 'completed' : ''}`}>Habitación</span>
             <span className={`step-label ${step === 'pago' || step === 'finalizado' ? 'active' : ''} ${step === 'finalizado' ? 'completed' : ''}`}>Pago</span>
-            <span className={`step-label ${step === 'finalizado' ? 'active' : ''}`}>Finalizado</span>
+            <span className={`step-label ${step === 'finalizado' ? 'active' : ''} ${step === 'finalizado' ? 'completed' : ''}`}>Finalizado</span>
           </div>
 
           <div className="timeline-track">
             <div className="timeline-line">
               <div 
                 className="timeline-line-active" 
-                style={{ width: step === 'fecha' ? '12.5%' : step === 'habitacion' ? '37.5%' : step === 'pago' ? '62.5%' : '87.5%' }}
+                style={{ width: step === 'fecha' ? '12.5%' : step === 'habitacion' ? '37.5%' : step === 'pago' ? '62.5%' : '100%' }}
               ></div>
             </div>
             <div className="timeline-circles">
               <div className={`step-circle ${step === 'fecha' || step === 'habitacion' || step === 'pago' || step === 'finalizado' ? 'active' : ''} ${step !== 'fecha' ? 'completed' : ''}`}></div>
               <div className={`step-circle ${step === 'habitacion' || step === 'pago' || step === 'finalizado' ? 'active' : ''} ${step !== 'fecha' && step !== 'habitacion' ? 'completed' : ''}`}></div>
               <div className={`step-circle ${step === 'pago' || step === 'finalizado' ? 'active' : ''} ${step === 'finalizado' ? 'completed' : ''}`}></div>
-              <div className={`step-circle ${step === 'finalizado' ? 'active' : ''}`}></div>
+              <div className={`step-circle ${step === 'finalizado' ? 'active' : ''} ${step === 'finalizado' ? 'completed' : ''}`}></div>
             </div>
           </div>
         </div>

@@ -744,7 +744,7 @@
     display: flex;
     flex-direction: column;
     align-items: stretch;
-    gap: 1rem;
+  gap: 1.6rem;
   }
 
   .search-field {
@@ -882,7 +882,7 @@
   color: var(--color-brown);
   border: 1.5px solid var(--color-brown);
   border-radius: 12px;
-  padding: 0.75rem 0;
+  padding: 0.85rem 1.5rem;
   font-family: var(--font-condensed);
   font-size: 1.1rem;
   font-weight: 700;
@@ -905,7 +905,7 @@
   color: #ffffff;
   border: none;
   border-radius: 12px;
-  padding: 0.75rem 0;
+  padding: 0.85rem 1.5rem;
   font-family: var(--font-condensed);
   font-size: 1.1rem;
   font-weight: 700;
@@ -1425,7 +1425,7 @@
   border: 1px solid #e5e3de;
   border-radius: 20px;
   padding: 3.5rem 2rem;
-  max-width: 680px;
+  max-width: 900px;
   margin: 2rem auto;
   text-align: center;
   box-shadow: 0 16px 45px rgba(21, 20, 20, 0.05);
@@ -1438,8 +1438,8 @@
 }
 
 .success-circle {
-  width: 80px;
-  height: 80px;
+  width: 100px;
+  height: 100px;
   border-radius: 50%;
   background-color: #e6f4ea;
   display: flex;
@@ -1449,8 +1449,8 @@
 }
 
 .success-checkmark {
-  width: 52px;
-  height: 52px;
+  width: 64px;
+  height: 64px;
 }
 
 .success-checkmark-circle {
@@ -1490,9 +1490,9 @@
 
 .code-box-label {
   font-family: var(--font-base);
-  font-size: 0.9rem;
-  color: #66634F;
-  font-weight: 500;
+  font-size: 1.05rem;
+  color: #4a483e;
+  font-weight: 600;
 }
 
 .code-box-value {
@@ -1538,14 +1538,14 @@
 
 .success-description {
   font-family: var(--font-base);
-  font-size: 0.95rem;
-  color: #66634F;
+  font-size: 1.05rem;
+  color: #4a483e;
   margin-bottom: 0.4rem;
 }
 
 .success-urgency-note {
   font-family: var(--font-condensed);
-  font-size: 1.45rem;
+  font-size: 1.85rem;
   color: #c53030;
   font-weight: 800;
   margin-bottom: 2.2rem;
@@ -1554,8 +1554,8 @@
 .success-actions-row {
   display: flex;
   justify-content: center;
-  gap: 1rem;
-  max-width: 480px;
+  gap: 2rem;
+  max-width: 600px;
   margin: 0 auto;
 }
 
@@ -1563,8 +1563,8 @@
   background-color: #ffffff;
   color: var(--color-brown);
   border: 1.5px solid var(--color-brown);
-  border-radius: 50px;
-  padding: 0.75rem 0;
+  border-radius: 10px;
+  padding: 0.85rem 1.5rem;
   font-family: var(--font-condensed);
   font-size: 1.05rem;
   font-weight: 700;
@@ -1586,8 +1586,8 @@
   background-color: var(--color-brown);
   color: #ffffff;
   border: 1px solid rgba(255, 255, 255, 0.15);
-  border-radius: 50px;
-  padding: 0.75rem 0;
+  border-radius: 10px;
+  padding: 0.85rem 1.5rem;
   font-family: var(--font-condensed);
   font-size: 1.05rem;
   font-weight: 700;
@@ -1898,11 +1898,6 @@
 .dp-day-btn.selected {
   background: var(--color-brown);
   color: #ffffff;
-}
-
-.dp-day-btn.today:not(.selected) {
-  border: 1.5px solid var(--color-brown);
-  color: var(--color-brown);
 }
 
 .dp-day-btn.disabled {
