@@ -126,9 +126,10 @@ export function Booking({
       const filledCount = huespedes.filter(h => h.trim()).length;
       const qty = filledCount || 1;
       onAddToCart(selectedRoom.title, parseFloat(selectedRoom.price), selectedRoom.image, qty);
+      closeModal();
     }
-    closeModal();
-    if (modalType === 'book') {
+    if (modalType === 'book' && selectedRoom) {
+      setIsModalOpen(false);
       setStep('pago');
     }
   };
@@ -142,6 +143,7 @@ export function Booking({
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
+    setSelectedRoom(null);
     setStep('habitacion');
   };
 
