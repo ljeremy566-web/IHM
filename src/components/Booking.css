@@ -673,7 +673,7 @@
 /* Mobile */
 @media (max-width: 768px) {
   .booking-timeline {
-    margin: 1.5rem auto 1rem;
+    margin: 1.5rem auto 2.5rem;
   }
 
   .timeline-labels {

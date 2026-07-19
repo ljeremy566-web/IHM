@@ -57,8 +57,14 @@ export function Booking({
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [modalType, setModalType] = useState<'book' | 'cart'>('book');
   const [selectedRoom, setSelectedRoom] = useState<Room | null>(null);
-  const [huesped1, setHuesped1] = useState('');
-  const [huesped2, setHuesped2] = useState('');
+  const [huespedes, setHuespedes] = useState<string[]>(['']);
+
+  const getMaxGuests = (roomId: number) => {
+    if (roomId === 1) return 1;
+    if (roomId === 2) return 2;
+    if (roomId === 3) return 3;
+    return 2;
+  };
 
   // Payment states
   const [paymentMethod, setPaymentMethod] = useState<'card' | 'yape'>('card');
@@ -95,12 +101,11 @@ export function Booking({
   const openModal = (type: 'book' | 'cart', room: Room) => {
     setModalType(type);
     setSelectedRoom(room);
-    setHuesped2('');
-    if (type === 'book') {
-      setHuesped1('Jorge Gonzalo Nina Retamozo');
-    } else {
-      setHuesped1('Carlos Alberto Reyes Casusol');
-    }
+    const max = getMaxGuests(room.id);
+    const prefilled = type === 'book'
+      ? ['Jorge Gonzalo Nina Retamozo', ...Array(max - 1).fill('')]
+      : ['Carlos Alberto Reyes Casusol', ...Array(max - 1).fill('')];
+    setHuespedes(prefilled);
     setIsModalOpen(true);
   };
 
@@ -111,7 +116,8 @@ export function Booking({
 
   const handleConfirmModal = () => {
     if (modalType === 'cart' && selectedRoom && onAddToCart) {
-      const qty = huesped2.trim() ? 2 : 1;
+      const filledCount = huespedes.filter(h => h.trim()).length;
+      const qty = filledCount || 1;
       onAddToCart(selectedRoom.title, parseFloat(selectedRoom.price), selectedRoom.image, qty);
     }
     closeModal();
@@ -734,35 +740,29 @@ export function Booking({
               </div>
             </div>
 
-            <h2 className="modal-title">
-              {modalType === 'book' ? 'Registro de huespedes' : `Configurar ${selectedRoom.title}`}
-            </h2>
+            <h2 className="modal-title">Registro de huespedes</h2>
             <p className="modal-subtitle">
-              {modalType === 'book' 
-                ? 'Ingresa el nombre de los huespedes de la habitacion' 
-                : 'Ingrese el nombre de los huespedes de la habitacion'}
+              {selectedRoom.id === 1
+                ? `Ingresa el nombre del huesped de la ${selectedRoom.title}`
+                : `Ingresa el nombre de los huespedes de la ${selectedRoom.title}`}
             </p>
 
             <div className="modal-form">
-              <div className="modal-input-field">
-                <label>Huesped 1</label>
-                <input 
-                  type="text" 
-                  value={huesped1} 
-                  onChange={(e) => setHuesped1(e.target.value)} 
-                  placeholder="Ingrese DNI o Nombre Completo"
-                />
-              </div>
-
-              <div className="modal-input-field">
-                <label>Huesped 2</label>
-                <input 
-                  type="text" 
-                  value={huesped2} 
-                  onChange={(e) => setHuesped2(e.target.value)} 
-                  placeholder="Ingrese DNI o Nombre Completo"
-                />
-              </div>
+              {huespedes.map((h, i) => (
+                <div className="modal-input-field" key={i}>
+                  <label>Huesped {i + 1}</label>
+                  <input
+                    type="text"
+                    value={h}
+                    onChange={(e) => {
+                      const next = [...huespedes];
+                      next[i] = e.target.value;
+                      setHuespedes(next);
+                    }}
+                    placeholder="Ingrese DNI o Nombre Completo"
+                  />
+                </div>
+              ))}
             </div>
 
             <div className="modal-actions">

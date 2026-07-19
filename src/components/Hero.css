@@ -66,6 +66,13 @@
   border-radius: 2px;
 }
 
+@media (max-width: 1024px) {
+  .hero {
+    height: 70vh;
+    min-height: 480px;
+  }
+}
+
 @media (max-width: 768px) {
   .hero {
     height: 60vh;
