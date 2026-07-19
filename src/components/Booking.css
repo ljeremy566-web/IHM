@@ -1438,8 +1438,8 @@
 }
 
 .success-circle {
-  width: 100px;
-  height: 100px;
+  width: 135px;
+  height: 135px;
   border-radius: 50%;
   background-color: #e6f4ea;
   display: flex;
@@ -1449,8 +1449,8 @@
 }
 
 .success-checkmark {
-  width: 64px;
-  height: 64px;
+  width: 86px;
+  height: 86px;
 }
 
 .success-checkmark-circle {
@@ -1554,12 +1554,14 @@
 .success-actions-row {
   display: flex;
   justify-content: center;
-  gap: 2rem;
-  max-width: 600px;
+  align-items: center;
+  gap: 2.5rem;
+  max-width: 680px;
   margin: 0 auto;
 }
 
 .success-btn-outline {
+  flex: 1;
   background-color: #ffffff;
   color: var(--color-brown);
   border: 1.5px solid var(--color-brown);
@@ -1571,6 +1573,7 @@
   cursor: pointer;
   transition: all 0.25s cubic-bezier(0.32, 0.72, 0, 1);
   text-transform: uppercase;
+  text-align: center;
 }
 
 .success-btn-outline:hover {
@@ -1583,9 +1586,10 @@
 }
 
 .success-btn-solid {
+  flex: 1;
   background-color: var(--color-brown);
   color: #ffffff;
-  border: 1px solid rgba(255, 255, 255, 0.15);
+  border: 1.5px solid var(--color-brown);
   border-radius: 10px;
   padding: 0.85rem 1.5rem;
   font-family: var(--font-condensed);
@@ -1594,11 +1598,13 @@
   cursor: pointer;
   transition: all 0.25s cubic-bezier(0.32, 0.72, 0, 1);
   text-transform: uppercase;
+  text-align: center;
   box-shadow: 0 4px 12px rgba(115, 53, 39, 0.2);
 }
 
 .success-btn-solid:hover {
   background-color: #8c4232;
+  border-color: #8c4232;
   box-shadow: 0 6px 16px rgba(115, 53, 39, 0.3);
   transform: translateY(-1px);
 }
@@ -1663,6 +1669,15 @@
   .success-actions-row {
     flex-direction: column;
     gap: 0.8rem;
+  }
+  .success-actions-row > button:nth-child(1) {
+    order: 2; /* Descargar */
+  }
+  .success-actions-row > button:nth-child(2) {
+    order: 1; /* Ver mi reserva */
+  }
+  .success-actions-row > button:nth-child(3) {
+    order: 3; /* Volver */
   }
   .success-btn-solid, .success-btn-outline {
     width: 100%;
