@@ -1,15 +1,31 @@
 .divider-container {
   display: flex; align-items: center; justify-content: center;
-  margin: 3rem auto; width: 100%; max-width: 400px;
+  margin: 3rem auto; width: 100%; max-width: 600px;
 }
 .divider-line {
-  flex: 1; height: 1px; background-color: #ccc;
+  flex: 1; height: 2px; background-color: #151414;
 }
 .divider-diamond {
-  width: 20px; height: 20px; border: 1px solid #ccc;
+  width: 24px; height: 24px; border: 2px solid #151414;
   transform: rotate(45deg); margin: 0 1rem;
   display: flex; align-items: center; justify-content: center;
 }
 .divider-diamond-inner {
-  width: 12px; height: 12px; border: 1px solid #ccc;
+  width: 14px; height: 14px; border: 2px solid #151414;
+}
+
+@media (max-width: 768px) {
+  .divider-container {
+    max-width: 280px;
+    margin: 2rem auto;
+  }
+  .divider-diamond {
+    width: 18px; height: 18px;
+    border-width: 1.5px;
+    margin: 0 0.6rem;
+  }
+  .divider-diamond-inner {
+    width: 10px; height: 10px;
+    border-width: 1.5px;
+  }
 }

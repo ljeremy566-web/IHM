@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { Navigation, Autoplay } from 'swiper/modules';
 import 'swiper/css';
@@ -19,7 +19,18 @@ const BG_IMAGES = [
 
 export function Rooms() {
   const [expanded, setExpanded] = useState<number | null>(null);
+  const [activeIdx, setActiveIdx] = useState(0);
+  const swiperRef = useRef<any>(null);
   const expandedRoom = ROOMS.find(r => r.id === expanded);
+
+  const handleCardClick = (roomId: number) => {
+    const roomIdx = roomId - 1;
+    if (roomIdx === activeIdx) {
+      setExpanded(roomId);
+    } else {
+      swiperRef.current?.slideToLoop(roomIdx);
+    }
+  };
 
   return (
     <section className="rooms-section">
@@ -37,9 +48,6 @@ export function Rooms() {
 
       <div className="fisheye-wrapper">
         <div className="fisheye-layout">
-          <button className="fisheye-nav fisheye-nav-prev" aria-label="Anterior">
-            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
-          </button>
           <Swiper
             modules={[Navigation, Autoplay]}
             grabCursor
@@ -47,8 +55,10 @@ export function Rooms() {
             slidesPerView={1.5}
             spaceBetween={20}
             loop
-            autoplay={{ delay: 5000, disableOnInteraction: false }}
+            autoplay={{ delay: 8000, disableOnInteraction: false }}
             navigation={{ prevEl: '.fisheye-nav-prev', nextEl: '.fisheye-nav-next' }}
+            onSwiper={(sw) => { swiperRef.current = sw; }}
+            onSlideChange={(sw) => setActiveIdx(sw.realIndex % ROOMS.length)}
             breakpoints={{
               769: { slidesPerView: 1.5, spaceBetween: 20 },
               0: { slidesPerView: 1.2, spaceBetween: 15 }
@@ -57,7 +67,7 @@ export function Rooms() {
           >
             {[...ROOMS, ...ROOMS].map((room, i) => (
               <SwiperSlide key={`${room.id}-${i}`}>
-                <div className="fisheye-card" onClick={() => setExpanded(room.id)}>
+                <div className="fisheye-card" onClick={() => handleCardClick(room.id)}>
                   <img src={room.image} alt={room.title} className="fisheye-card-img" loading="lazy" />
                   <div className="fisheye-card-overlay"></div>
                   <div className="fisheye-card-info">
@@ -72,9 +82,24 @@ export function Rooms() {
               </SwiperSlide>
             ))}
           </Swiper>
-          <button className="fisheye-nav fisheye-nav-next" aria-label="Siguiente">
-            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M9 18l6-6-6-6"/></svg>
-          </button>
+          <div className="fisheye-footer-row">
+            <button className="fisheye-nav fisheye-nav-prev" aria-label="Anterior">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
+            </button>
+            <div className="fisheye-dots">
+              {ROOMS.map((room, i) => (
+                <button
+                  key={room.id}
+                  className={`fisheye-dot${i === activeIdx ? ' fisheye-dot-active' : ''}`}
+                  onClick={() => swiperRef.current?.slideToLoop(i)}
+                  aria-label={`Habitación ${i + 1}`}
+                />
+              ))}
+            </div>
+            <button className="fisheye-nav fisheye-nav-next" aria-label="Siguiente">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M9 18l6-6-6-6"/></svg>
+            </button>
+          </div>
         </div>
       </div>
 

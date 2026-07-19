@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { FaIdCard, FaShoppingCart, FaTimesCircle } from 'react-icons/fa';
+import { FaShoppingCart, FaTimesCircle, FaBars } from 'react-icons/fa';
 import type { CartItem } from '../App';
 import './Header.css';
 
@@ -23,16 +23,22 @@ export function Header({
   onCheckoutCart
 }: HeaderProps) {
   const [isCartOpen, setIsCartOpen] = useState(false);
+  const [menuOpen, setMenuOpen] = useState(false);
 
   return (
     <header className="header">
       <div className="container header-container">
+        <button className="header-hamburger" onClick={() => setMenuOpen(!menuOpen)} aria-label="Menu">
+          <FaBars size={20} />
+        </button>
+
         <div className="logo" onClick={onNavigateHome} style={{ cursor: 'pointer' }}>
           <div className="logo-mark">
             <span className="logo-symbol">K</span>
           </div>
           <span className="logo-text">KIN</span>
         </div>
+
         <nav className="nav-links">
           <a 
             href="#" 
@@ -65,8 +71,8 @@ export function Header({
         
         <div className="header-btn-wrapper" style={{ position: 'relative' }}>
           <button className="header-btn" onClick={() => setIsCartOpen(!isCartOpen)}>
-            <FaIdCard size={14} />
-            <span>Mis Reservas</span>
+            <FaShoppingCart size={14} />
+            <span className="header-btn-text">Mis Reservas</span>
             {cart.length > 0 && (
               <span className="cart-badge">
                 {cart.reduce((sum, item) => sum + item.quantity, 0)}
@@ -140,6 +146,15 @@ export function Header({
           )}
         </div>
       </div>
+
+      {menuOpen && (
+        <nav className="mobile-dropdown" onClick={() => setMenuOpen(false)}>
+          <a onClick={() => { onNavigateHome(); setMenuOpen(false); }}>Inicio</a>
+          <a onClick={() => { onNavigateBooking(); setMenuOpen(false); }}>Buscar Reserva</a>
+          <a onClick={() => { onNavigateContact(); setMenuOpen(false); }}>Contactanos</a>
+          <a onClick={() => { onNavigateContact(); setMenuOpen(false); }}>Ubicación</a>
+        </nav>
+      )}
     </header>
   );
 }
