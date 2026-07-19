@@ -295,19 +295,21 @@ export function Booking({
                           <span key={idx} className="room-card-feature-icon">{icon}</span>
                         ))}
                       </div>
-                      <span className="room-card-availability">
-                        {room.availableCount} habitaciones disponibles
-                      </span>
                     </div>
                   </div>
 
                   {/* Right Column: Price & Actions */}
                   <div className="room-card-pricing-col">
-                    <span className="room-status-badge">DISPONIBLE</span>
-                    <div className="room-price-container">
-                      <span className="room-price-value">S/ {room.price}</span>
+                    <div className="room-pricing-info">
+                      <span className="room-status-badge">DISPONIBLE</span>
+                      <div className="room-price-container">
+                        <span className="room-price-value">S/ {room.price}</span>
+                      </div>
+                      <span className="room-urgency-badge">¡Ultimas Habitaciones!</span>
+                      <span className="room-card-availability">
+                        Solo {room.availableCount} habitaciones disponibles
+                      </span>
                     </div>
-                    <span className="room-urgency-badge">¡Ultimas Habitaciones!</span>
                     <div className="room-card-actions">
                       <button 
                         className="room-btn-book" 
