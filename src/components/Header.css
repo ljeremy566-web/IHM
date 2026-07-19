@@ -36,7 +36,7 @@
 .nav-links a:hover, .nav-links a.active { opacity: 1; }
 .header-btn {
   background-color: var(--color-primary); color: var(--color-light);
-  padding: 0.4rem 1rem; border-radius: 2px;
+  padding: 0.4rem 1rem; border-radius: 2px; border: none;
   display: flex; align-items: center; gap: 0.5rem;
   font-size: calc(var(--text-base) * 0.8); font-weight: 600;
 }

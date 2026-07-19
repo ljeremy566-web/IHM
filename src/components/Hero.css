@@ -58,12 +58,19 @@
 .hero-btn {
   background-color: var(--color-primary);
   color: var(--color-light);
-  font-size: var(--text-h5);
+  font-size: 1.3rem;
   font-family: var(--font-base);
-  font-weight: 500;
-  padding: 0.8rem 2.5rem;
-  border: 2px solid var(--color-light);
-  border-radius: 2px;
+  font-weight: 600;
+  padding: 1rem 3.5rem;
+  border: 3px solid var(--color-light);
+  border-radius: 20px 0 20px 0;
+  box-shadow: 0 6px 20px rgba(180, 10, 10, 0.4);
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+.hero-btn:hover {
+  background-color: #d10007;
+  transform: translateY(-2px);
 }
 
 @media (max-width: 1024px) {
