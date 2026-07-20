@@ -22,13 +22,15 @@ interface FooterProps {
   onNavigateBooking: () => void;
   onNavigateSearchBooking: () => void;
   onNavigateContact: () => void;
+  onNavigateContactTab: (tab: string) => void;
 }
 
 export function Footer({
   onNavigateHome,
   onNavigateBooking,
   onNavigateSearchBooking,
-  onNavigateContact
+  onNavigateContact,
+  onNavigateContactTab
 }: FooterProps) {
   const [isMobile, setIsMobile] = useState(false);
 
@@ -47,6 +49,14 @@ export function Footer({
     else if (label === 'Buscar Reserva') onNavigateSearchBooking();
     else if (label === 'Contactanos') onNavigateContact();
     else if (label === 'Ubicacion') onNavigateContact();
+  };
+
+  const handleCompanyClick = (label: string, e: React.MouseEvent) => {
+    e.preventDefault();
+    if (label === 'Politicas de privacidad') onNavigateContactTab('privacidad');
+    else if (label === 'Politicas de cancelación') onNavigateContactTab('cancelacion');
+    else if (label === 'F.A.Q') onNavigateContactTab('preguntas');
+    else if (label === 'Sobre nosotros') onNavigateContactTab('sobre-nosotros');
   };
 
   return (
@@ -97,7 +107,7 @@ export function Footer({
               <summary className="footer-heading">Compañia</summary>
               <ul>
                 {COMPANY_LINKS.map(link => (
-                  <li key={link.label}><a href={link.href}>{link.label}</a></li>
+                  <li key={link.label}><a href="#" onClick={(e) => handleCompanyClick(link.label, e)}>{link.label}</a></li>
                 ))}
               </ul>
             </details>
@@ -106,7 +116,7 @@ export function Footer({
               <h4 className="footer-heading">Compañia</h4>
               <ul>
                 {COMPANY_LINKS.map(link => (
-                  <li key={link.label}><a href={link.href}>{link.label}</a></li>
+                  <li key={link.label}><a href="#" onClick={(e) => handleCompanyClick(link.label, e)}>{link.label}</a></li>
                 ))}
               </ul>
             </>

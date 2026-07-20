@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { 
   FaPhoneAlt, 
   FaEnvelope, 
@@ -12,9 +12,19 @@ import './Contact.css';
 
 type TabType = 'sobre-nosotros' | 'contacto' | 'cancelacion' | 'privacidad' | 'preguntas';
 
-export function Contact() {
-  const [activeTab, setActiveTab] = useState<TabType>('contacto');
+interface ContactProps {
+  initialTab?: string;
+}
+
+export function Contact({ initialTab = 'contacto' }: ContactProps) {
+  const [activeTab, setActiveTab] = useState<TabType>((initialTab as TabType) || 'contacto');
   const [mobileSelectOpen, setMobileSelectOpen] = useState(false);
+
+  useEffect(() => {
+    if (initialTab) {
+      setActiveTab(initialTab as TabType);
+    }
+  }, [initialTab]);
 
   const tabs = [
     { id: 'sobre-nosotros', label: 'Sobre nosotros' },

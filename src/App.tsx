@@ -50,6 +50,7 @@ function App() {
   const [bookingInitialStep, setBookingInitialStep] = useState<'fecha' | 'pago'>('fecha');
   const [checkoutType, setCheckoutType] = useState<'single' | 'cart'>('single');
   const [lastBooking, setLastBooking] = useState<any>(null);
+  const [contactTab, setContactTab] = useState<string>('contacto');
 
   const navigateToHome = () => {
     setCurrentView('home');
@@ -66,6 +67,13 @@ function App() {
   };
 
   const navigateToContact = () => {
+    setContactTab('contacto');
+    setCurrentView('contact');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
+  const navigateToContactTab = (tab: string) => {
+    setContactTab(tab);
     setCurrentView('contact');
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
@@ -132,7 +140,7 @@ function App() {
             onBookingSuccess={(details) => setLastBooking(details)}
           />
         )}
-        {currentView === 'contact' && <Contact />}
+        {currentView === 'contact' && <Contact initialTab={contactTab} />}
         {currentView === 'searchBooking' && (
           <SearchBooking 
             lastBooking={lastBooking} 
@@ -145,6 +153,7 @@ function App() {
         onNavigateBooking={navigateToBooking}
         onNavigateSearchBooking={navigateToSearchBooking}
         onNavigateContact={navigateToContact}
+        onNavigateContactTab={navigateToContactTab}
       />
     </div>
   );
