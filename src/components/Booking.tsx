@@ -1491,7 +1491,9 @@ export function Booking({
                           payerDocType: docType || 'DNI',
                           phone: phone || '',
                           email: email || '',
-                          paymentMethod: paymentMethod
+                          paymentMethod: paymentMethod,
+                          boletaCode: fullBoletaNum,
+                          boletaDate: currentFormattedDate
                         });
                       }
                     }}

@@ -23,6 +23,66 @@ export interface BookingDetails {
   roomTitle?: string;
   roomDesc?: string;
   roomImage?: string;
+  payerName?: string;
+  payerDocId?: string;
+  payerDocType?: string;
+  phone?: string;
+  email?: string;
+  paymentMethod?: string;
+  boletaCode?: string;
+  boletaDate?: string;
+}
+
+function numeroALetras(num: number): string {
+  const unidades = ['CERO', 'UNO', 'DOS', 'TRES', 'CUATRO', 'CINCO', 'SEIS', 'SIETE', 'OCHO', 'NUEVE'];
+  const decenas = ['', 'DIEZ', 'VEINTE', 'TREINTA', 'CUARENTA', 'CINCUENTA', 'SESENTA', 'SETENTA', 'OCHENTA', 'NOVENTA'];
+  const especiales = {
+    11: 'ONCE', 12: 'DOCE', 13: 'TRECE', 14: 'CATORCE', 15: 'QUINCE',
+    16: 'DIECISEIS', 17: 'DIECISIETE', 18: 'DIECIOCHO', 19: 'DIECINUEVE',
+    21: 'VEINTIUNO', 22: 'VEINTIDOS', 23: 'VEINTITRES', 24: 'VEINTICUATRO',
+    25: 'VEINTICINCO', 26: 'VEINTISEIS', 27: 'VEINTISIETE', 28: 'VEINTIOCHO', 29: 'VEINTINUEVE'
+  };
+  const centenas = ['', 'CIENTO', 'DOSCIENTOS', 'TRESCIENTOS', 'CUATROCIENTOS', 'QUINIENTOS', 'SEISCIENTOS', 'SIETECIENTOS', 'OCHOCIENTOS', 'NOVECIENTOS'];
+
+  const entero = Math.floor(num);
+  const centavos = Math.round((num - entero) * 100);
+
+  let letras = '';
+
+  if (entero === 100) {
+    letras = 'CIEN';
+  } else if (entero < 10) {
+    letras = unidades[entero];
+  } else if (entero < 30) {
+    letras = (especiales as any)[entero] || (decenas[Math.floor(entero / 10)] + ' Y ' + unidades[entero % 10]);
+  } else if (entero < 100) {
+    const d = Math.floor(entero / 10);
+    const u = entero % 10;
+    letras = decenas[d] + (u > 0 ? ' Y ' + unidades[u] : '');
+  } else if (entero < 1000) {
+    const c = Math.floor(entero / 100);
+    const resto = entero % 100;
+    let restoStr = '';
+    if (resto > 0) {
+      if (resto < 10) restoStr = ' ' + unidades[resto];
+      else if (resto < 30) restoStr = ' ' + ((especiales as any)[resto] || (decenas[Math.floor(resto / 10)] + ' Y ' + unidades[resto % 10]));
+      else {
+        const d = Math.floor(resto / 10);
+        const u = resto % 10;
+        restoStr = ' ' + decenas[d] + (u > 0 ? ' Y ' + unidades[u] : '');
+      }
+    }
+    letras = centenas[c] + restoStr;
+  } else if (entero < 1000000) {
+    const m = Math.floor(entero / 1000);
+    const resto = entero % 1000;
+    const miles = m === 1 ? 'MIL' : numeroALetras(m).split(' Y ')[0] + ' MIL';
+    letras = miles + (resto > 0 ? ' ' + numeroALetras(resto).split(' Y ')[0] : '');
+  } else {
+    letras = 'CIENTO';
+  }
+
+  return `${letras} Y ${centavos.toString().padStart(2, '0')}/100 SOLES`;
 }
 
 interface SearchBookingProps {
@@ -358,8 +418,240 @@ export function SearchBooking({ lastBooking, onNavigateHome, onNavigateContact }
               </div>
             </div>
           )}
+      {/* Print-only Boleta template */}
+      {searchResult && (
+        <div id="boleta-print-only-container">
+          <div 
+            style={{ 
+              width: '740px', 
+              padding: '1.2rem', 
+              background: '#ffffff', 
+              color: '#000000',
+              fontFamily: 'system-ui, -apple-system, sans-serif',
+              fontSize: '11.5px',
+              lineHeight: '1.25',
+              boxSizing: 'border-box',
+              margin: '0 auto'
+            }}
+          >
+            {/* Main border box */}
+            <div style={{ border: '1.5px solid #000000', padding: '1rem', minHeight: '600px', position: 'relative', boxSizing: 'border-box' }}>
+              
+              {/* Header section */}
+              <table style={{ width: '100%', borderCollapse: 'collapse', marginBottom: '0.6rem', color: '#000000' }}>
+                <tbody>
+                  <tr>
+                    <td style={{ width: '60%', verticalAlign: 'top' }}>
+                      <div style={{ fontWeight: 'bold', fontSize: '14px', marginBottom: '0.1rem' }}>HOSTAL KIN</div>
+                      <div style={{ fontWeight: 'bold', fontSize: '11px', marginBottom: '0.4rem' }}>HOSTAL KIN S.A.C.</div>
+                      <div style={{ fontSize: '10px', color: '#000000', lineHeight: '1.3' }}>
+                        MZ. A LT. 1 EL BOSQUE
+                        <br />
+                        NUEVO CHIMBOTE - ANCASH - PERU
+                      </div>
+                    </td>
+                    <td style={{ width: '40%', verticalAlign: 'top', paddingLeft: '1rem' }}>
+                      <div style={{ border: '1.5px solid #000000', borderRadius: '2px', padding: '0.6rem', textAlign: 'center' }}>
+                        <div style={{ fontWeight: 'bold', fontSize: '10px', letterSpacing: '0.5px' }}>BOLETA DE VENTA ELECTRONICA</div>
+                        <div style={{ fontWeight: 'bold', fontSize: '11px', margin: '0.2rem 0' }}>RUC: 20609476941</div>
+                        <div style={{ fontWeight: 'bold', fontSize: '12px' }}>{searchResult.boletaCode || 'EB01-138'}</div>
+                      </div>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+
+              {/* Separator Line */}
+              <hr style={{ border: 'none', borderTop: '1.5px solid #000000', margin: '0.5rem 0' }} />
+
+              {/* Metadata / Payer details */}
+              <table style={{ width: '100%', borderCollapse: 'collapse', marginBottom: '0.8rem', color: '#000000', fontSize: '11px' }}>
+                <tbody>
+                  <tr>
+                    <td style={{ width: '135px', padding: '1px 0' }}>Fecha de Vencimiento</td>
+                    <td style={{ width: '15px', textAlign: 'center' }}>:</td>
+                    <td>-</td>
+                  </tr>
+                  <tr>
+                    <td style={{ padding: '1px 0' }}>Fecha de Emisión</td>
+                    <td style={{ textAlign: 'center' }}>:</td>
+                    <td style={{ fontWeight: 'bold' }}>{searchResult.boletaDate || new Date().toLocaleString('es-PE')}</td>
+                  </tr>
+                  <tr>
+                    <td style={{ padding: '1px 0' }}>Señor(es)</td>
+                    <td style={{ textAlign: 'center' }}>:</td>
+                    <td style={{ fontWeight: 'bold', textTransform: 'uppercase' }}>{searchResult.payerName || 'Jorge Gonzalo Nina Retamozo'}</td>
+                  </tr>
+                  <tr>
+                    <td style={{ padding: '1px 0' }}>{searchResult.payerDocType || 'DNI'}</td>
+                    <td style={{ textAlign: 'center' }}>:</td>
+                    <td style={{ fontWeight: 'bold' }}>{searchResult.payerDocId || '002788537'}</td>
+                  </tr>
+                  <tr>
+                    <td style={{ padding: '1px 0' }}>Tipo de Moneda</td>
+                    <td style={{ textAlign: 'center' }}>:</td>
+                    <td style={{ fontWeight: 'bold' }}>SOLES</td>
+                  </tr>
+                  <tr>
+                    <td style={{ padding: '1px 0' }}>Observación</td>
+                    <td style={{ textAlign: 'center' }}>:</td>
+                    <td>-</td>
+                  </tr>
+                </tbody>
+              </table>
+
+              {/* Main Items Table */}
+              <table style={{ width: '100%', borderCollapse: 'collapse', marginBottom: '0.8rem', color: '#000000', fontSize: '11px' }}>
+                <thead>
+                  <tr style={{ borderBottom: '1px solid #000000', borderTop: '1px solid #000000' }}>
+                    <th style={{ textAlign: 'right', padding: '0.2rem 0.4rem', width: '10%', fontWeight: 'bold' }}>Cantidad</th>
+                    <th style={{ textAlign: 'center', padding: '0.2rem 0.4rem', width: '15%', fontWeight: 'bold' }}>Unidad Medida</th>
+                    <th style={{ textAlign: 'left', padding: '0.2rem 0.4rem', width: '45%', fontWeight: 'bold' }}>Descripción</th>
+                    <th style={{ textAlign: 'right', padding: '0.2rem 0.4rem', width: '12%', fontWeight: 'bold' }}>Valor Unitario(*)</th>
+                    <th style={{ textAlign: 'right', padding: '0.2rem 0.4rem', width: '8%', fontWeight: 'bold' }}>Descuento(*)</th>
+                    <th style={{ textAlign: 'right', padding: '0.2rem 0.4rem', width: '10%', fontWeight: 'bold' }}>Importe de Venta(**)</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {(() => {
+                    const itemsToRender = searchResult.rooms || [];
+                    
+                    // Parse check-in and check-out to get number of nights
+                    let checkoutNights = 1;
+                    if (searchResult.checkIn && searchResult.checkOut) {
+                      try {
+                        const [inD, inM, inY] = searchResult.checkIn.split('/');
+                        const [outD, outM, outY] = searchResult.checkOut.split('/');
+                        const inDate = new Date(parseInt(inY), parseInt(inM) - 1, parseInt(inD));
+                        const outDate = new Date(parseInt(outY), parseInt(outM) - 1, parseInt(outD));
+                        checkoutNights = Math.max(1, Math.ceil(
+                          (outDate.getTime() - inDate.getTime()) / (1000 * 60 * 60 * 24)
+                        ));
+                      } catch (e) {
+                        checkoutNights = 1;
+                      }
+                    }
+
+                    if (itemsToRender.length > 0) {
+                      return itemsToRender.map((item, idx) => {
+                        const itemTotal = item.price * item.quantity * checkoutNights;
+                        const unitVal = (item.price * checkoutNights) / 1.18;
+                        return (
+                          <tr key={idx}>
+                            <td style={{ textAlign: 'right', padding: '0.2rem 0.4rem' }}>{item.quantity.toFixed(2)}</td>
+                            <td style={{ textAlign: 'center', padding: '0.2rem 0.4rem' }}>UNIDAD</td>
+                            <td style={{ textAlign: 'left', padding: '0.2rem 0.4rem', textTransform: 'uppercase' }}>{item.title} - {checkoutNights} {checkoutNights === 1 ? 'NOCHE' : 'NOCHES'}</td>
+                            <td style={{ textAlign: 'right', padding: '0.2rem 0.4rem' }}>{unitVal.toFixed(5)}</td>
+                            <td style={{ textAlign: 'right', padding: '0.2rem 0.4rem' }}>0.00</td>
+                            <td style={{ textAlign: 'right', padding: '0.2rem 0.4rem' }}>{itemTotal.toFixed(2)}</td>
+                          </tr>
+                        );
+                      });
+                    } else {
+                      const roomTitle = searchResult.roomTitle || 'Habitación Matrimonial';
+                      const roomTotal = searchResult.total;
+                      const unitVal = roomTotal / 1.18;
+                      return (
+                        <tr>
+                          <td style={{ textAlign: 'right', padding: '0.2rem 0.4rem' }}>1.00</td>
+                          <td style={{ textAlign: 'center', padding: '0.2rem 0.4rem' }}>UNIDAD</td>
+                          <td style={{ textAlign: 'left', padding: '0.2rem 0.4rem', textTransform: 'uppercase' }}>{roomTitle} - {checkoutNights} {checkoutNights === 1 ? 'NOCHE' : 'NOCHES'}</td>
+                          <td style={{ textAlign: 'right', padding: '0.2rem 0.4rem' }}>{unitVal.toFixed(5)}</td>
+                          <td style={{ textAlign: 'right', padding: '0.2rem 0.4rem' }}>0.00</td>
+                          <td style={{ textAlign: 'right', padding: '0.2rem 0.4rem' }}>{roomTotal.toFixed(2)}</td>
+                        </tr>
+                      );
+                    }
+                  })()}
+                </tbody>
+              </table>
+
+              {/* Separator line after table */}
+              <hr style={{ border: 'none', borderTop: '1.5px solid #000000', margin: '0.4rem 0' }} />
+
+              {/* Tax info & Total Summary Grid */}
+              <table style={{ width: '100%', borderCollapse: 'collapse', color: '#000000', fontSize: '11px' }}>
+                <tbody>
+                  <tr>
+                    <td style={{ width: '60%', verticalAlign: 'top' }}>
+                      <div style={{ fontSize: '9.5px', color: '#000000', marginBottom: '0.5rem', lineHeight: '1.3' }}>
+                        (*) Sin impuestos.
+                        <br />
+                        (**) Incluye impuestos, de ser Op. Gravada.
+                      </div>
+                      <div style={{ fontWeight: 'bold', fontSize: '10.5px' }}>
+                        SON: {numeroALetras(searchResult.total)}
+                      </div>
+                    </td>
+                    <td style={{ width: '40%', verticalAlign: 'top' }}>
+                      <table style={{ width: '100%', borderCollapse: 'collapse' }}>
+                        <tbody>
+                          {(() => {
+                            const checkoutTotal = searchResult.total;
+                            const opGravada = checkoutTotal / 1.18;
+                            const igv = checkoutTotal - opGravada;
+                            return (
+                              <>
+                                <tr>
+                                  <td style={{ textAlign: 'right', padding: '2px 6px', fontWeight: 'bold' }}>Op. Gravada:</td>
+                                  <td style={{ textAlign: 'right', padding: '2px 8px', border: '1px solid #000000', width: '110px' }}>S/ {opGravada.toFixed(2)}</td>
+                                </tr>
+                                <tr>
+                                  <td style={{ textAlign: 'right', padding: '2px 6px', fontWeight: 'bold' }}>Op. Exonerada:</td>
+                                  <td style={{ textAlign: 'right', padding: '2px 8px', border: '1px solid #000000' }}>S/ 0.00</td>
+                                </tr>
+                                <tr>
+                                  <td style={{ textAlign: 'right', padding: '2px 6px', fontWeight: 'bold' }}>Op. Inafecta:</td>
+                                  <td style={{ textAlign: 'right', padding: '2px 8px', border: '1px solid #000000' }}>S/ 0.00</td>
+                                </tr>
+                                <tr>
+                                  <td style={{ textAlign: 'right', padding: '2px 6px', fontWeight: 'bold' }}>ISC:</td>
+                                  <td style={{ textAlign: 'right', padding: '2px 8px', border: '1px solid #000000' }}>S/ 0.00</td>
+                                </tr>
+                                <tr>
+                                  <td style={{ textAlign: 'right', padding: '2px 6px', fontWeight: 'bold' }}>IGV:</td>
+                                  <td style={{ textAlign: 'right', padding: '2px 8px', border: '1px solid #000000' }}>S/ {igv.toFixed(2)}</td>
+                                </tr>
+                                <tr>
+                                  <td style={{ textAlign: 'right', padding: '2px 6px', fontWeight: 'bold' }}>Otros Cargos:</td>
+                                  <td style={{ textAlign: 'right', padding: '2px 8px', border: '1px solid #000000' }}>S/ 0.00</td>
+                                </tr>
+                                <tr>
+                                  <td style={{ textAlign: 'right', padding: '2px 6px', fontWeight: 'bold' }}>Otros Tributos:</td>
+                                  <td style={{ textAlign: 'right', padding: '2px 8px', border: '1px solid #000000' }}>S/ 0.00</td>
+                                </tr>
+                                <tr>
+                                  <td style={{ textAlign: 'right', padding: '2px 6px', fontWeight: 'bold' }}>Monto de Redondeo:</td>
+                                  <td style={{ textAlign: 'right', padding: '2px 8px', border: '1px solid #000000' }}>S/ 0.00</td>
+                                </tr>
+                                <tr>
+                                  <td style={{ textAlign: 'right', padding: '2px 6px', fontWeight: 'bold' }}>Importe Total:</td>
+                                  <td style={{ textAlign: 'right', padding: '2px 8px', border: '1.5px solid #000000', fontWeight: 'bold', backgroundColor: '#f5f5f5' }}>S/ {checkoutTotal.toFixed(2)}</td>
+                                </tr>
+                              </>
+                            );
+                          })()}
+                        </tbody>
+                      </table>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+
+              {/* Footer Legal message box */}
+              <div style={{ border: '1px solid #000000', padding: '0.4rem', fontSize: '9px', textAlign: 'center', lineHeight: '1.4', marginTop: '0.8rem', color: '#000000' }}>
+                Esta es una representación impresa de la Boleta de Venta Electrónica, generada en el Sistema de la SUNAT. El Emisor
+                Electrónico puede verificarla utilizando su clave SOL, el Adquirente o Usuario puede consultar su validez en SUNAT Virtual:
+                <br />
+                <span style={{ textDecoration: 'underline', color: '#0000ee' }}>www.sunat.gob.pe</span>, en Opciones sin Clave SOL/ Consulta de Validez del CPE.
+              </div>
+
+            </div>
+          </div>
         </div>
-      </div>
+      )}
+    </div>
+    </div>
     </div>
   );
 }
