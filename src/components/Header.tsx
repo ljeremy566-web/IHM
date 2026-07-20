@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { FaShoppingCart, FaBars, FaBed, FaCalendarAlt, FaTrashAlt } from 'react-icons/fa';
 import type { CartItem } from '../App';
-import logoKin from '../img/fbdfdabe-d455-4f4a-a1b9-a1799a8b2768.png';
+import logoKin from '../img/logohostalkin.png';
 import './Header.css';
 
 interface HeaderProps {
@@ -16,9 +16,9 @@ interface HeaderProps {
   hideCart?: boolean;
 }
 
-export function Header({ 
-  currentView, 
-  onNavigateHome, 
+export function Header({
+  currentView,
+  onNavigateHome,
   onNavigateContact,
   onNavigateSearchBooking,
   cart,
@@ -62,40 +62,40 @@ export function Header({
         </div>
 
         <nav className="nav-links">
-          <a 
-            href="#" 
-            className={currentView === 'home' ? 'active' : ''} 
+          <a
+            href="#"
+            className={currentView === 'home' ? 'active' : ''}
             onClick={(e) => { e.preventDefault(); onNavigateHome(); }}
           >
             Inicio
           </a>
-          <a 
-            href="#" 
-            className={currentView === 'booking' ? 'active' : ''} 
+          <a
+            href="#"
+            className={currentView === 'booking' ? 'active' : ''}
             onClick={(e) => { e.preventDefault(); onNavigateBooking(); }}
           >
             Reservar ahora
           </a>
-          <a 
-            href="#" 
-            className={currentView === 'searchBooking' ? 'active' : ''} 
+          <a
+            href="#"
+            className={currentView === 'searchBooking' ? 'active' : ''}
             onClick={(e) => { e.preventDefault(); onNavigateSearchBooking(); }}
           >
             Buscar Reserva
           </a>
-          <a 
-            href="#" 
-            className={currentView === 'contact' ? 'active' : ''} 
+          <a
+            href="#"
+            className={currentView === 'contact' ? 'active' : ''}
             onClick={(e) => { e.preventDefault(); onNavigateContact(); }}
           >
             Contactanos
           </a>
         </nav>
-        
+
         {!hideCart && (
           <div className="header-btn-wrapper" style={{ position: 'relative' }}>
-            <button 
-              className={`header-btn ${cartBumped ? 'cart-bump' : ''}`} 
+            <button
+              className={`header-btn ${cartBumped ? 'cart-bump' : ''}`}
               onClick={() => setIsCartOpen(!isCartOpen)}
             >
               <FaShoppingCart size={14} />
@@ -106,7 +106,7 @@ export function Header({
                 </span>
               )}
             </button>
-            
+
             {isCartOpen && (
               <div className="cart-dropdown-modal">
                 <div className="cart-modal-header">
@@ -114,7 +114,7 @@ export function Header({
                   <FaShoppingCart className="cart-modal-icon" />
                 </div>
                 <div className="cart-modal-divider"></div>
-                
+
                 <div className="cart-modal-items">
                   {cart.length === 0 ? (
                     <p className="empty-cart-message">No tienes reservas activas</p>
@@ -123,8 +123,8 @@ export function Header({
                       <div key={item.id} className="cart-modal-item restructured">
                         <div className="cart-item-header">
                           <h3>{item.title}</h3>
-                          <button 
-                            type="button" 
+                          <button
+                            type="button"
                             className="cart-item-remove-btn"
                             onClick={() => onRemoveFromCart(item.id)}
                             title="Eliminar reserva"
@@ -150,26 +150,26 @@ export function Header({
                     ))
                   )}
                 </div>
-                
+
                 <div className="cart-modal-divider"></div>
-                
+
                 <div className="cart-modal-subtotal">
                   <span>Subtotal</span>
                   <span className="cart-subtotal-value">
                     S/ {cart.reduce((sum, item) => sum + (item.price * item.quantity * (item.nights || 1)), 0).toFixed(2)}
                   </span>
                 </div>
-                
+
                 <div className="cart-modal-actions">
-                  <button 
-                    type="button" 
+                  <button
+                    type="button"
                     className="cart-btn-outline"
                     onClick={() => setIsCartOpen(false)}
                   >
                     Seguir comprando
                   </button>
-                  <button 
-                    type="button" 
+                  <button
+                    type="button"
                     className="cart-btn-primary"
                     disabled={cart.length === 0}
                     onClick={() => {
@@ -177,9 +177,9 @@ export function Header({
                       setIsCartOpen(false);
                       onCheckoutCart();
                     }}
-                    style={{ 
-                      opacity: cart.length === 0 ? 0.5 : 1, 
-                      cursor: cart.length === 0 ? 'not-allowed' : 'pointer' 
+                    style={{
+                      opacity: cart.length === 0 ? 0.5 : 1,
+                      cursor: cart.length === 0 ? 'not-allowed' : 'pointer'
                     }}
                   >
                     Continuar

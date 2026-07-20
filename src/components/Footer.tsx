@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { FaFacebookF, FaTwitter, FaTiktok, FaInstagram } from 'react-icons/fa';
-import logoKin from '../img/fbdfdabe-d455-4f4a-a1b9-a1799a8b2768.png';
+import logoKin from '../img/logohostalkin.png';
 import './Footer.css';
 
 const QUICK_LINKS = [
@@ -75,7 +75,7 @@ export function Footer({
             <a href="#"><FaInstagram size={18} /></a>
           </div>
         </div>
-        
+
         <div className="footer-col links-col">
           {isMobile ? (
             <details className="footer-dropdown">
@@ -101,7 +101,7 @@ export function Footer({
             </>
           )}
         </div>
-        
+
         <div className="footer-col links-col">
           {isMobile ? (
             <details className="footer-dropdown">
