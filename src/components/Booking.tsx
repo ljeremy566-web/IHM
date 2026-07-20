@@ -1299,18 +1299,43 @@ export function Booking({
                           onClearCart();
                         }
                         if (onBookingSuccess) {
-                          const room = selectedRoom || ROOMS[1];
+                          let bookedRooms = [];
+                          if (checkoutType === 'cart' && cart.length > 0) {
+                            bookedRooms = cart.map(item => {
+                              const matchedRoom = ROOMS.find(r => r.title.toLowerCase() === item.title.toLowerCase());
+                              return {
+                                id: item.id,
+                                title: item.title,
+                                desc: matchedRoom ? matchedRoom.desc : 'Pensada para ofrecer máximo confort y todas las comodidades.',
+                                image: item.image,
+                                price: item.price,
+                                quantity: item.quantity,
+                                nights: nights
+                              };
+                            });
+                          } else {
+                            const room = selectedRoom || ROOMS[1];
+                            bookedRooms = [{
+                              id: room.id,
+                              title: room.title,
+                              desc: room.desc,
+                              image: room.image,
+                              price: parseFloat(room.price),
+                              quantity: 1,
+                              nights: nights
+                            }];
+                          }
+
                           onBookingSuccess({
                             code: '9XY384-586KLM',
-                            roomTitle: checkoutType === 'cart' ? 'Habitación Matrimonial' : room.title,
-                            roomDesc: checkoutType === 'cart' 
-                              ? 'Diseñada para ofrecer confort y privacidad, nuestra Habitación Matrimonial es el espacio perfecto para parejas o viajeros que buscan un ambiente acogedor y relajante. Ideal para disfrutar de momentos de descanso.' 
-                              : room.desc,
-                            roomImage: checkoutType === 'cart' ? cart[0]?.image || room.image : room.image,
                             checkIn: formatDateForDisplay(fechaLlegada) || '20/10/2025',
                             checkOut: formatDateForDisplay(fechaSalida) || '25/10/2025',
                             guests: huespedes.filter(h => h.trim()).length > 0 ? huespedes.filter(h => h.trim()) : ['Jorge Gonzalo Nina Retamozo'],
-                            total: totalVal
+                            total: totalVal,
+                            rooms: bookedRooms,
+                            roomTitle: bookedRooms[0]?.title || 'Habitación Matrimonial',
+                            roomDesc: bookedRooms[0]?.desc || '',
+                            roomImage: bookedRooms[0]?.image || ''
                           });
                         }
                       }}
