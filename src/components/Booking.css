@@ -1259,6 +1259,48 @@
   margin-bottom: 1rem;
 }
 
+/* ── Card Payment Form & Row Layout ── */
+.payment-section-title {
+  font-family: var(--font-condensed);
+  font-size: 1.2rem;
+  color: #151414;
+  font-weight: 700;
+  margin-top: 0.5rem;
+  margin-bottom: 1.2rem;
+}
+
+.card-payment-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.2rem;
+  margin-bottom: 1.8rem;
+}
+
+.card-row-fields {
+  display: flex;
+  gap: 1.2rem;
+  width: 100%;
+}
+
+.card-row-fields .form-field {
+  margin-bottom: 0;
+}
+
+.card-row-fields .form-field.flex-2 {
+  flex: 2;
+}
+
+.card-row-fields .form-field.flex-1 {
+  flex: 1;
+}
+
+@media (max-width: 576px) {
+  .card-row-fields {
+    flex-direction: column;
+    gap: 1.2rem;
+  }
+}
+
 .methods-selector-row {
   display: flex;
   gap: 0.8rem;

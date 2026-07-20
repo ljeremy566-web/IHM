@@ -730,7 +730,7 @@ export function Booking({
 
                   {/* Payment Info Card Details */}
                   {paymentMethod === 'card' ? (
-                    <>
+                    <div className="card-payment-form">
                       <h3 className="payment-section-title">Informacion de pago</h3>
                       
                       <div className="form-field">
@@ -772,7 +772,7 @@ export function Booking({
                           onChange={(e) => setCardName(e.target.value)}
                         />
                       </div>
-                    </>
+                    </div>
                   ) : (
                     <>
                       <div className={`yape-segmented ${yapeTab === 'qr' ? 'qr-active' : ''}`}>
