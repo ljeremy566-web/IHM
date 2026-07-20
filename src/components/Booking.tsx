@@ -313,6 +313,18 @@ export function Booking({
     setExpandedItems(prev => ({ ...prev, [id]: !prev[id] }));
   };
 
+  // Timeline Step Navigation Handler
+  const handleTimelineStepClick = (targetStep: 'fecha' | 'habitacion' | 'pago') => {
+    // Lock navigation if booking is completed
+    if (step === 'finalizado') return;
+
+    if (targetStep === 'fecha') {
+      setStep('fecha');
+    } else if (targetStep === 'habitacion' && (step === 'habitacion' || step === 'pago')) {
+      setStep('habitacion');
+    }
+  };
+
   // Input Handlers with Real-time Restrictions & Validation
   const handleDocIdChange = (val: string) => {
     const digits = val.replace(/\D/g, '');
@@ -658,10 +670,26 @@ export function Booking({
       <div className="container">
         <div className="booking-timeline">
           <div className="timeline-labels">
-            <span className={`step-label ${step === 'fecha' || step === 'habitacion' || step === 'pago' || step === 'finalizado' ? 'active' : ''} ${step !== 'fecha' ? 'completed' : ''}`}>Fecha</span>
-            <span className={`step-label ${step === 'habitacion' || step === 'pago' || step === 'finalizado' ? 'active' : ''} ${step !== 'fecha' && step !== 'habitacion' ? 'completed' : ''}`}>Habitación</span>
-            <span className={`step-label ${step === 'pago' || step === 'finalizado' ? 'active' : ''} ${step === 'finalizado' ? 'completed' : ''}`}>Pago</span>
-            <span className={`step-label ${step === 'finalizado' ? 'active' : ''} ${step === 'finalizado' ? 'completed' : ''}`}>Finalizado</span>
+            <span 
+              className={`step-label ${step === 'fecha' || step === 'habitacion' || step === 'pago' || step === 'finalizado' ? 'active' : ''} ${step !== 'fecha' ? 'completed' : ''} ${step !== 'finalizado' ? 'timeline-clickable' : 'timeline-locked'}`}
+              onClick={() => handleTimelineStepClick('fecha')}
+              title={step !== 'finalizado' ? 'Ir al paso de Fecha' : ''}
+            >
+              Fecha
+            </span>
+            <span 
+              className={`step-label ${step === 'habitacion' || step === 'pago' || step === 'finalizado' ? 'active' : ''} ${step !== 'fecha' && step !== 'habitacion' ? 'completed' : ''} ${step === 'pago' ? 'timeline-clickable' : step === 'finalizado' ? 'timeline-locked' : ''}`}
+              onClick={() => handleTimelineStepClick('habitacion')}
+              title={step === 'pago' ? 'Ir al paso de Habitación' : ''}
+            >
+              Habitación
+            </span>
+            <span className={`step-label ${step === 'pago' || step === 'finalizado' ? 'active' : ''} ${step === 'finalizado' ? 'completed' : ''}`}>
+              Pago
+            </span>
+            <span className={`step-label ${step === 'finalizado' ? 'active' : ''} ${step === 'finalizado' ? 'completed' : ''}`}>
+              Finalizado
+            </span>
           </div>
 
           <div className="timeline-track">
@@ -672,8 +700,16 @@ export function Booking({
               ></div>
             </div>
             <div className="timeline-circles">
-              <div className={`step-circle ${step === 'fecha' || step === 'habitacion' || step === 'pago' || step === 'finalizado' ? 'active' : ''} ${step !== 'fecha' ? 'completed' : ''}`}></div>
-              <div className={`step-circle ${step === 'habitacion' || step === 'pago' || step === 'finalizado' ? 'active' : ''} ${step !== 'fecha' && step !== 'habitacion' ? 'completed' : ''}`}></div>
+              <div 
+                className={`step-circle ${step === 'fecha' || step === 'habitacion' || step === 'pago' || step === 'finalizado' ? 'active' : ''} ${step !== 'fecha' ? 'completed' : ''} ${step !== 'finalizado' ? 'timeline-clickable' : 'timeline-locked'}`}
+                onClick={() => handleTimelineStepClick('fecha')}
+                title={step !== 'finalizado' ? 'Ir al paso de Fecha' : ''}
+              ></div>
+              <div 
+                className={`step-circle ${step === 'habitacion' || step === 'pago' || step === 'finalizado' ? 'active' : ''} ${step !== 'fecha' && step !== 'habitacion' ? 'completed' : ''} ${step === 'pago' ? 'timeline-clickable' : step === 'finalizado' ? 'timeline-locked' : ''}`}
+                onClick={() => handleTimelineStepClick('habitacion')}
+                title={step === 'pago' ? 'Ir al paso de Habitación' : ''}
+              ></div>
               <div className={`step-circle ${step === 'pago' || step === 'finalizado' ? 'active' : ''} ${step === 'finalizado' ? 'completed' : ''}`}></div>
               <div className={`step-circle ${step === 'finalizado' ? 'active' : ''} ${step === 'finalizado' ? 'completed' : ''}`}></div>
             </div>
@@ -799,7 +835,18 @@ export function Booking({
             }
             
             return (
-              <div className="payment-grid-layout fade-in">
+              <div className="payment-step-wrapper fade-in">
+                <div style={{ marginBottom: '1.4rem' }}>
+                  <button 
+                    type="button" 
+                    className="booking-step-back-btn" 
+                    onClick={() => setStep('habitacion')}
+                  >
+                    <FaArrowLeft />
+                    Volver a elegir habitaciones
+                  </button>
+                </div>
+                <div className="payment-grid-layout">
                 {/* Left Column: Summary Card */}
                 {checkoutType === 'cart' ? (
                   <div className="payment-summary-card">
@@ -1235,8 +1282,9 @@ export function Booking({
                   )}
                 </div>
               </div>
-            );
-          })()}
+            </div>
+          );
+        })()}
 
           {step === 'finalizado' && (
             <motion.div 
