@@ -13,7 +13,9 @@ import {
   FaDownload,
   FaEye,
   FaArrowLeft,
-  FaCheckCircle
+  FaCheckCircle,
+  FaExclamationCircle,
+  FaExclamationTriangle
 } from 'react-icons/fa';
 import type { CartItem } from '../App';
 import DatePicker from './DatePicker';
@@ -277,7 +279,7 @@ export function Booking({
     return 2;
   };
 
-  // Payment states
+  // Payment states & validation
   const [paymentMethod, setPaymentMethod] = useState<'card' | 'yape'>('card');
   const [yapeTab, setYapeTab] = useState<'num' | 'qr'>('qr');
   const [docType, setDocType] = useState('DNI');
@@ -287,6 +289,77 @@ export function Booking({
   const [name, setName] = useState('');
   const [phone, setPhone] = useState('');
   const [yapeCode, setYapeCode] = useState(['', '', '', '', '', '']);
+  const [cardNumber, setCardNumber] = useState('');
+  const [expDate, setExpDate] = useState('');
+  const [cvv, setCvv] = useState('');
+  const [cardName, setCardName] = useState('');
+
+  const [formSubmitted, setFormSubmitted] = useState(false);
+  const [errors, setErrors] = useState<Record<string, string>>({});
+
+  // Input Handlers with Real-time Restrictions & Validation
+  const handleDocIdChange = (val: string) => {
+    const digits = val.replace(/\D/g, '');
+    const maxLen = docType === 'DNI' ? 8 : 11;
+    const truncated = digits.slice(0, maxLen);
+    setDocId(truncated);
+    if (formSubmitted) validateField('docId', truncated);
+  };
+
+  const handleDocTypeSelect = (type: string) => {
+    setDocType(type);
+    setDocOpen(false);
+    const maxLen = type === 'DNI' ? 8 : 11;
+    const truncated = docId.slice(0, maxLen);
+    setDocId(truncated);
+    if (formSubmitted) validateField('docId', truncated, type);
+  };
+
+  const handleNameChange = (val: string) => {
+    const cleaned = val.replace(/[^a-zA-ZáéíóúÁÉÍÓÚñÑ\s'-]/g, '');
+    setName(cleaned);
+    if (formSubmitted) validateField('name', cleaned);
+  };
+
+  const handlePhoneChange = (val: string) => {
+    const digits = val.replace(/\D/g, '').slice(0, 9);
+    setPhone(digits);
+    if (formSubmitted) validateField('phone', digits);
+  };
+
+  const handleEmailChange = (val: string) => {
+    setEmail(val);
+    if (formSubmitted) validateField('email', val);
+  };
+
+  const handleCardNumberChange = (val: string) => {
+    const digits = val.replace(/\D/g, '').slice(0, 16);
+    const formatted = digits.replace(/(\d{4})(?=\d)/g, '$1 ');
+    setCardNumber(formatted);
+    if (formSubmitted) validateField('cardNumber', formatted);
+  };
+
+  const handleExpDateChange = (val: string) => {
+    const digits = val.replace(/\D/g, '').slice(0, 4);
+    let formatted = digits;
+    if (digits.length >= 3) {
+      formatted = `${digits.slice(0, 2)}/${digits.slice(2)}`;
+    }
+    setExpDate(formatted);
+    if (formSubmitted) validateField('expDate', formatted);
+  };
+
+  const handleCvvChange = (val: string) => {
+    const digits = val.replace(/\D/g, '').slice(0, 4);
+    setCvv(digits);
+    if (formSubmitted) validateField('cvv', digits);
+  };
+
+  const handleCardNameChange = (val: string) => {
+    const cleaned = val.replace(/[^a-zA-ZáéíóúÁÉÍÓÚñÑ\s'-]/g, '');
+    setCardName(cleaned);
+    if (formSubmitted) validateField('cardName', cleaned);
+  };
 
   const handleYapeCodeChange = (index: number, val: string) => {
     if (/^[0-9]?$/.test(val)) {
@@ -297,12 +370,160 @@ export function Booking({
         const nextInput = document.getElementById(`yape-code-${index + 1}`);
         if (nextInput) (nextInput as HTMLInputElement).focus();
       }
+      if (formSubmitted) validateField('yapeCode', nextCode.join(''));
     }
   };
-  const [cardNumber, setCardNumber] = useState('');
-  const [expDate, setExpDate] = useState('');
-  const [cvv, setCvv] = useState('');
-  const [cardName, setCardName] = useState('');
+
+  const validateField = (field: string, value: string, currentDocType = docType) => {
+    setErrors((prev) => {
+      const newErrs = { ...prev };
+      if (field === 'docId') {
+        if (!value.trim()) {
+          newErrs.docId = 'El Documento de Identidad es obligatorio.';
+        } else if (currentDocType === 'DNI' && value.length !== 8) {
+          newErrs.docId = 'El DNI debe tener exactamente 8 dígitos.';
+        } else if (currentDocType === 'RUC' && value.length !== 11) {
+          newErrs.docId = 'El RUC debe tener exactamente 11 dígitos.';
+        } else {
+          delete newErrs.docId;
+        }
+      }
+      if (field === 'name') {
+        if (!value.trim()) {
+          newErrs.name = 'El Nombre es obligatorio.';
+        } else if (value.trim().length < 2) {
+          newErrs.name = 'Ingrese su nombre completo.';
+        } else {
+          delete newErrs.name;
+        }
+      }
+      if (field === 'phone') {
+        if (!value.trim()) {
+          newErrs.phone = 'El número de teléfono es obligatorio.';
+        } else if (value.length !== 9) {
+          newErrs.phone = 'El teléfono debe tener 9 dígitos.';
+        } else {
+          delete newErrs.phone;
+        }
+      }
+      if (field === 'email') {
+        if (value.trim() && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value)) {
+          newErrs.email = 'Ingrese un correo electrónico válido.';
+        } else {
+          delete newErrs.email;
+        }
+      }
+      if (field === 'cardNumber') {
+        const rawDigits = value.replace(/\s/g, '');
+        if (!rawDigits) {
+          newErrs.cardNumber = 'El número de tarjeta es obligatorio.';
+        } else if (rawDigits.length !== 16) {
+          newErrs.cardNumber = 'La tarjeta debe tener 16 dígitos.';
+        } else {
+          delete newErrs.cardNumber;
+        }
+      }
+      if (field === 'expDate') {
+        if (!value.trim()) {
+          newErrs.expDate = 'La fecha de vencimiento es obligatoria.';
+        } else if (!/^(0[1-9]|1[0-2])\/\d{2}$/.test(value)) {
+          newErrs.expDate = 'Formato inválido (MM/AA).';
+        } else {
+          delete newErrs.expDate;
+        }
+      }
+      if (field === 'cvv') {
+        if (!value.trim()) {
+          newErrs.cvv = 'El CVV es obligatorio.';
+        } else if (value.length < 3) {
+          newErrs.cvv = 'El CVV debe tener 3 o 4 dígitos.';
+        } else {
+          delete newErrs.cvv;
+        }
+      }
+      if (field === 'cardName') {
+        if (!value.trim()) {
+          newErrs.cardName = 'El nombre del titular es obligatorio.';
+        } else if (value.trim().length < 2) {
+          newErrs.cardName = 'Ingrese el nombre impreso en la tarjeta.';
+        } else {
+          delete newErrs.cardName;
+        }
+      }
+      if (field === 'yapeCode') {
+        if (value.length !== 6) {
+          newErrs.yapeCode = 'Ingrese el código de aprobación de 6 dígitos.';
+        } else {
+          delete newErrs.yapeCode;
+        }
+      }
+      return newErrs;
+    });
+  };
+
+  const validateAll = () => {
+    const newErrs: Record<string, string> = {};
+
+    if (!docId.trim()) {
+      newErrs.docId = 'El Documento de Identidad es obligatorio.';
+    } else if (docType === 'DNI' && docId.length !== 8) {
+      newErrs.docId = 'El DNI debe tener exactamente 8 dígitos.';
+    } else if (docType === 'RUC' && docId.length !== 11) {
+      newErrs.docId = 'El RUC debe tener exactamente 11 dígitos.';
+    }
+
+    if (!name.trim()) {
+      newErrs.name = 'El Nombre es obligatorio.';
+    } else if (name.trim().length < 2) {
+      newErrs.name = 'Ingrese su nombre completo.';
+    }
+
+    if (!phone.trim()) {
+      newErrs.phone = 'El número de teléfono es obligatorio.';
+    } else if (phone.length !== 9) {
+      newErrs.phone = 'El teléfono debe tener 9 dígitos.';
+    }
+
+    if (email.trim() && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+      newErrs.email = 'Ingrese un correo electrónico válido.';
+    }
+
+    if (paymentMethod === 'card') {
+      const rawDigits = cardNumber.replace(/\s/g, '');
+      if (!rawDigits) {
+        newErrs.cardNumber = 'El número de tarjeta es obligatorio.';
+      } else if (rawDigits.length !== 16) {
+        newErrs.cardNumber = 'La tarjeta debe tener 16 dígitos.';
+      }
+
+      if (!expDate.trim()) {
+        newErrs.expDate = 'La fecha de vencimiento es obligatoria.';
+      } else if (!/^(0[1-9]|1[0-2])\/\d{2}$/.test(expDate)) {
+        newErrs.expDate = 'Formato inválido (MM/AA).';
+      }
+
+      if (!cvv.trim()) {
+        newErrs.cvv = 'El CVV es obligatorio.';
+      } else if (cvv.length < 3) {
+        newErrs.cvv = 'El CVV debe tener 3 o 4 dígitos.';
+      }
+
+      if (!cardName.trim()) {
+        newErrs.cardName = 'El nombre del titular es obligatorio.';
+      } else if (cardName.trim().length < 2) {
+        newErrs.cardName = 'Ingrese el nombre impreso en la tarjeta.';
+      }
+    }
+
+    if (paymentMethod === 'yape' && yapeTab === 'num') {
+      if (yapeCode.join('').length !== 6) {
+        newErrs.yapeCode = 'Ingrese el código de aprobación de 6 dígitos.';
+      }
+    }
+
+    setErrors(newErrs);
+    return Object.keys(newErrs).length === 0;
+  };
 
   // Success states
   const [copied, setCopied] = useState(false);
@@ -646,8 +867,15 @@ export function Booking({
                     <span className="mandatory-label">Campos marcados con (*) son obligatorios</span>
                   </div>
 
+                  {formSubmitted && Object.keys(errors).length > 0 && (
+                    <div className="form-validation-alert">
+                      <FaExclamationTriangle className="alert-icon" />
+                      <span>Por favor, complete correctamente los campos requeridos antes de continuar.</span>
+                    </div>
+                  )}
+
                   <div className="holder-form-grid">
-                    <div className="form-field">
+                    <div className={`form-field ${errors.docId ? 'field-has-error' : ''}`}>
                       <label style={{ color: '#c53030' }}>Documento de Identidad*</label>
                       <div className="doc-input-wrapper">
                         <div className="doc-custom-select" onClick={() => setDocOpen(!docOpen)}>
@@ -655,49 +883,75 @@ export function Booking({
                           <span className="doc-arrow">▾</span>
                           {docOpen && (
                             <div className="doc-dropdown">
-                              <div className="doc-option" onClick={() => { setDocType('DNI'); setDocOpen(false); }}>DNI</div>
-                              <div className="doc-option" onClick={() => { setDocType('RUC'); setDocOpen(false); }}>RUC</div>
+                              <div className="doc-option" onClick={() => handleDocTypeSelect('DNI')}>DNI</div>
+                              <div className="doc-option" onClick={() => handleDocTypeSelect('RUC')}>RUC</div>
                             </div>
                           )}
                         </div>
                         <input 
                           type="text" 
-                          placeholder="Ej: 12345678" 
+                          placeholder={docType === 'DNI' ? 'Ej: 12345678' : 'Ej: 20123456789'} 
                           value={docId} 
-                          onChange={(e) => setDocId(e.target.value)}
+                          onChange={(e) => handleDocIdChange(e.target.value)}
                           className="doc-input"
+                          maxLength={docType === 'DNI' ? 8 : 11}
                         />
                       </div>
+                      {errors.docId && (
+                        <span className="field-error-message">
+                          <FaExclamationCircle className="field-error-icon" />
+                          {errors.docId}
+                        </span>
+                      )}
                     </div>
 
-                    <div className="form-field">
+                    <div className={`form-field ${errors.email ? 'field-has-error' : ''}`}>
                       <label>Email</label>
                       <input 
                         type="email" 
                         placeholder="ejemplo@gmail.com" 
                         value={email} 
-                        onChange={(e) => setEmail(e.target.value)}
+                        onChange={(e) => handleEmailChange(e.target.value)}
                       />
+                      {errors.email && (
+                        <span className="field-error-message">
+                          <FaExclamationCircle className="field-error-icon" />
+                          {errors.email}
+                        </span>
+                      )}
                     </div>
 
-                    <div className="form-field">
+                    <div className={`form-field ${errors.name ? 'field-has-error' : ''}`}>
                       <label style={{ color: '#c53030' }}>Nombre*</label>
                       <input 
                         type="text" 
                         placeholder="Ej: John Alexander" 
                         value={name} 
-                        onChange={(e) => setName(e.target.value)}
+                        onChange={(e) => handleNameChange(e.target.value)}
                       />
+                      {errors.name && (
+                        <span className="field-error-message">
+                          <FaExclamationCircle className="field-error-icon" />
+                          {errors.name}
+                        </span>
+                      )}
                     </div>
 
-                    <div className="form-field">
-                      <label>Numero</label>
+                    <div className={`form-field ${errors.phone ? 'field-has-error' : ''}`}>
+                      <label style={{ color: '#c53030' }}>Numero*</label>
                       <input 
                         type="text" 
                         placeholder="Ej: 932527449" 
                         value={phone} 
-                        onChange={(e) => setPhone(e.target.value)}
+                        onChange={(e) => handlePhoneChange(e.target.value)}
+                        maxLength={9}
                       />
+                      {errors.phone && (
+                        <span className="field-error-message">
+                          <FaExclamationCircle className="field-error-icon" />
+                          {errors.phone}
+                        </span>
+                      )}
                     </div>
                   </div>
 
@@ -733,44 +987,72 @@ export function Booking({
                     <div className="card-payment-form">
                       <h3 className="payment-section-title">Informacion de pago</h3>
                       
-                      <div className="form-field">
+                      <div className={`form-field ${errors.cardNumber ? 'field-has-error' : ''}`}>
                         <label>Numero de tarjeta</label>
                         <input 
                           type="text" 
                           placeholder="0000 0000 0000 0000" 
                           value={cardNumber}
-                          onChange={(e) => setCardNumber(e.target.value)}
+                          onChange={(e) => handleCardNumberChange(e.target.value)}
+                          maxLength={19}
                         />
+                        {errors.cardNumber && (
+                          <span className="field-error-message">
+                            <FaExclamationCircle className="field-error-icon" />
+                            {errors.cardNumber}
+                          </span>
+                        )}
                       </div>
 
                       <div className="card-row-fields">
-                        <div className="form-field flex-2">
+                        <div className={`form-field flex-2 ${errors.expDate ? 'field-has-error' : ''}`}>
                           <label>Fecha de vencimiento</label>
                           <input 
                             type="text" 
                             placeholder="MM / AA" 
                             value={expDate}
-                            onChange={(e) => setExpDate(e.target.value)}
+                            onChange={(e) => handleExpDateChange(e.target.value)}
+                            maxLength={5}
                           />
+                          {errors.expDate && (
+                            <span className="field-error-message">
+                              <FaExclamationCircle className="field-error-icon" />
+                              {errors.expDate}
+                            </span>
+                          )}
                         </div>
-                        <div className="form-field flex-1">
+                        <div className={`form-field flex-1 ${errors.cvv ? 'field-has-error' : ''}`}>
                           <label>CVV</label>
                           <input 
                             type="text" 
                             placeholder="CVC" 
                             value={cvv}
-                            onChange={(e) => setCvv(e.target.value)}
+                            onChange={(e) => handleCvvChange(e.target.value)}
+                            maxLength={4}
                           />
+                          {errors.cvv && (
+                            <span className="field-error-message">
+                              <FaExclamationCircle className="field-error-icon" />
+                              {errors.cvv}
+                            </span>
+                          )}
                         </div>
                       </div>
 
-                      <div className="form-field">
+                      <div className={`form-field ${errors.cardName ? 'field-has-error' : ''}`}>
                         <label>Nombre del titular</label>
                         <input 
                           type="text" 
+                          placeholder="Ej: JOHN ALEXANDER"
                           value={cardName}
-                          onChange={(e) => setCardName(e.target.value)}
+                          onChange={(e) => handleCardNameChange(e.target.value)}
                         />
+                        {errors.cardName && (
+                          <span className="field-error-message">
+                            <FaExclamationCircle className="field-error-icon" />
+                            {errors.cardName}
+                          </span>
+                        )}
                       </div>
                     </div>
                   ) : (
@@ -805,17 +1087,24 @@ export function Booking({
                             Ingresa tu numero de telefono para pago con Yape
                           </h4>
                           
-                          <div className="form-field">
+                          <div className={`form-field ${errors.phone ? 'field-has-error' : ''}`}>
                             <label>Telefono</label>
                             <input 
                               type="text" 
                               placeholder="Ej: 940 930 037" 
                               value={phone}
-                              onChange={(e) => setPhone(e.target.value)}
+                              onChange={(e) => handlePhoneChange(e.target.value)}
+                              maxLength={9}
                             />
+                            {errors.phone && (
+                              <span className="field-error-message">
+                                <FaExclamationCircle className="field-error-icon" />
+                                {errors.phone}
+                              </span>
+                            )}
                           </div>
                           
-                          <div className="form-field">
+                          <div className={`form-field ${errors.yapeCode ? 'field-has-error' : ''}`}>
                             <label>Código de aprobación</label>
                             <div className="yape-code-grid">
                               {yapeCode.map((digit, idx) => (
@@ -831,6 +1120,12 @@ export function Booking({
                                 />
                               ))}
                             </div>
+                            {errors.yapeCode && (
+                              <span className="field-error-message">
+                                <FaExclamationCircle className="field-error-icon" />
+                                {errors.yapeCode}
+                              </span>
+                            )}
                           </div>
                         </div>
                       )}
@@ -842,6 +1137,10 @@ export function Booking({
                       type="button" 
                       className="pay-now-btn"
                       onClick={() => {
+                        setFormSubmitted(true);
+                        if (!validateAll()) {
+                          return;
+                        }
                         setStep('finalizado');
                         if (onBookingSuccess) {
                           const room = selectedRoom || ROOMS[1];
