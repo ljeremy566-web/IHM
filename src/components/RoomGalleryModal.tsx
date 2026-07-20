@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { FaChevronLeft, FaChevronRight, FaTimes, FaCamera } from 'react-icons/fa';
+import { announceAccessibility } from '../utils/accessibility';
 import './RoomGalleryModal.css';
 
 export interface GalleryPhoto {
@@ -28,6 +29,9 @@ export function RoomGalleryModal({ room, onClose, onBookNow }: RoomGalleryModalP
 
   useEffect(() => {
     setActiveIdx(0);
+    if (room) {
+      announceAccessibility(`Modal abierto: Galería de fotos de la ${room.title}. Revisa las imágenes y características.`);
+    }
   }, [room]);
 
   useEffect(() => {

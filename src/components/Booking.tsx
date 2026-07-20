@@ -21,6 +21,7 @@ import {
 import type { CartItem } from '../App';
 import DatePicker from './DatePicker';
 import { RoomGalleryModal, type RoomGalleryData } from './RoomGalleryModal';
+import { announceAccessibility } from '../utils/accessibility';
 import yapeImg from '../img/logo-yape.png';
 import './Booking.css';
 
@@ -721,7 +722,12 @@ export function Booking({
     }
 
     setErrors(newErrs);
-    return Object.keys(newErrs).length === 0;
+    const hasErrors = Object.keys(newErrs).length > 0;
+    if (hasErrors) {
+      const messages = Object.values(newErrs).join('. ');
+      announceAccessibility(`Atención. Por favor corrija los siguientes campos: ${messages}`);
+    }
+    return !hasErrors;
   };
 
   // Success states
@@ -731,7 +737,10 @@ export function Booking({
 
   useEffect(() => {
     if (step === 'finalizado' && !codeRevealed) {
-      const timer = setTimeout(() => setCodeRevealed(true), 600);
+      const timer = setTimeout(() => {
+        setCodeRevealed(true);
+        announceAccessibility(`¡Reserva confirmada con éxito! Su código de reserva es: 9, X, Y, 3, 8, 4, guión, 5, 8, 6, K, L, M. Por favor guárdelo para consultar su estancia o descargar su boleta.`);
+      }, 600);
       return () => clearTimeout(timer);
     }
   }, [step, codeRevealed]);
@@ -743,6 +752,7 @@ export function Booking({
     const max = getMaxGuests(room.id);
     setHuespedes(Array(max).fill(''));
     setIsModalOpen(true);
+    announceAccessibility(`Modal abierto: Registro de huéspedes para ${room.title}. Ingrese el nombre del huésped. Al menos uno es obligatorio.`);
   };
 
   const closeModal = () => {
@@ -755,6 +765,7 @@ export function Booking({
     const hasAtLeastOne = huespedes.some(h => h.trim().length > 0);
     if (!hasAtLeastOne) {
       setModalError('Debe ingresar al menos el nombre de un huésped para continuar.');
+      announceAccessibility('Atención: Debe ingresar al menos el nombre de un huésped para continuar.');
       return;
     }
     setModalError(null);

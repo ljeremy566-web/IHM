@@ -16,9 +16,10 @@ type TabType = 'sobre-nosotros' | 'contacto' | 'cancelacion' | 'privacidad' | 'p
 
 interface ContactProps {
   initialTab?: string;
+  onTabChange?: (tab: string) => void;
 }
 
-export function Contact({ initialTab = 'contacto' }: ContactProps) {
+export function Contact({ initialTab = 'contacto', onTabChange }: ContactProps) {
   const [activeTab, setActiveTab] = useState<TabType>((initialTab as TabType) || 'contacto');
   const [mobileSelectOpen, setMobileSelectOpen] = useState(false);
 
@@ -27,6 +28,13 @@ export function Contact({ initialTab = 'contacto' }: ContactProps) {
       setActiveTab(initialTab as TabType);
     }
   }, [initialTab]);
+
+  const handleTabSelect = (tabId: TabType) => {
+    setActiveTab(tabId);
+    if (onTabChange) {
+      onTabChange(tabId);
+    }
+  };
 
   const tabs = [
     { id: 'sobre-nosotros', label: 'Sobre nosotros' },
@@ -281,7 +289,7 @@ export function Contact({ initialTab = 'contacto' }: ContactProps) {
                 <button
                   key={tab.id}
                   className={`contact-tab-btn ${activeTab === tab.id ? 'active' : ''}`}
-                  onClick={() => setActiveTab(tab.id)}
+                  onClick={() => handleTabSelect(tab.id)}
                 >
                   {tab.label}
                 </button>
@@ -298,7 +306,7 @@ export function Contact({ initialTab = 'contacto' }: ContactProps) {
                       <div 
                         key={tab.id} 
                         className={`contact-option ${activeTab === tab.id ? 'active' : ''}`}
-                        onClick={() => { setActiveTab(tab.id); setMobileSelectOpen(false); }}
+                        onClick={() => { handleTabSelect(tab.id); setMobileSelectOpen(false); }}
                       >
                         {tab.label}
                       </div>

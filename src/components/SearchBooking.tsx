@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { motion } from 'motion/react';
 import { FaSearch, FaWifi, FaTv, FaBath, FaWind, FaCoffee } from 'react-icons/fa';
+import { announceAccessibility } from '../utils/accessibility';
 import './SearchBooking.css';
 
 export interface BookingRoomItem {
@@ -110,6 +111,7 @@ export function SearchBooking({ lastBooking, onNavigateHome, onNavigateContact }
     
     if (!searchCode.trim()) {
       setSearchError('Por favor, ingrese un código de reserva.');
+      announceAccessibility('Atención: Por favor, ingrese un código de reserva.');
       setHasSearched(false);
       setSearchResult(null);
       return;

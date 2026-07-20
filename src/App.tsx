@@ -9,6 +9,7 @@ import { Footer } from './components/Footer';
 import { Booking } from './components/Booking';
 import { Contact } from './components/Contact';
 import { SearchBooking } from './components/SearchBooking';
+import { AccessibilityAudio } from './components/AccessibilityAudio';
 
 export interface CartItem {
   id: number;
@@ -251,7 +252,7 @@ function App() {
               animate="animate"
               exit="exit"
             >
-              <Contact initialTab={contactTab} />
+              <Contact initialTab={contactTab} onTabChange={(t) => setContactTab(t)} />
             </motion.div>
           )}
           {currentView === 'searchBooking' && (
@@ -277,6 +278,11 @@ function App() {
         onNavigateSearchBooking={navigateToSearchBooking}
         onNavigateContact={navigateToContact}
         onNavigateContactTab={navigateToContactTab}
+      />
+      <AccessibilityAudio 
+        currentView={currentView}
+        bookingStep={bookingStep}
+        contactTab={contactTab}
       />
     </div>
   );
