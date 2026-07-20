@@ -11,6 +11,7 @@ interface HeaderProps {
   cart: CartItem[];
   onRemoveFromCart: (id: number) => void;
   onCheckoutCart: () => void;
+  onNavigateBooking: () => void;
 }
 
 export function Header({ 
@@ -20,7 +21,8 @@ export function Header({
   onNavigateSearchBooking,
   cart,
   onRemoveFromCart,
-  onCheckoutCart
+  onCheckoutCart,
+  onNavigateBooking
 }: HeaderProps) {
   const [isCartOpen, setIsCartOpen] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
@@ -49,6 +51,13 @@ export function Header({
           </a>
           <a 
             href="#" 
+            className={currentView === 'booking' ? 'active' : ''} 
+            onClick={(e) => { e.preventDefault(); onNavigateBooking(); }}
+          >
+            Reservar ahora
+          </a>
+          <a 
+            href="#" 
             className={currentView === 'searchBooking' ? 'active' : ''} 
             onClick={(e) => { e.preventDefault(); onNavigateSearchBooking(); }}
           >
@@ -60,12 +69,6 @@ export function Header({
             onClick={(e) => { e.preventDefault(); onNavigateContact(); }}
           >
             Contactanos
-          </a>
-          <a 
-            href="#" 
-            onClick={(e) => { e.preventDefault(); onNavigateContact(); }}
-          >
-            Ubicación
           </a>
         </nav>
         
@@ -159,10 +162,10 @@ export function Header({
 
       {menuOpen && (
         <nav className="mobile-dropdown" onClick={() => setMenuOpen(false)}>
-          <a onClick={() => { onNavigateHome(); setMenuOpen(false); }}>Inicio</a>
-          <a onClick={() => { onNavigateSearchBooking(); setMenuOpen(false); }}>Buscar Reserva</a>
-          <a onClick={() => { onNavigateContact(); setMenuOpen(false); }}>Contactanos</a>
-          <a onClick={() => { onNavigateContact(); setMenuOpen(false); }}>Ubicación</a>
+          <a onClick={(e) => { e.preventDefault(); onNavigateHome(); setMenuOpen(false); }}>Inicio</a>
+          <a onClick={(e) => { e.preventDefault(); onNavigateBooking(); setMenuOpen(false); }}>Reservar ahora</a>
+          <a onClick={(e) => { e.preventDefault(); onNavigateSearchBooking(); setMenuOpen(false); }}>Buscar Reserva</a>
+          <a onClick={(e) => { e.preventDefault(); onNavigateContact(); setMenuOpen(false); }}>Contactanos</a>
         </nav>
       )}
     </header>

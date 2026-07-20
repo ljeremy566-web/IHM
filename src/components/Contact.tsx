@@ -13,7 +13,8 @@ import './Contact.css';
 type TabType = 'sobre-nosotros' | 'contacto' | 'cancelacion' | 'privacidad' | 'preguntas';
 
 export function Contact() {
-  const [activeTab, setActiveTab] = useState<TabType>('sobre-nosotros');
+  const [activeTab, setActiveTab] = useState<TabType>('contacto');
+  const [mobileSelectOpen, setMobileSelectOpen] = useState(false);
 
   const tabs = [
     { id: 'sobre-nosotros', label: 'Sobre nosotros' },
@@ -252,15 +253,37 @@ export function Contact() {
         <div className="contact-layout-grid">
           {/* Sidebar */}
           <aside className="contact-sidebar">
-            {tabs.map((tab) => (
-              <button
-                key={tab.id}
-                className={`contact-tab-btn ${activeTab === tab.id ? 'active' : ''}`}
-                onClick={() => setActiveTab(tab.id)}
-              >
-                {tab.label}
-              </button>
-            ))}
+            <div className="contact-desktop-tabs">
+              {tabs.map((tab) => (
+                <button
+                  key={tab.id}
+                  className={`contact-tab-btn ${activeTab === tab.id ? 'active' : ''}`}
+                  onClick={() => setActiveTab(tab.id)}
+                >
+                  {tab.label}
+                </button>
+              ))}
+            </div>
+            
+            <div className="contact-mobile-select-wrapper">
+              <div className="contact-custom-select" onClick={() => setMobileSelectOpen(!mobileSelectOpen)}>
+                <span className="contact-selected-value">{tabs.find(t => t.id === activeTab)?.label}</span>
+                <span className="contact-arrow">▾</span>
+                {mobileSelectOpen && (
+                  <div className="contact-dropdown">
+                    {tabs.map((tab) => (
+                      <div 
+                        key={tab.id} 
+                        className={`contact-option ${activeTab === tab.id ? 'active' : ''}`}
+                        onClick={() => { setActiveTab(tab.id); setMobileSelectOpen(false); }}
+                      >
+                        {tab.label}
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
+            </div>
           </aside>
 
           {/* Content Card */}

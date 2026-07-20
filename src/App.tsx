@@ -107,6 +107,7 @@ function App() {
         onNavigateHome={navigateToHome} 
         onNavigateContact={navigateToContact}
         onNavigateSearchBooking={navigateToSearchBooking}
+        onNavigateBooking={navigateToBooking}
         cart={cart}
         onRemoveFromCart={removeFromCart}
         onCheckoutCart={handleCheckoutCart}

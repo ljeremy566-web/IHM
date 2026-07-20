@@ -72,11 +72,83 @@
   display: flex;
   flex-direction: column;
   flex-shrink: 0;
+}
+
+.contact-desktop-tabs {
+  display: flex;
+  flex-direction: column;
   background-color: #ffffff;
   border-radius: 12px;
   overflow: hidden;
   box-shadow: 0 4px 15px rgba(21, 20, 20, 0.03);
   border: 1px solid #e5e3de;
+}
+
+.contact-mobile-select-wrapper {
+  display: none;
+}
+
+.contact-custom-select {
+  position: relative;
+  display: flex;
+  align-items: center;
+  background-color: #fcfbf9;
+  border: 1px solid #d5d3ce;
+  border-radius: 8px;
+  padding: 1rem 1.2rem;
+  cursor: pointer;
+  user-select: none;
+  transition: border-color 0.2s;
+}
+
+.contact-custom-select:focus-within {
+  border-color: var(--color-brown);
+}
+
+.contact-selected-value {
+  font-family: var(--font-base);
+  font-size: 1rem;
+  color: #151414;
+  font-weight: 500;
+  flex: 1;
+}
+
+.contact-arrow {
+  font-size: 0.8rem;
+  color: #66634F;
+  margin-left: 0.5rem;
+}
+
+.contact-dropdown {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  width: 100%;
+  background: #ffffff;
+  border: 1px solid #d5d3ce;
+  border-radius: 0 0 8px 8px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+  z-index: 10;
+  overflow: hidden;
+}
+
+.contact-option {
+  padding: 0.8rem 1.2rem;
+  font-family: var(--font-base);
+  font-size: 0.95rem;
+  color: #151414;
+  cursor: pointer;
+  transition: background-color 0.15s;
+  border-bottom: 1px solid #f2f1ec;
+}
+
+.contact-option:last-child {
+  border-bottom: none;
+}
+
+.contact-option:hover, .contact-option.active {
+  background-color: #f2f1ec;
+  color: var(--color-brown);
 }
 
 .contact-tab-btn {
@@ -382,20 +454,17 @@
   
   .contact-sidebar {
     width: 100%;
-    flex-direction: row;
-    flex-wrap: wrap;
+    flex-direction: column;
   }
   
-  .contact-tab-btn {
-    flex: 1;
-    min-width: 160px;
-    text-align: center;
-    border-bottom: none;
-    border-right: 1px solid rgba(229, 227, 222, 0.6);
+  .contact-desktop-tabs {
+    display: none;
   }
   
-  .contact-tab-btn:last-child {
-    border-right: none;
+  .contact-mobile-select-wrapper {
+    display: block;
+    width: 100%;
+    margin-bottom: 1rem;
   }
   
   .contact-details-grid {
@@ -409,15 +478,6 @@
 }
 
 @media (max-width: 768px) {
-  .contact-sidebar {
-    flex-direction: column;
-  }
-  
-  .contact-tab-btn {
-    border-right: none;
-    border-bottom: 1px solid rgba(229, 227, 222, 0.6);
-  }
-  
   .contact-content-body {
     padding: 1.5rem;
   }
