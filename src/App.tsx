@@ -265,6 +265,7 @@ function App() {
               <SearchBooking 
                 lastBooking={lastBooking} 
                 onNavigateHome={navigateToHome} 
+                onNavigateContact={navigateToContact}
               />
             </motion.div>
           )}

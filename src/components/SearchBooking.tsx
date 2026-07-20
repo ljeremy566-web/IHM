@@ -28,27 +28,37 @@ export interface BookingDetails {
 interface SearchBookingProps {
   lastBooking?: BookingDetails | null;
   onNavigateHome: () => void;
+  onNavigateContact?: () => void;
 }
 
-export function SearchBooking({ lastBooking, onNavigateHome }: SearchBookingProps) {
-  const [searchCode, setSearchCode] = useState(() => lastBooking ? lastBooking.code : '');
-  const [hasSearched, setHasSearched] = useState(() => !!lastBooking);
-  const [searchResult, setSearchResult] = useState<BookingDetails | null>(() => lastBooking || null);
+export function SearchBooking({ lastBooking, onNavigateHome, onNavigateContact }: SearchBookingProps) {
+  const [searchCode, setSearchCode] = useState('');
+  const [hasSearched, setHasSearched] = useState(false);
+  const [searchResult, setSearchResult] = useState<BookingDetails | null>(null);
+  const [searchError, setSearchError] = useState<string | null>(null);
 
   useEffect(() => {
     if (lastBooking) {
       setSearchCode(lastBooking.code);
-      setHasSearched(true);
-      setSearchResult(lastBooking);
+      setHasSearched(false);
+      setSearchResult(null);
     }
   }, [lastBooking]);
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
+    
+    if (!searchCode.trim()) {
+      setSearchError('Por favor, ingrese un código de reserva.');
+      setHasSearched(false);
+      setSearchResult(null);
+      return;
+    }
+    
+    setSearchError(null);
     setHasSearched(true);
     
-    // If input is empty, fallback to the default code
-    const queryCode = searchCode.trim() ? searchCode.trim().toUpperCase() : '9XY384-586KLM';
+    const queryCode = searchCode.trim().toUpperCase();
 
     // 1. Check if it matches the last booked reservation code
     if (lastBooking && queryCode === lastBooking.code.toUpperCase()) {
@@ -205,7 +215,30 @@ export function SearchBooking({ lastBooking, onNavigateHome }: SearchBookingProp
 
         {/* Results Area */}
         <div className="search-results-area">
-          {!hasSearched && (
+          {searchError && (
+            <motion.div 
+              className="search-error-message-card"
+              initial={{ opacity: 0, y: -10 }}
+              animate={{ opacity: 1, y: 0 }}
+              style={{
+                backgroundColor: '#fff5f5',
+                border: '1px solid #feb2b2',
+                borderLeft: '4px solid #e53e3e',
+                color: '#c53030',
+                padding: '0.85rem 1.2rem',
+                borderRadius: '10px',
+                fontFamily: 'var(--font-base)',
+                fontSize: '0.9rem',
+                fontWeight: '600',
+                marginBottom: '1.5rem',
+                textAlign: 'left'
+              }}
+            >
+              {searchError}
+            </motion.div>
+          )}
+
+          {!hasSearched && !searchError && (
             <p className="initial-search-message">
               Ingrese su código de reserva para realizar una búsqueda
             </p>
@@ -315,7 +348,9 @@ export function SearchBooking({ lastBooking, onNavigateHome }: SearchBookingProp
                   <button 
                     type="button" 
                     className="btn-outline-brown" 
-                    onClick={() => alert('Si necesita ayuda con su reserva, contáctenos al (01) 555-0199 o mediante la página de Contacto.')}
+                    onClick={() => {
+                      if (onNavigateContact) onNavigateContact();
+                    }}
                   >
                     Ayuda
                   </button>
