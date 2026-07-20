@@ -55,23 +55,25 @@ export function Contact() {
           <div className="contact-tab-content fade-in">
             <div className="contact-details-grid">
               <div className="contact-info-col">
-                <div className="contact-info-item">
-                  <div className="contact-info-icon-wrapper">
-                    <FaPhoneAlt />
+                <div className="contact-info-top">
+                  <div className="contact-info-item">
+                    <div className="contact-info-icon-wrapper">
+                      <FaPhoneAlt />
+                    </div>
+                    <div className="contact-info-text">
+                      <h3>Teléfono</h3>
+                      <p>986 312 768</p>
+                    </div>
                   </div>
-                  <div className="contact-info-text">
-                    <h3>Teléfono</h3>
-                    <p>986 312 768</p>
-                  </div>
-                </div>
 
-                <div className="contact-info-item">
-                  <div className="contact-info-icon-wrapper">
-                    <FaEnvelope />
-                  </div>
-                  <div className="contact-info-text">
-                    <h3>EMAIL</h3>
-                    <p>hostalkin@gmail.com</p>
+                  <div className="contact-info-item">
+                    <div className="contact-info-icon-wrapper">
+                      <FaEnvelope />
+                    </div>
+                    <div className="contact-info-text">
+                      <h3>EMAIL</h3>
+                      <p>hostalkin@gmail.com</p>
+                    </div>
                   </div>
                 </div>
 
@@ -103,12 +105,12 @@ export function Contact() {
               </div>
 
               <div className="contact-map-col">
-                <div className="map-container">
+                <div className="map-container" style={{ width: '100%', height: '100%', display: 'block' }}>
                   <iframe 
                     src="https://maps.google.com/maps?q=Hostal%20Kin,%20Nuevo%20Chimbote&t=&z=16&ie=UTF8&iwloc=&output=embed" 
                     width="100%" 
                     height="100%" 
-                    style={{ border: 0 }} 
+                    style={{ border: 0, width: '100%', height: '100%', display: 'block' }} 
                     allowFullScreen={true} 
                     loading="lazy"
                     title="Ubicación Hostal KIN"
