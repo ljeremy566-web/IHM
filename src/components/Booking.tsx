@@ -371,6 +371,7 @@ export function Booking({
   const [modalType, setModalType] = useState<'book' | 'cart'>('book');
   const [selectedRoom, setSelectedRoom] = useState<Room | null>(null);
   const [huespedes, setHuespedes] = useState<string[]>(['']);
+  const [modalError, setModalError] = useState<string | null>(null);
   const [galleryRoom, setGalleryRoom] = useState<RoomGalleryData | null>(null);
 
   const handleOpenGallery = (room: Room) => {
@@ -738,20 +739,26 @@ export function Booking({
   const openModal = (type: 'book' | 'cart', room: Room) => {
     setModalType(type);
     setSelectedRoom(room);
+    setModalError(null);
     const max = getMaxGuests(room.id);
-    const prefilled = type === 'book'
-      ? ['Jorge Gonzalo Nina Retamozo', ...Array(max - 1).fill('')]
-      : ['Carlos Alberto Reyes Casusol', ...Array(max - 1).fill('')];
-    setHuespedes(prefilled);
+    setHuespedes(Array(max).fill(''));
     setIsModalOpen(true);
   };
 
   const closeModal = () => {
     setIsModalOpen(false);
     setSelectedRoom(null);
+    setModalError(null);
   };
 
   const handleConfirmModal = () => {
+    const hasAtLeastOne = huespedes.some(h => h.trim().length > 0);
+    if (!hasAtLeastOne) {
+      setModalError('Debe ingresar al menos el nombre de un huésped para continuar.');
+      return;
+    }
+    setModalError(null);
+
     if (modalType === 'cart' && selectedRoom && onAddToCart) {
       const filledCount = huespedes.filter(h => h.trim()).length;
       const qty = filledCount || 1;
@@ -1674,9 +1681,28 @@ export function Booking({
             </p>
 
             <div className="modal-form">
+              {modalError && (
+                <div 
+                  className="modal-error-banner"
+                  style={{
+                    color: '#c53030',
+                    backgroundColor: '#fff5f5',
+                    border: '1px solid #feb2b2',
+                    borderLeft: '4px solid #e53e3e',
+                    padding: '0.7rem 0.9rem',
+                    borderRadius: '8px',
+                    fontSize: '0.85rem',
+                    fontWeight: '600',
+                    marginBottom: '1.2rem',
+                    textAlign: 'left'
+                  }}
+                >
+                  {modalError}
+                </div>
+              )}
               {huespedes.map((h, i) => (
                 <div className="modal-input-field" key={i}>
-                  <label>Huesped {i + 1}</label>
+                  <label>Huésped {i + 1} {i === 0 ? '(Obligatorio)' : '(Opcional)'}</label>
                   <input
                     type="text"
                     value={h}
@@ -1684,8 +1710,11 @@ export function Booking({
                       const next = [...huespedes];
                       next[i] = e.target.value;
                       setHuespedes(next);
+                      if (modalError && e.target.value.trim()) {
+                        setModalError(null);
+                      }
                     }}
-                    placeholder="Ingrese DNI o Nombre Completo"
+                    placeholder={i === 0 ? "Ingrese DNI o Nombre Completo" : "Ingrese DNI o Nombre Completo (Opcional)"}
                   />
                 </div>
               ))}
