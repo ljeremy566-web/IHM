@@ -6,7 +6,8 @@ import {
   FaFacebookF, 
   FaInstagram, 
   FaWhatsapp, 
-  FaTiktok 
+  FaTiktok,
+  FaDownload 
 } from 'react-icons/fa';
 import './Contact.css';
 
@@ -132,13 +133,27 @@ export function Contact({ initialTab = 'contacto' }: ContactProps) {
             <div className="contact-video-section">
               <video 
                 controls 
+                crossOrigin="anonymous"
                 width="100%" 
                 poster="https://images.unsplash.com/photo-1540518614846-7eded433c457?q=80&w=2070&auto=format&fit=crop"
                 className="facade-video"
               >
                 <source src="https://player.vimeo.com/external/371433846.sd.mp4?s=236da2f3c02afdc1b8b835e5d36e2d93e3df7718&profile_id=139&oauth2_token_id=57447761" type="video/mp4" />
+                <track 
+                  kind="subtitles" 
+                  src="/subtitles.vtt" 
+                  srcLang="es" 
+                  label="Español" 
+                  default 
+                />
                 Tu navegador no soporta el tag de video.
               </video>
+            </div>
+            <div className="video-transcript-download">
+              <a href="/transcripcion.txt" download="transcripcion_hostal_kin.txt" className="transcript-btn">
+                <FaDownload />
+                <span>Descargar Transcripción</span>
+              </a>
             </div>
           </div>
         );
