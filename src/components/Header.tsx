@@ -13,6 +13,7 @@ interface HeaderProps {
   onRemoveFromCart: (id: number) => void;
   onCheckoutCart: () => void;
   onNavigateBooking: () => void;
+  hideCart?: boolean;
 }
 
 export function Header({ 
@@ -23,7 +24,8 @@ export function Header({
   cart,
   onRemoveFromCart,
   onCheckoutCart,
-  onNavigateBooking
+  onNavigateBooking,
+  hideCart = false
 }: HeaderProps) {
   const [isCartOpen, setIsCartOpen] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
@@ -90,101 +92,103 @@ export function Header({
           </a>
         </nav>
         
-        <div className="header-btn-wrapper" style={{ position: 'relative' }}>
-          <button 
-            className={`header-btn ${cartBumped ? 'cart-bump' : ''}`} 
-            onClick={() => setIsCartOpen(!isCartOpen)}
-          >
-            <FaShoppingCart size={14} />
-            <span className="header-btn-text">Mis Reservas</span>
-            {totalItems > 0 && (
-              <span className="cart-badge">
-                {totalItems}
-              </span>
-            )}
-          </button>
-          
-          {isCartOpen && (
-            <div className="cart-dropdown-modal">
-              <div className="cart-modal-header">
-                <h2>Mis reservas</h2>
-                <FaShoppingCart className="cart-modal-icon" />
-              </div>
-              <div className="cart-modal-divider"></div>
-              
-              <div className="cart-modal-items">
-                {cart.length === 0 ? (
-                  <p className="empty-cart-message">No tienes reservas activas</p>
-                ) : (
-                  cart.map((item) => (
-                    <div key={item.id} className="cart-modal-item restructured">
-                      <div className="cart-item-header">
-                        <h3>{item.title}</h3>
-                        <button 
-                          type="button" 
-                          className="cart-item-remove-btn"
-                          onClick={() => onRemoveFromCart(item.id)}
-                          title="Eliminar reserva"
-                        >
-                          <FaTrashAlt />
-                        </button>
-                      </div>
-                      <div className="cart-item-meta">
-                        <div className="cart-meta-pill">
-                          <FaBed className="pill-icon" />
-                          <span>{item.quantity} {item.quantity === 1 ? 'habitación' : 'habitaciones'}</span>
-                        </div>
-                        <div className="cart-meta-pill">
-                          <FaCalendarAlt className="pill-icon" />
-                          <span>{item.nights || 1} {item.nights === 1 ? 'noche' : 'noches'}</span>
-                        </div>
-                      </div>
-                      <div className="cart-item-footer">
-                        <span className="cart-item-rate">S/ {item.price.toFixed(2)} x noche</span>
-                        <span className="cart-item-total">S/ {(item.price * item.quantity * (item.nights || 1)).toFixed(2)}</span>
-                      </div>
-                    </div>
-                  ))
-                )}
-              </div>
-              
-              <div className="cart-modal-divider"></div>
-              
-              <div className="cart-modal-subtotal">
-                <span>Subtotal</span>
-                <span className="cart-subtotal-value">
-                  S/ {cart.reduce((sum, item) => sum + (item.price * item.quantity * (item.nights || 1)), 0).toFixed(2)}
+        {!hideCart && (
+          <div className="header-btn-wrapper" style={{ position: 'relative' }}>
+            <button 
+              className={`header-btn ${cartBumped ? 'cart-bump' : ''}`} 
+              onClick={() => setIsCartOpen(!isCartOpen)}
+            >
+              <FaShoppingCart size={14} />
+              <span className="header-btn-text">Mis Reservas</span>
+              {totalItems > 0 && (
+                <span className="cart-badge">
+                  {totalItems}
                 </span>
+              )}
+            </button>
+            
+            {isCartOpen && (
+              <div className="cart-dropdown-modal">
+                <div className="cart-modal-header">
+                  <h2>Mis reservas</h2>
+                  <FaShoppingCart className="cart-modal-icon" />
+                </div>
+                <div className="cart-modal-divider"></div>
+                
+                <div className="cart-modal-items">
+                  {cart.length === 0 ? (
+                    <p className="empty-cart-message">No tienes reservas activas</p>
+                  ) : (
+                    cart.map((item) => (
+                      <div key={item.id} className="cart-modal-item restructured">
+                        <div className="cart-item-header">
+                          <h3>{item.title}</h3>
+                          <button 
+                            type="button" 
+                            className="cart-item-remove-btn"
+                            onClick={() => onRemoveFromCart(item.id)}
+                            title="Eliminar reserva"
+                          >
+                            <FaTrashAlt />
+                          </button>
+                        </div>
+                        <div className="cart-item-meta">
+                          <div className="cart-meta-pill">
+                            <FaBed className="pill-icon" />
+                            <span>{item.quantity} {item.quantity === 1 ? 'habitación' : 'habitaciones'}</span>
+                          </div>
+                          <div className="cart-meta-pill">
+                            <FaCalendarAlt className="pill-icon" />
+                            <span>{item.nights || 1} {item.nights === 1 ? 'noche' : 'noches'}</span>
+                          </div>
+                        </div>
+                        <div className="cart-item-footer">
+                          <span className="cart-item-rate">S/ {item.price.toFixed(2)} x noche</span>
+                          <span className="cart-item-total">S/ {(item.price * item.quantity * (item.nights || 1)).toFixed(2)}</span>
+                        </div>
+                      </div>
+                    ))
+                  )}
+                </div>
+                
+                <div className="cart-modal-divider"></div>
+                
+                <div className="cart-modal-subtotal">
+                  <span>Subtotal</span>
+                  <span className="cart-subtotal-value">
+                    S/ {cart.reduce((sum, item) => sum + (item.price * item.quantity * (item.nights || 1)), 0).toFixed(2)}
+                  </span>
+                </div>
+                
+                <div className="cart-modal-actions">
+                  <button 
+                    type="button" 
+                    className="cart-btn-outline"
+                    onClick={() => setIsCartOpen(false)}
+                  >
+                    Seguir comprando
+                  </button>
+                  <button 
+                    type="button" 
+                    className="cart-btn-primary"
+                    disabled={cart.length === 0}
+                    onClick={() => {
+                      if (cart.length === 0) return;
+                      setIsCartOpen(false);
+                      onCheckoutCart();
+                    }}
+                    style={{ 
+                      opacity: cart.length === 0 ? 0.5 : 1, 
+                      cursor: cart.length === 0 ? 'not-allowed' : 'pointer' 
+                    }}
+                  >
+                    Continuar
+                  </button>
+                </div>
               </div>
-              
-              <div className="cart-modal-actions">
-                <button 
-                  type="button" 
-                  className="cart-btn-outline"
-                  onClick={() => setIsCartOpen(false)}
-                >
-                  Seguir comprando
-                </button>
-                <button 
-                  type="button" 
-                  className="cart-btn-primary"
-                  disabled={cart.length === 0}
-                  onClick={() => {
-                    if (cart.length === 0) return;
-                    setIsCartOpen(false);
-                    onCheckoutCart();
-                  }}
-                  style={{ 
-                    opacity: cart.length === 0 ? 0.5 : 1, 
-                    cursor: cart.length === 0 ? 'not-allowed' : 'pointer' 
-                  }}
-                >
-                  Continuar
-                </button>
-              </div>
-            </div>
-          )}
-        </div>
+            )}
+          </div>
+        )}
       </div>
 
       {menuOpen && (

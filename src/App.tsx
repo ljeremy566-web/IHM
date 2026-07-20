@@ -62,6 +62,7 @@ function App() {
   });
 
   const [bookingInitialStep, setBookingInitialStep] = useState<'fecha' | 'pago'>('fecha');
+  const [bookingStep, setBookingStep] = useState<'fecha' | 'habitacion' | 'pago' | 'finalizado'>('fecha');
   const [checkoutType, setCheckoutType] = useState<'single' | 'cart'>('single');
   const [lastBooking, setLastBooking] = useState<any>(null);
   const [contactTab, setContactTab] = useState<string>('contacto');
@@ -79,12 +80,14 @@ function App() {
     setCurrentView('home');
     setCheckoutType('single');
     setBookingInitialStep('fecha');
+    setBookingStep('fecha');
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
   const navigateToBooking = () => {
     setCheckoutType('single');
     setBookingInitialStep('fecha');
+    setBookingStep('fecha');
     setCurrentView('booking');
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
@@ -109,6 +112,7 @@ function App() {
   const handleCheckoutCart = () => {
     setCheckoutType('cart');
     setBookingInitialStep('pago');
+    setBookingStep('pago');
     setCurrentView('booking');
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
@@ -166,6 +170,8 @@ function App() {
     }
   };
 
+  const isPaymentPage = currentView === 'booking' && bookingStep === 'pago';
+
   return (
     <div className="app">
       <Header 
@@ -177,6 +183,7 @@ function App() {
         cart={cart}
         onRemoveFromCart={removeFromCart}
         onCheckoutCart={handleCheckoutCart}
+        hideCart={isPaymentPage}
       />
       <main style={{ minHeight: '80vh', overflowX: 'hidden', paddingTop: currentView === 'home' ? 0 : '75px' }}>
         <AnimatePresence mode="wait">
@@ -210,6 +217,7 @@ function App() {
                 initialStep={bookingInitialStep}
                 initialCheckoutType={checkoutType}
                 onClearCart={clearCart}
+                onStepChange={setBookingStep}
                 onBookingSuccess={(details) => {
                   setLastBooking(details);
                   if (checkoutType === 'cart') {

@@ -15,7 +15,8 @@ import {
   FaArrowLeft,
   FaCheckCircle,
   FaExclamationCircle,
-  FaExclamationTriangle
+  FaExclamationTriangle,
+  FaChevronDown
 } from 'react-icons/fa';
 import type { CartItem } from '../App';
 import DatePicker from './DatePicker';
@@ -217,6 +218,7 @@ interface BookingProps {
   initialCheckoutType?: 'single' | 'cart';
   onClearCart?: () => void;
   onBookingSuccess?: (details: any) => void;
+  onStepChange?: (step: 'fecha' | 'habitacion' | 'pago' | 'finalizado') => void;
 }
 
 export function Booking({ 
@@ -225,10 +227,17 @@ export function Booking({
   initialStep = 'fecha', 
   initialCheckoutType = 'single',
   onClearCart,
-  onBookingSuccess
+  onBookingSuccess,
+  onStepChange
 }: BookingProps) {
   const [step, setStep] = useState<'fecha' | 'habitacion' | 'pago' | 'finalizado'>('fecha');
   const [checkoutType, setCheckoutType] = useState<'single' | 'cart'>('single');
+
+  useEffect(() => {
+    if (onStepChange) {
+      onStepChange(step);
+    }
+  }, [step, onStepChange]);
 
   useEffect(() => {
     if (initialStep) {
@@ -298,6 +307,11 @@ export function Booking({
 
   const [formSubmitted, setFormSubmitted] = useState(false);
   const [errors, setErrors] = useState<Record<string, string>>({});
+  const [expandedItems, setExpandedItems] = useState<Record<number, boolean>>({});
+
+  const toggleExpandItem = (id: number) => {
+    setExpandedItems(prev => ({ ...prev, [id]: !prev[id] }));
+  };
 
   // Input Handlers with Real-time Restrictions & Validation
   const handleDocIdChange = (val: string) => {
@@ -795,16 +809,68 @@ export function Booking({
                     </div>
                     
                     <div className="summary-body">
-                      <h4 style={{ fontFamily: 'var(--font-base)', textDecoration: 'underline', fontWeight: '800', color: '#151414', fontSize: '0.82rem', marginBottom: '1rem', textTransform: 'none' }}>Precio de Habitaciones por noche</h4>
-                      {cart.map((item) => (
-                        <div key={item.id} className="summary-row" style={{ border: 'none', borderBottom: '1px solid #d5d3cc', paddingBottom: '0.6rem', marginBottom: '1.2rem' }}>
-                          <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start' }}>
-                            <span style={{ fontWeight: '700', color: '#151414', fontSize: '0.88rem' }}>{item.title}</span>
-                            <span style={{ color: '#8f8d87', fontSize: '0.78rem' }}>Cantidad: {item.quantity}</span>
+                      <h4 style={{ fontFamily: 'var(--font-base)', textDecoration: 'underline', fontWeight: '800', color: '#151414', fontSize: '0.82rem', marginBottom: '1rem', textTransform: 'none' }}>
+                        Habitaciones reservadas (haz clic para ver detalle)
+                      </h4>
+                      {cart.map((item) => {
+                        const isExpanded = !!expandedItems[item.id];
+                        const basePricePerNight = item.price * 0.82;
+                        const subtotalBase = basePricePerNight * item.quantity * nights;
+                        const igvAmount = item.price * 0.18 * item.quantity * nights;
+                        const totalItemVal = item.price * item.quantity * nights;
+
+                        return (
+                          <div key={item.id} className="summary-cart-item-block">
+                            <div 
+                              className={`summary-row summary-item-clickable ${isExpanded ? 'active-expanded' : ''}`}
+                              onClick={() => toggleExpandItem(item.id)}
+                            >
+                              <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+                                <FaChevronDown className={`summary-expand-chevron ${isExpanded ? 'rotated' : ''}`} style={{ color: '#733527' }} />
+                                <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start' }}>
+                                  <span style={{ fontWeight: '700', color: '#151414', fontSize: '0.96rem' }}>{item.title}</span>
+                                  <span style={{ color: '#686558', fontSize: '0.82rem', marginTop: '0.1rem' }}>Cantidad: {item.quantity} {item.quantity === 1 ? 'habitación' : 'habitaciones'}</span>
+                                </div>
+                              </div>
+                              <div style={{ display: 'flex', alignItems: 'center' }}>
+                                <span style={{ fontFamily: 'var(--font-condensed)', fontWeight: '700', color: '#151414', fontSize: '1.1rem' }}>S/ {(item.price * item.quantity).toFixed(2)}</span>
+                              </div>
+                            </div>
+
+                            {/* Collapsible Dropdown Details */}
+                            {isExpanded && (
+                              <div className="summary-item-details-dropdown">
+                                <div style={{ display: 'flex', justifyContent: 'space-between', color: '#4a483f' }}>
+                                  <span>Precio base por noche {item.quantity > 1 ? '(1 hab.)' : '(s/ IGV)'}:</span>
+                                  <span>S/ {basePricePerNight.toFixed(2)}</span>
+                                </div>
+                                {item.quantity > 1 && (
+                                  <div style={{ display: 'flex', justifyContent: 'space-between', color: '#4a483f' }}>
+                                    <span>Habitaciones reservadas:</span>
+                                    <span>{item.quantity}</span>
+                                  </div>
+                                )}
+                                <div style={{ display: 'flex', justifyContent: 'space-between', color: '#4a483f' }}>
+                                  <span>Cantidad de noches:</span>
+                                  <span>{nights}</span>
+                                </div>
+                                <div style={{ display: 'flex', justifyContent: 'space-between', color: '#4a483f' }}>
+                                  <span>Subtotal sin IGV {item.quantity > 1 ? `(${item.quantity} hab.)` : ''}:</span>
+                                  <span>S/ {subtotalBase.toFixed(2)}</span>
+                                </div>
+                                <div style={{ display: 'flex', justifyContent: 'space-between', color: '#4a483f' }}>
+                                  <span>IGV 18% {item.quantity > 1 ? `(${item.quantity} hab.)` : ''}:</span>
+                                  <span>S/ {igvAmount.toFixed(2)}</span>
+                                </div>
+                                <div style={{ display: 'flex', justifyContent: 'space-between', color: '#151414', fontWeight: '800', borderTop: '1px dashed #d5d3cc', paddingTop: '0.5rem', marginTop: '0.2rem' }}>
+                                  <span>Total {item.quantity > 1 ? `(${item.quantity} habitaciones)` : 'por esta habitación'}:</span>
+                                  <span style={{ color: '#b30006', fontSize: '1rem' }}>S/ {totalItemVal.toFixed(2)}</span>
+                                </div>
+                              </div>
+                            )}
                           </div>
-                          <span style={{ fontFamily: 'var(--font-condensed)', fontWeight: '700', color: '#151414', fontSize: '0.95rem', alignSelf: 'center' }}>S/ {(item.price * item.quantity).toFixed(2)}</span>
-                        </div>
-                      ))}
+                        );
+                      })}
                       
                       <h4 style={{ fontFamily: 'var(--font-base)', textDecoration: 'underline', fontWeight: '800', color: '#151414', fontSize: '0.82rem', marginTop: '1.4rem', marginBottom: '0.8rem', textTransform: 'none' }}>Tiempo de Estancia</h4>
                       <div className="summary-row">
