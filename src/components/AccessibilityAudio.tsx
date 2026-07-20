@@ -83,8 +83,9 @@ export function AccessibilityAudio({ currentView, bookingStep = 'fecha', contact
     setIsSpeaking(false);
   };
 
-  const startSpeech = (textToSpeak?: string) => {
+  const startSpeech = (textToSpeak?: string, force = false) => {
     if (!synthRef.current) return;
+    if (!hasUserEnabledAuto && !force) return;
 
     synthRef.current.cancel();
 
@@ -109,18 +110,24 @@ export function AccessibilityAudio({ currentView, bookingStep = 'fecha', contact
   };
 
   const toggleAudio = () => {
-    if (isSpeaking) {
+    if (hasUserEnabledAuto || isSpeaking) {
       stopSpeech();
       setHasUserEnabledAuto(false);
+      try {
+        localStorage.setItem('ihm_accessibility_audio', 'false');
+      } catch (e) {}
     } else {
       setHasUserEnabledAuto(true);
-      startSpeech();
+      try {
+        localStorage.setItem('ihm_accessibility_audio', 'true');
+      } catch (e) {}
+      startSpeech(undefined, true);
     }
   };
 
-  // Automatically switch audio narration when view/step changes if narration was already active
+  // Automatically switch audio narration when view/step changes if narration is active
   useEffect(() => {
-    if (hasUserEnabledAuto || isSpeaking) {
+    if (hasUserEnabledAuto) {
       startSpeech();
     }
     // Cleanup on unmount
@@ -129,12 +136,12 @@ export function AccessibilityAudio({ currentView, bookingStep = 'fecha', contact
         synthRef.current.cancel();
       }
     };
-  }, [currentView, bookingStep, contactTab]);
+  }, [currentView, bookingStep, contactTab, hasUserEnabledAuto]);
 
-  // Listen for targeted announcements (modal opens, validation errors, warnings)
+  // Listen for targeted announcements (modal opens, validation errors, warnings) ONLY if narration switch is ON
   useEffect(() => {
     const handleAnnounce = (e: CustomEvent<string>) => {
-      if (e.detail) {
+      if (e.detail && hasUserEnabledAuto) {
         startSpeech(e.detail);
       }
     };
@@ -143,7 +150,7 @@ export function AccessibilityAudio({ currentView, bookingStep = 'fecha', contact
     return () => {
       window.removeEventListener('accessibility-announce' as any, handleAnnounce);
     };
-  }, []);
+  }, [hasUserEnabledAuto]);
 
   return (
     <div className="accessibility-audio-wrapper">

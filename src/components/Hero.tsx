@@ -29,12 +29,6 @@ export function Hero({ onBookingClick }: HeroProps) {
           animate={{ opacity: 1, x: 0 }}
           transition={{ duration: 0.8, delay: 0.15, ease: [0.16, 1, 0.3, 1] }}
         >
-          {/* Live Status Badge */}
-          <div className="hero-status-badge">
-            <span className="hero-status-dot"></span>
-            <span>Recepción & Reservas 24/7</span>
-          </div>
-
           <div className="hero-divider"></div>
           <h2 className="hero-quote">
             Habitaciones limpias y seguras, con un trato cálido que te hará sentir como en casa

@@ -191,6 +191,18 @@
   opacity: 0.9;
 }
 
+.hero-quote::after {
+  content: "\201D";
+  display: inline-block;
+  font-size: 2.5rem;
+  color: var(--color-primary);
+  font-style: normal;
+  line-height: 0;
+  vertical-align: -0.35em;
+  margin-left: 0.2rem;
+  opacity: 0.9;
+}
+
 /* CTA Button with Shimmer Effect */
 .hero-btn {
   position: relative;
