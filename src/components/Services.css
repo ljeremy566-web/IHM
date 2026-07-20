@@ -205,10 +205,9 @@
 
 .service-tag {
   font-size: 0.78rem;
-  color: #787568;
+  color: #151414;
   font-family: var(--font-base);
   font-weight: 500;
-  opacity: 0.75;
   transition: all 0.3s ease;
 }
 
