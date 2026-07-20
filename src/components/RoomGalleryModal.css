@@ -370,6 +370,10 @@
     text-align: center;
   }
 
+  .gallery-footer-hint {
+    display: none;
+  }
+
   .gallery-book-now-btn {
     width: 100%;
   }
