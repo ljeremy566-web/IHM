@@ -135,6 +135,19 @@ function App() {
     setCart(prev => prev.filter(item => item.id !== id));
   };
 
+  const updateCartQuantity = (roomTitle: string, newQuantity: number) => {
+    setCart((prev) => {
+      if (newQuantity <= 0) {
+        return prev.filter(item => item.title.toLowerCase() !== roomTitle.toLowerCase());
+      }
+      return prev.map(item => 
+        item.title.toLowerCase() === roomTitle.toLowerCase()
+          ? { ...item, quantity: newQuantity }
+          : item
+      );
+    });
+  };
+
   const clearCart = () => {
     setCart([]);
     try {
@@ -213,6 +226,7 @@ function App() {
             >
               <Booking 
                 onAddToCart={addToCart} 
+                onUpdateCartQuantity={updateCartQuantity}
                 cart={cart}
                 initialStep={bookingInitialStep}
                 initialCheckoutType={checkoutType}

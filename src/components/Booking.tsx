@@ -213,6 +213,7 @@ interface Room {
 }
 interface BookingProps {
   onAddToCart?: (roomTitle: string, price: number, image: string, quantity: number) => void;
+  onUpdateCartQuantity?: (roomTitle: string, newQuantity: number) => void;
   cart?: CartItem[];
   initialStep?: 'fecha' | 'pago';
   initialCheckoutType?: 'single' | 'cart';
@@ -223,6 +224,7 @@ interface BookingProps {
 
 export function Booking({ 
   onAddToCart, 
+  onUpdateCartQuantity,
   cart = [], 
   initialStep = 'fecha', 
   initialCheckoutType = 'single',
@@ -754,65 +756,97 @@ export function Booking({
 
           {step === 'habitacion' && (
             <div className="room-results-list">
-              {ROOMS.map((room) => (
-                <div key={room.id} className="room-result-card">
-                  {/* Left Column: Image with Hover Overlay */}
-                  <div 
-                    className="room-card-image-col"
-                    onClick={() => handleOpenGallery(room)}
-                    title="Haga clic para ver más fotos de la habitación"
-                  >
-                    <img src={room.image} alt={room.title} className="room-card-image" />
-                    <div className="room-card-image-hover-overlay">
-                      <span>Más detalles del cuarto</span>
-                    </div>
-                    <FaInfoCircle className="room-card-info-icon" title="Ver galería de fotos" />
-                  </div>
+              {ROOMS.map((room) => {
+                const cartItem = cart.find(item => item.title.toLowerCase() === room.title.toLowerCase());
+                const currentQty = cartItem ? cartItem.quantity : 0;
 
-                  {/* Middle Column: Details */}
-                  <div className="room-card-details-col">
-                    <h2 className="room-card-title">{room.title}</h2>
-                    <p className="room-card-desc">{room.desc}</p>
-                    <div className="room-card-footer">
-                      <div className="room-card-icons">
-                        {room.icons.map((icon, idx) => (
-                          <span key={idx} className="room-card-feature-icon">{icon}</span>
-                        ))}
+                return (
+                  <div key={room.id} className="room-result-card">
+                    {/* Left Column: Image with Hover Overlay */}
+                    <div 
+                      className="room-card-image-col"
+                      onClick={() => handleOpenGallery(room)}
+                      title="Haga clic para ver más fotos de la habitación"
+                    >
+                      <img src={room.image} alt={room.title} className="room-card-image" />
+                      <div className="room-card-image-hover-overlay">
+                        <span>Más detalles del cuarto</span>
+                      </div>
+                      <FaInfoCircle className="room-card-info-icon" title="Ver galería de fotos" />
+                    </div>
+
+                    {/* Middle Column: Details */}
+                    <div className="room-card-details-col">
+                      <h2 className="room-card-title">{room.title}</h2>
+                      <p className="room-card-desc">{room.desc}</p>
+                      <div className="room-card-footer">
+                        <div className="room-card-icons">
+                          {room.icons.map((icon, idx) => (
+                            <span key={idx} className="room-card-feature-icon">{icon}</span>
+                          ))}
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Right Column: Price & Actions */}
+                    <div className="room-card-pricing-col">
+                      <div className="room-pricing-info">
+                        <span className="room-status-badge">DISPONIBLE</span>
+                        <div className="room-price-container">
+                          <span className="room-price-value">S/ {room.price}</span>
+                        </div>
+                        <span className="room-urgency-badge">¡Ultimas Habitaciones!</span>
+                        <span className="room-card-availability">
+                          Solo {room.availableCount} habitaciones disponibles
+                        </span>
+                      </div>
+                      <div className="room-card-actions">
+                        <button 
+                          className="room-btn-book" 
+                          type="button"
+                          onClick={() => openModal('book', room)}
+                        >
+                          RESERVA AHORA
+                        </button>
+
+                        {currentQty > 0 ? (
+                          <div className="room-cart-stepper">
+                            <button 
+                              type="button" 
+                              className="stepper-btn stepper-minus"
+                              onClick={() => {
+                                if (onUpdateCartQuantity) {
+                                  onUpdateCartQuantity(room.title, currentQty - 1);
+                                }
+                              }}
+                              title="Reducir cantidad"
+                            >
+                              -
+                            </button>
+                            <span className="stepper-count">{currentQty}</span>
+                            <button 
+                              type="button" 
+                              className="stepper-btn stepper-plus"
+                              onClick={() => openModal('cart', room)}
+                              title="Agregar otra habitación"
+                            >
+                              +
+                            </button>
+                          </div>
+                        ) : (
+                          <button 
+                            className="room-btn-cart" 
+                            type="button"
+                            onClick={() => openModal('cart', room)}
+                          >
+                            AÑADIR AL CARRITO
+                          </button>
+                        )}
                       </div>
                     </div>
                   </div>
-
-                  {/* Right Column: Price & Actions */}
-                  <div className="room-card-pricing-col">
-                    <div className="room-pricing-info">
-                      <span className="room-status-badge">DISPONIBLE</span>
-                      <div className="room-price-container">
-                        <span className="room-price-value">S/ {room.price}</span>
-                      </div>
-                      <span className="room-urgency-badge">¡Ultimas Habitaciones!</span>
-                      <span className="room-card-availability">
-                        Solo {room.availableCount} habitaciones disponibles
-                      </span>
-                    </div>
-                    <div className="room-card-actions">
-                      <button 
-                        className="room-btn-book" 
-                        type="button"
-                        onClick={() => openModal('book', room)}
-                      >
-                        RESERVA AHORA
-                      </button>
-                      <button 
-                        className="room-btn-cart" 
-                        type="button"
-                        onClick={() => openModal('cart', room)}
-                      >
-                        AÑADIR AL CARRITO
-                      </button>
-                    </div>
-                  </div>
-                </div>
-              ))}
+                );
+              })}
             </div>
           )}
 
