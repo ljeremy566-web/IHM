@@ -1,19 +1,17 @@
 .header {
   position: fixed;
   top: 0; left: 0; width: 100%; z-index: 100;
-  background: rgba(21, 20, 20, 0.75);
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
-  padding: 1rem 0;
+  background: #151414;
+  padding: 1.3rem 0;
   transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
   border-bottom: 1px solid rgba(255, 255, 255, 0.05);
 }
 
 .header.header-scrolled {
-  background: rgba(14, 13, 13, 0.94);
+  background: #151414;
   backdrop-filter: blur(18px);
   -webkit-backdrop-filter: blur(18px);
-  padding: 0.55rem 0;
+  padding: 1rem 0;
   box-shadow: 0 4px 30px rgba(0, 0, 0, 0.45);
   border-bottom-color: rgba(255, 255, 255, 0.1);
 }
@@ -101,8 +99,18 @@
     align-items: center;
   }
 
+  .header-container {
+    min-height: 42px;
+  }
+
   .header-hamburger {
     display: flex;
+  }
+
+  .logo {
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
   }
 
   .nav-links {
@@ -114,8 +122,8 @@
   }
 
   .header-btn {
-    padding: 0.5rem 0.6rem;
-    border-radius: 6px;
+    padding: 0.7rem 0.9rem;
+    border-radius: 10px;
     border: 1px solid rgba(255, 255, 255, 0.2);
   }
 
