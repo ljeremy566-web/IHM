@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { motion } from 'motion/react';
 import { FaSearch, FaWifi, FaTv, FaBath, FaWind, FaCoffee } from 'react-icons/fa';
 import './SearchBooking.css';
@@ -20,9 +20,17 @@ interface SearchBookingProps {
 }
 
 export function SearchBooking({ lastBooking, onNavigateHome }: SearchBookingProps) {
-  const [searchCode, setSearchCode] = useState('');
-  const [hasSearched, setHasSearched] = useState(false);
-  const [searchResult, setSearchResult] = useState<BookingDetails | null>(null);
+  const [searchCode, setSearchCode] = useState(() => lastBooking ? lastBooking.code : '');
+  const [hasSearched, setHasSearched] = useState(() => !!lastBooking);
+  const [searchResult, setSearchResult] = useState<BookingDetails | null>(() => lastBooking || null);
+
+  useEffect(() => {
+    if (lastBooking) {
+      setSearchCode(lastBooking.code);
+      setHasSearched(true);
+      setSearchResult(lastBooking);
+    }
+  }, [lastBooking]);
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();

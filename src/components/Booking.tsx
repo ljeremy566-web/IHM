@@ -220,6 +220,8 @@ interface BookingProps {
   onClearCart?: () => void;
   onBookingSuccess?: (details: any) => void;
   onStepChange?: (step: 'fecha' | 'habitacion' | 'pago' | 'finalizado') => void;
+  onViewBooking?: () => void;
+  onNavigateHome?: () => void;
 }
 
 export function Booking({ 
@@ -230,7 +232,9 @@ export function Booking({
   initialCheckoutType = 'single',
   onClearCart,
   onBookingSuccess,
-  onStepChange
+  onStepChange,
+  onViewBooking,
+  onNavigateHome
 }: BookingProps) {
   const [step, setStep] = useState<'fecha' | 'habitacion' | 'pago' | 'finalizado'>('fecha');
   const [checkoutType, setCheckoutType] = useState<'single' | 'cart'>('single');
@@ -1206,20 +1210,20 @@ export function Booking({
                     </div>
                   ) : (
                     <>
-                      <div className={`yape-segmented ${yapeTab === 'qr' ? 'qr-active' : ''}`}>
+                      <div className="yape-segmented">
                         <button 
                           type="button" 
                           className={`yape-seg-btn ${yapeTab === 'num' ? 'active' : ''}`}
                           onClick={() => setYapeTab('num')}
                         >
-                          Numero
+                          Número
                         </button>
                         <button 
                           type="button" 
                           className={`yape-seg-btn ${yapeTab === 'qr' ? 'active' : ''}`}
                           onClick={() => setYapeTab('qr')}
                         >
-                          Codigo QR
+                          Código QR
                         </button>
                       </div>
 
@@ -1439,7 +1443,7 @@ export function Booking({
                 <button 
                   className="success-btn-outline" 
                   type="button"
-                  onClick={() => setStep('fecha')}
+                  onClick={() => window.print()}
                 >
                   <FaDownload className="btn-action-icon" />
                   <span>DESCARGAR</span>
@@ -1447,7 +1451,9 @@ export function Booking({
                 <button 
                   className="success-btn-solid" 
                   type="button"
-                  onClick={() => setStep('fecha')}
+                  onClick={() => {
+                    if (onViewBooking) onViewBooking();
+                  }}
                 >
                   <FaEye className="btn-action-icon" />
                   <span>VER MI RESERVA</span>
@@ -1455,7 +1461,9 @@ export function Booking({
                 <button 
                   className="success-btn-outline" 
                   type="button"
-                  onClick={() => setStep('fecha')}
+                  onClick={() => {
+                    if (onNavigateHome) onNavigateHome();
+                  }}
                 >
                   <FaArrowLeft className="btn-action-icon" />
                   <span>VOLVER</span>

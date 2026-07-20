@@ -232,6 +232,8 @@ function App() {
                 initialCheckoutType={checkoutType}
                 onClearCart={clearCart}
                 onStepChange={setBookingStep}
+                onViewBooking={navigateToSearchBooking}
+                onNavigateHome={navigateToHome}
                 onBookingSuccess={(details) => {
                   setLastBooking(details);
                   if (checkoutType === 'cart') {
