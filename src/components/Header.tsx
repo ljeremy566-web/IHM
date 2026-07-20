@@ -168,9 +168,15 @@ export function Header({
                 <button 
                   type="button" 
                   className="cart-btn-primary"
+                  disabled={cart.length === 0}
                   onClick={() => {
+                    if (cart.length === 0) return;
                     setIsCartOpen(false);
                     onCheckoutCart();
+                  }}
+                  style={{ 
+                    opacity: cart.length === 0 ? 0.5 : 1, 
+                    cursor: cart.length === 0 ? 'not-allowed' : 'pointer' 
                   }}
                 >
                   Continuar

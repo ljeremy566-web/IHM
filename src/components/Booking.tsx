@@ -215,6 +215,7 @@ interface BookingProps {
   cart?: CartItem[];
   initialStep?: 'fecha' | 'pago';
   initialCheckoutType?: 'single' | 'cart';
+  onClearCart?: () => void;
   onBookingSuccess?: (details: any) => void;
 }
 
@@ -223,6 +224,7 @@ export function Booking({
   cart = [], 
   initialStep = 'fecha', 
   initialCheckoutType = 'single',
+  onClearCart,
   onBookingSuccess
 }: BookingProps) {
   const [step, setStep] = useState<'fecha' | 'habitacion' | 'pago' | 'finalizado'>('fecha');
@@ -1142,6 +1144,9 @@ export function Booking({
                           return;
                         }
                         setStep('finalizado');
+                        if (checkoutType === 'cart' && onClearCart) {
+                          onClearCart();
+                        }
                         if (onBookingSuccess) {
                           const room = selectedRoom || ROOMS[1];
                           onBookingSuccess({

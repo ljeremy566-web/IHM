@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { AnimatePresence, motion } from 'motion/react';
 import { Header } from './components/Header';
 import { Hero } from './components/Hero';
@@ -21,37 +21,59 @@ export interface CartItem {
 
 function App() {
   const [currentView, setCurrentView] = useState<'home' | 'booking' | 'contact' | 'searchBooking'>('home');
-  const [cart, setCart] = useState<CartItem[]>([
-    {
-      id: 1,
-      title: 'Habitación simple',
-      image: 'https://images.unsplash.com/photo-1520250497591-112f2f40a3f4?q=80&w=2070&auto=format&fit=crop',
-      price: 70,
-      quantity: 1,
-      nights: 2
-    },
-    {
-      id: 2,
-      title: 'Habitación matrimonial',
-      image: 'https://images.unsplash.com/photo-1611892440504-42a792e24d32?q=80&w=2070&auto=format&fit=crop',
-      price: 90,
-      quantity: 2,
-      nights: 3
-    },
-    {
-      id: 3,
-      title: 'Habitación doble',
-      image: 'https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?q=80&w=2070&auto=format&fit=crop',
-      price: 120,
-      quantity: 1,
-      nights: 1
+  
+  // Initialize cart from localStorage if available, or start empty / mock
+  const [cart, setCart] = useState<CartItem[]>(() => {
+    try {
+      const saved = localStorage.getItem('ihm_cart');
+      if (saved) {
+        const parsed = JSON.parse(saved);
+        if (Array.isArray(parsed)) return parsed;
+      }
+    } catch (e) {
+      console.error('Error loading cart from localStorage:', e);
     }
-  ]);
+    return [
+      {
+        id: 1,
+        title: 'Habitación simple',
+        image: 'https://images.unsplash.com/photo-1520250497591-112f2f40a3f4?q=80&w=2070&auto=format&fit=crop',
+        price: 70,
+        quantity: 1,
+        nights: 1
+      },
+      {
+        id: 2,
+        title: 'Habitación matrimonial',
+        image: 'https://images.unsplash.com/photo-1611892440504-42a792e24d32?q=80&w=2070&auto=format&fit=crop',
+        price: 90,
+        quantity: 1,
+        nights: 1
+      },
+      {
+        id: 3,
+        title: 'Habitación doble',
+        image: 'https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?q=80&w=2070&auto=format&fit=crop',
+        price: 120,
+        quantity: 1,
+        nights: 1
+      }
+    ];
+  });
 
   const [bookingInitialStep, setBookingInitialStep] = useState<'fecha' | 'pago'>('fecha');
   const [checkoutType, setCheckoutType] = useState<'single' | 'cart'>('single');
   const [lastBooking, setLastBooking] = useState<any>(null);
   const [contactTab, setContactTab] = useState<string>('contacto');
+
+  // Save cart to localStorage on any state change
+  useEffect(() => {
+    try {
+      localStorage.setItem('ihm_cart', JSON.stringify(cart));
+    } catch (e) {
+      console.error('Error saving cart to localStorage:', e);
+    }
+  }, [cart]);
 
   const navigateToHome = () => {
     setCurrentView('home');
@@ -101,12 +123,21 @@ function App() {
             : item
         );
       }
-      return [...prev, { id: Date.now(), title: roomTitle, price, image, quantity }];
+      return [...prev, { id: Date.now(), title: roomTitle, price, image, quantity, nights: 1 }];
     });
   };
 
   const removeFromCart = (id: number) => {
     setCart(prev => prev.filter(item => item.id !== id));
+  };
+
+  const clearCart = () => {
+    setCart([]);
+    try {
+      localStorage.removeItem('ihm_cart');
+    } catch (e) {
+      console.error('Error removing cart from localStorage:', e);
+    }
   };
 
   const pageVariants = {
@@ -178,7 +209,13 @@ function App() {
                 cart={cart}
                 initialStep={bookingInitialStep}
                 initialCheckoutType={checkoutType}
-                onBookingSuccess={(details) => setLastBooking(details)}
+                onClearCart={clearCart}
+                onBookingSuccess={(details) => {
+                  setLastBooking(details);
+                  if (checkoutType === 'cart') {
+                    clearCart();
+                  }
+                }}
               />
             </motion.div>
           )}
