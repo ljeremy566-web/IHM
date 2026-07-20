@@ -1011,7 +1011,7 @@ export function Booking({
                 {checkoutType === 'cart' ? (
                   <div className="payment-summary-card">
                     <div className="summary-header">
-                      <h2 style={{ fontSize: '1.4rem', color: '#151414', fontFamily: 'var(--font-condensed)', fontWeight: '700' }}>Resumen de los gastos</h2>
+                      <h2 style={{ fontSize: '1.3rem', color: 'var(--color-brown)', fontFamily: 'var(--font-condensed)', fontWeight: '700' }}>Resumen de los gastos</h2>
                       <div className="cart-modal-divider" style={{ margin: '0.8rem 0' }}></div>
                     </div>
                     
@@ -1084,12 +1084,10 @@ export function Booking({
                         <span>Total de noches</span>
                         <span style={{ fontWeight: '800' }}>{nights}</span>
                       </div>
-                      <div className="summary-row" style={{ fontSize: '0.78rem', color: '#8f8d87', border: 'none', marginTop: '-0.5rem', marginBottom: '1.2rem' }}>
-                        <span>({formatDateForDisplay(fechaLlegada)} - {formatDateForDisplay(fechaSalida)})</span>
-                      </div>
+
                       
                       <div className="summary-total-row" style={{ borderTop: '1px solid #d5d3cc', paddingTop: '1.2rem' }}>
-                        <span style={{ fontSize: '1rem', fontWeight: '800' }}>Total a pagar</span>
+                        <span style={{ fontSize: '1.15rem', fontWeight: '700' }}>TOTAL A PAGAR</span>
                         <span className="total-price-highlight" style={{ fontSize: '1.6rem' }}>S/ {totalVal.toFixed(2)}</span>
                       </div>
                     </div>

@@ -405,7 +405,7 @@ export function SearchBooking({ lastBooking, onNavigateHome, onNavigateContact }
                     className="btn-solid-brown" 
                     onClick={() => window.print()}
                   >
-                    Imprimir
+                    Descargar
                   </button>
                   <button 
                     type="button" 

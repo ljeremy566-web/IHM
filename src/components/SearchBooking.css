@@ -254,13 +254,13 @@
 .search-result-actions-row {
   display: flex;
   gap: 1rem;
-  justify-content: flex-end;
+  justify-content: center;
   width: 100%;
 }
 
 .btn-outline-brown,
 .btn-solid-brown {
-  height: 44px;
+  height: 56px;
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -276,8 +276,8 @@
   text-align: center;
   white-space: nowrap;
   flex: 1;
-  max-width: 180px; /* Equalized width */
-  min-width: 140px; /* Equalized width */
+  max-width: 250px;
+  min-width: 180px;
 }
 
 .btn-outline-brown {
