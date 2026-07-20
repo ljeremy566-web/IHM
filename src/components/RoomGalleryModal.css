@@ -118,6 +118,9 @@
   background: #09090b;
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
   user-select: none;
+  /* Fix safari/chrome overflow-hidden clipping with border-radius & transform bug */
+  isolation: isolate;
+  transform: translate3d(0, 0, 0);
 }
 
 .gallery-main-image {
@@ -135,12 +138,10 @@
 /* Bottom Hover Overlay with Context Message */
 .gallery-hover-overlay {
   position: absolute;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  background: rgba(0, 0, 0, 0.92);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
+  bottom: -2px;
+  left: -2px;
+  right: -2px;
+  background: #111010; /* Solid premium dark background to prevent subpixel bleed */
   border-top: 1px solid rgba(255, 255, 255, 0.12);
   padding: 1rem 1.4rem;
   transform: translateY(100%);
@@ -148,6 +149,9 @@
   transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.35s ease;
   z-index: 10;
   pointer-events: none;
+  /* No rounded corners on the overlay itself so it completely covers the image in the corners, letting the parent's overflow: hidden handle the clipping */
+  border-bottom-left-radius: 0;
+  border-bottom-right-radius: 0;
 }
 
 .gallery-main-slide-container:hover .gallery-hover-overlay {
