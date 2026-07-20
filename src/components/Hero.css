@@ -13,7 +13,7 @@
   content: "";
   position: absolute;
   inset: 0;
-  background-image: url('https://images.unsplash.com/photo-1542314831-068cd1dbfeeb?q=80&w=2070&auto=format&fit=crop');
+  background-image: url('../img/hero.png');
   background-size: cover;
   background-position: center;
   filter: blur(2px);
@@ -23,20 +23,23 @@
 }
 
 @keyframes hero-zoom {
-  from { transform: scale(1.06); }
-  to   { transform: scale(1.12); }
+  from {
+    transform: scale(1.06);
+  }
+
+  to {
+    transform: scale(1.12);
+  }
 }
 
 /* Overlay: rich dark directional gradient for maximum text & logo contrast */
 .hero-overlay {
   position: absolute;
   inset: 0;
-  background: linear-gradient(
-    105deg,
-    rgba(10, 9, 9, 0.92) 0%,
-    rgba(15, 14, 14, 0.78) 50%,
-    rgba(15, 14, 14, 0.62) 100%
-  );
+  background: linear-gradient(105deg,
+      rgba(10, 9, 9, 0.92) 0%,
+      rgba(15, 14, 14, 0.78) 20%,
+      rgba(15, 14, 14, 0.62) 50%);
   z-index: 1;
 }
 
@@ -65,8 +68,15 @@
 }
 
 @keyframes hero-fade-in {
-  from { opacity: 0; transform: translateY(20px); }
-  to   { opacity: 1; transform: translateY(0); }
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 /* ── Logo ── */
@@ -77,6 +87,63 @@
   display: block;
   filter: drop-shadow(0 4px 24px rgba(0, 0, 0, 0.55));
   flex-shrink: 0;
+}
+
+/* Live Status Badge */
+.hero-status-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.65rem;
+  background: rgba(255, 255, 255, 0.08);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  padding: 0.45rem 1.1rem;
+  border-radius: 30px;
+  color: #ffffff;
+  font-family: var(--font-condensed);
+  font-size: 0.85rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  margin-bottom: 1.2rem;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.25);
+  transition: all 0.3s ease;
+}
+
+.hero-status-badge:hover {
+  background: rgba(255, 255, 255, 0.14);
+  border-color: rgba(255, 255, 255, 0.3);
+  transform: translateY(-1px);
+}
+
+.hero-status-dot {
+  width: 9px;
+  height: 9px;
+  background-color: #10b981;
+  border-radius: 50%;
+  position: relative;
+  box-shadow: 0 0 8px #10b981;
+}
+
+.hero-status-dot::after {
+  content: '';
+  position: absolute;
+  inset: -3px;
+  border-radius: 50%;
+  border: 2px solid #10b981;
+  animation: pulse-dot-ring 2s cubic-bezier(0.25, 1, 0.5, 1) infinite;
+}
+
+@keyframes pulse-dot-ring {
+  0% {
+    transform: scale(0.8);
+    opacity: 0.9;
+  }
+
+  100% {
+    transform: scale(2.2);
+    opacity: 0;
+  }
 }
 
 /* ── Right panel ── */
@@ -124,8 +191,9 @@
   opacity: 0.9;
 }
 
-/* CTA Button */
+/* CTA Button with Shimmer Effect */
 .hero-btn {
+  position: relative;
   background-color: var(--color-primary);
   color: var(--color-light);
   font-size: calc(var(--text-base) * 0.85);
@@ -140,7 +208,27 @@
     0 6px 24px rgba(179, 0, 6, 0.45),
     inset 0 1px 0 rgba(255, 255, 255, 0.1);
   cursor: pointer;
+  overflow: hidden;
   transition: background-color 0.25s ease, transform 0.15s ease, box-shadow 0.25s ease;
+}
+
+.hero-btn-shimmer::before {
+  content: '';
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: linear-gradient(60deg,
+      transparent 30%,
+      rgba(255, 255, 255, 0.25) 50%,
+      transparent 70%);
+  transform: rotate(30deg) translateY(-100%);
+  transition: transform 0.65s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.hero-btn-shimmer:hover::before {
+  transform: rotate(30deg) translateY(100%);
 }
 
 .hero-btn:hover {
@@ -152,7 +240,7 @@
 }
 
 .hero-btn:active {
-  transform: translateY(0) scale(0.98);
+  transform: translateY(0) scale(0.97);
   box-shadow: 0 4px 14px rgba(179, 0, 6, 0.35);
 }
 
@@ -162,7 +250,10 @@
     height: 72vh;
     min-height: 500px;
   }
-  .hero-logo-img { height: 170px; }
+
+  .hero-logo-img {
+    height: 170px;
+  }
 }
 
 @media (max-width: 820px) {
@@ -173,11 +264,9 @@
   }
 
   .hero-overlay {
-    background: linear-gradient(
-      180deg,
-      rgba(21, 20, 20, 0.78) 0%,
-      rgba(21, 20, 20, 0.55) 100%
-    );
+    background: linear-gradient(180deg,
+        rgba(21, 20, 20, 0.78) 0%,
+        rgba(21, 20, 20, 0.55) 100%);
   }
 
   .hero-container {
@@ -186,7 +275,9 @@
     gap: 2rem;
   }
 
-  .hero-logo-img { height: 140px; }
+  .hero-logo-img {
+    height: 140px;
+  }
 
   .hero-right {
     align-items: center;
@@ -194,7 +285,10 @@
     max-width: 90%;
   }
 
-  .hero-divider { margin-left: auto; margin-right: auto; }
+  .hero-divider {
+    margin-left: auto;
+    margin-right: auto;
+  }
 
   .hero-quote {
     font-size: var(--text-h4);
@@ -210,7 +304,15 @@
 }
 
 @media (max-width: 390px) {
-  .hero { padding: 4rem 0 3rem; }
-  .hero-logo-img { height: 110px; }
-  .hero-quote { font-size: var(--text-base); }
+  .hero {
+    padding: 4rem 0 3rem;
+  }
+
+  .hero-logo-img {
+    height: 110px;
+  }
+
+  .hero-quote {
+    font-size: var(--text-base);
+  }
 }

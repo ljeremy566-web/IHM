@@ -75,7 +75,7 @@
   font-weight: 700;
   cursor: pointer;
   border: 1px solid rgba(255, 255, 255, 0.1);
-  transition: all 0.3s cubic-bezier(0.32, 0.72, 0, 1);
+  transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
   box-shadow: 0 4px 15px rgba(21, 20, 20, 0.2);
   white-space: nowrap;
 }
@@ -86,8 +86,14 @@
   box-shadow: 0 6px 20px rgba(21, 20, 20, 0.3);
 }
 
+.search-submit-btn:focus-visible {
+  outline: 2px solid var(--color-brown);
+  outline-offset: 3px;
+}
+
 .search-submit-btn:active {
-  transform: scale(0.96);
+  transform: scale(0.98);
+  box-shadow: 0 2px 8px rgba(21, 20, 20, 0.15);
 }
 
 /* ── Results Area ── */

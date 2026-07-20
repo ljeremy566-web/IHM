@@ -1,3 +1,4 @@
+import { motion } from 'motion/react';
 import logoKin from '../img/fbdfdabe-d455-4f4a-a1b9-a1799a8b2768.png';
 import './Hero.css';
 
@@ -12,18 +13,36 @@ export function Hero({ onBookingClick }: HeroProps) {
       <div className="container hero-container">
 
         {/* Logo — left side */}
-        <img src={logoKin} alt="Hostal KIN" className="hero-logo-img" />
+        <motion.img
+          src={logoKin}
+          alt="Hostal KIN"
+          className="hero-logo-img"
+          initial={{ opacity: 0, x: -30 }}
+          animate={{ opacity: 1, x: 0 }}
+          transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
+        />
 
         {/* Quote + CTA — right side */}
-        <div className="hero-right">
+        <motion.div
+          className="hero-right"
+          initial={{ opacity: 0, x: 30 }}
+          animate={{ opacity: 1, x: 0 }}
+          transition={{ duration: 0.8, delay: 0.15, ease: [0.16, 1, 0.3, 1] }}
+        >
+          {/* Live Status Badge */}
+          <div className="hero-status-badge">
+            <span className="hero-status-dot"></span>
+            <span>Recepción & Reservas 24/7</span>
+          </div>
+
           <div className="hero-divider"></div>
           <h2 className="hero-quote">
             Habitaciones limpias y seguras, con un trato cálido que te hará sentir como en casa
           </h2>
-          <button className="hero-btn" onClick={onBookingClick}>
+          <button className="hero-btn hero-btn-shimmer" onClick={onBookingClick}>
             Reserva Ahora
           </button>
-        </div>
+        </motion.div>
 
       </div>
     </section>

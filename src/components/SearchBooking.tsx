@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { motion } from 'motion/react';
 import { FaSearch, FaWifi, FaTv, FaBath, FaWind, FaCoffee } from 'react-icons/fa';
 import './SearchBooking.css';
 
@@ -141,26 +142,41 @@ export function SearchBooking({ lastBooking, onNavigateHome }: SearchBookingProp
           )}
 
           {hasSearched && !searchResult && (
-            <div className="search-no-results-card fade-in">
+            <motion.div 
+              className="search-no-results-card"
+              initial={{ opacity: 0, y: 12 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.45, ease: [0.16, 1, 0.3, 1] }}
+            >
               <h3>No se encontraron resultados</h3>
               <p>Por favor verifique que el código ingresado sea el correcto e inténtelo de nuevo.</p>
-            </div>
+            </motion.div>
           )}
 
           {hasSearched && searchResult && (
-            <div className="search-result-container-card fade-in">
+            <div className="search-result-container-card">
               <div className="search-result-main-layout">
                 {/* Left Side: Image */}
-                <div className="search-result-image-wrapper">
+                <motion.div 
+                  className="search-result-image-wrapper"
+                  initial={{ opacity: 0, y: 16 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.5, delay: 0, ease: [0.16, 1, 0.3, 1] }}
+                >
                   <img 
                     src={searchResult.roomImage} 
                     alt={searchResult.roomTitle} 
                     className="search-result-room-image" 
                   />
-                </div>
+                </motion.div>
 
                 {/* Right Side: Details */}
-                <div className="search-result-details-wrapper">
+                <motion.div 
+                  className="search-result-details-wrapper"
+                  initial={{ opacity: 0, y: 16 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.5, delay: 0.08, ease: [0.16, 1, 0.3, 1] }}
+                >
                   <h2 className="search-result-room-title">{searchResult.roomTitle}</h2>
                   <p className="search-result-room-desc">{searchResult.roomDesc}</p>
 
@@ -210,7 +226,7 @@ export function SearchBooking({ lastBooking, onNavigateHome }: SearchBookingProp
                       Ayuda
                     </button>
                   </div>
-                </div>
+                </motion.div>
               </div>
             </div>
           )}

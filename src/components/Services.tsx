@@ -1,9 +1,16 @@
+import { motion } from 'motion/react';
 import { FaWifi, FaWarehouse, FaTag, FaBath, FaInfoCircle } from 'react-icons/fa';
 import './Services.css';
 
 export function Services() {
   return (
-    <section className="services container">
+    <motion.section 
+      className="services container"
+      initial={{ opacity: 0, y: 30 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true, amount: 0.2 }}
+      transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
+    >
       <h2 className="services-title">Nuestros servicios</h2>
       <p className="services-subtitle">Contamos con una gran diversidad de servicios disponibles para hacer su estadía mas cómoda</p>
 
@@ -60,6 +67,6 @@ export function Services() {
           </ul>
         </div>
       </div>
-    </section>
+    </motion.section>
   );
 }

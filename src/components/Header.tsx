@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { FaShoppingCart, FaBars, FaBed, FaCalendarAlt, FaTrashAlt } from 'react-icons/fa';
 import type { CartItem } from '../App';
 import logoKin from '../img/fbdfdabe-d455-4f4a-a1b9-a1799a8b2768.png';
@@ -27,9 +27,29 @@ export function Header({
 }: HeaderProps) {
   const [isCartOpen, setIsCartOpen] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
+  const [scrolled, setScrolled] = useState(false);
+  const [cartBumped, setCartBumped] = useState(false);
+
+  const totalItems = cart.reduce((sum, item) => sum + item.quantity, 0);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      setScrolled(window.scrollY > 20);
+    };
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
+
+  useEffect(() => {
+    if (totalItems > 0) {
+      setCartBumped(true);
+      const timer = setTimeout(() => setCartBumped(false), 350);
+      return () => clearTimeout(timer);
+    }
+  }, [totalItems]);
 
   return (
-    <header className="header">
+    <header className={`header ${scrolled ? 'header-scrolled' : ''}`}>
       <div className="container header-container">
         <button className="header-hamburger" onClick={() => setMenuOpen(!menuOpen)} aria-label="Menu">
           <FaBars size={20} />
@@ -71,12 +91,15 @@ export function Header({
         </nav>
         
         <div className="header-btn-wrapper" style={{ position: 'relative' }}>
-          <button className="header-btn" onClick={() => setIsCartOpen(!isCartOpen)}>
+          <button 
+            className={`header-btn ${cartBumped ? 'cart-bump' : ''}`} 
+            onClick={() => setIsCartOpen(!isCartOpen)}
+          >
             <FaShoppingCart size={14} />
             <span className="header-btn-text">Mis Reservas</span>
-            {cart.length > 0 && (
+            {totalItems > 0 && (
               <span className="cart-badge">
-                {cart.reduce((sum, item) => sum + item.quantity, 0)}
+                {totalItems}
               </span>
             )}
           </button>

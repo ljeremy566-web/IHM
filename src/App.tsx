@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { AnimatePresence, motion } from 'motion/react';
 import { Header } from './components/Header';
 import { Hero } from './components/Hero';
 import { Divider } from './components/Divider';
@@ -108,6 +109,32 @@ function App() {
     setCart(prev => prev.filter(item => item.id !== id));
   };
 
+  const pageVariants = {
+    initial: {
+      opacity: 0,
+      y: 16,
+      scale: 0.99
+    },
+    animate: {
+      opacity: 1,
+      y: 0,
+      scale: 1,
+      transition: {
+        duration: 0.4,
+        ease: [0.16, 1, 0.3, 1] as const
+      }
+    },
+    exit: {
+      opacity: 0,
+      y: -12,
+      scale: 0.99,
+      transition: {
+        duration: 0.25,
+        ease: [0.16, 1, 0.3, 1] as const
+      }
+    }
+  };
+
   return (
     <div className="app">
       <Header 
@@ -120,33 +147,67 @@ function App() {
         onRemoveFromCart={removeFromCart}
         onCheckoutCart={handleCheckoutCart}
       />
-      <main style={{ minHeight: '80vh' }}>
-        {currentView === 'home' && (
-          <>
-            <Hero onBookingClick={navigateToBooking} />
-            <Divider />
-            <Services />
-            <Divider />
-            <Rooms />
-            <Divider />
-          </>
-        )}
-        {currentView === 'booking' && (
-          <Booking 
-            onAddToCart={addToCart} 
-            cart={cart}
-            initialStep={bookingInitialStep}
-            initialCheckoutType={checkoutType}
-            onBookingSuccess={(details) => setLastBooking(details)}
-          />
-        )}
-        {currentView === 'contact' && <Contact initialTab={contactTab} />}
-        {currentView === 'searchBooking' && (
-          <SearchBooking 
-            lastBooking={lastBooking} 
-            onNavigateHome={navigateToHome} 
-          />
-        )}
+      <main style={{ minHeight: '80vh', overflowX: 'hidden', paddingTop: currentView === 'home' ? 0 : '75px' }}>
+        <AnimatePresence mode="wait">
+          {currentView === 'home' && (
+            <motion.div
+              key="home"
+              variants={pageVariants}
+              initial="initial"
+              animate="animate"
+              exit="exit"
+            >
+              <Hero onBookingClick={navigateToBooking} />
+              <Divider />
+              <Services />
+              <Divider />
+              <Rooms />
+              <Divider />
+            </motion.div>
+          )}
+          {currentView === 'booking' && (
+            <motion.div
+              key="booking"
+              variants={pageVariants}
+              initial="initial"
+              animate="animate"
+              exit="exit"
+            >
+              <Booking 
+                onAddToCart={addToCart} 
+                cart={cart}
+                initialStep={bookingInitialStep}
+                initialCheckoutType={checkoutType}
+                onBookingSuccess={(details) => setLastBooking(details)}
+              />
+            </motion.div>
+          )}
+          {currentView === 'contact' && (
+            <motion.div
+              key="contact"
+              variants={pageVariants}
+              initial="initial"
+              animate="animate"
+              exit="exit"
+            >
+              <Contact initialTab={contactTab} />
+            </motion.div>
+          )}
+          {currentView === 'searchBooking' && (
+            <motion.div
+              key="searchBooking"
+              variants={pageVariants}
+              initial="initial"
+              animate="animate"
+              exit="exit"
+            >
+              <SearchBooking 
+                lastBooking={lastBooking} 
+                onNavigateHome={navigateToHome} 
+              />
+            </motion.div>
+          )}
+        </AnimatePresence>
       </main>
       <Footer 
         onNavigateHome={navigateToHome}

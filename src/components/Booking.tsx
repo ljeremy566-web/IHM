@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import type { ReactNode } from 'react';
+import { motion } from 'motion/react';
 import { 
   FaWifi, 
   FaTv, 
@@ -8,12 +9,126 @@ import {
   FaCoffee, 
   FaSearch, 
   FaInfoCircle,
-  FaUserFriends
+  FaUserFriends,
+  FaDownload,
+  FaEye,
+  FaArrowLeft,
+  FaCheckCircle
 } from 'react-icons/fa';
 import type { CartItem } from '../App';
 import DatePicker from './DatePicker';
 import { RoomGalleryModal, type RoomGalleryData } from './RoomGalleryModal';
+import yapeImg from '../img/logo-yape.png';
 import './Booking.css';
+
+
+
+const CardLogosSVG = () => (
+  <div style={{ display: 'flex', alignItems: 'center', gap: '3px' }}>
+    <svg width="26" height="16" viewBox="0 0 50 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <rect width="50" height="32" rx="4" fill="#1A1F71"/>
+      <path d="M19.8 22H16.7L18.6 10H21.7L19.8 22ZM33.5 10.3C32.9 10.1 32 9.9 30.9 9.9C27.6 9.9 25.3 11.6 25.3 14C25.3 15.8 26.9 16.8 28.2 17.4C29.5 18 29.9 18.4 29.9 19C29.9 19.9 28.8 20.3 27.7 20.3C26.1 20.3 25.2 20 24.4 19.6L23.9 21.9C24.8 22.3 26.4 22.6 28 22.6C31.5 22.6 33.8 20.9 33.8 18.4C33.8 16.9 32.8 15.7 30.7 14.7C29.5 14.1 28.8 13.7 28.8 13.1C28.8 12.5 29.5 12 30.8 12C31.8 12 32.6 12.2 33.2 12.5L33.5 10.3ZM41.4 10H38.9C38.1 10 37.5 10.2 37.2 11L32.7 22H35.9L36.5 20.2H40.5L40.9 22H43.7L41.4 10ZM37.4 17.8L39 13.2L39.9 17.8H37.4ZM15.5 10L12.5 18.2L12.1 16.3C11.6 14.6 10.1 12.7 8.3 11.7L11.1 22H14.4L19.4 10H15.5Z" fill="white"/>
+    </svg>
+    <svg width="26" height="16" viewBox="0 0 50 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <rect width="50" height="32" rx="4" fill="#0A0A0A"/>
+      <circle cx="20" cy="16" r="9" fill="#EB001B"/>
+      <circle cx="30" cy="16" r="9" fill="#F79E1B" fillOpacity="0.88"/>
+    </svg>
+  </div>
+);
+
+const RealisticQRCode = () => {
+  const qrModules = [
+    [1,1,1,1,1,1,1,0,1,0,1,1,0,1,0,1,1,1,1,1,1,1,1,0,1,1,1,1,1],
+    [1,0,0,0,0,0,1,0,0,1,0,0,1,0,1,0,0,0,0,0,0,1,1,0,1,0,0,0,1],
+    [1,0,1,1,1,0,1,0,1,0,1,0,0,1,0,1,1,1,1,1,0,1,1,0,1,0,1,0,1],
+    [1,0,1,1,1,0,1,0,0,1,1,1,0,0,1,0,1,1,1,1,0,1,1,0,1,0,1,0,1],
+    [1,0,1,1,1,0,1,0,1,0,0,1,1,1,0,1,1,1,1,1,0,1,1,0,1,0,1,0,1],
+    [1,0,0,0,0,0,1,0,1,1,0,0,1,0,1,0,0,0,0,0,0,1,1,0,1,0,0,0,1],
+    [1,1,1,1,1,1,1,0,1,0,1,0,1,0,1,0,1,1,1,1,1,1,1,0,1,1,1,1,1],
+    [0,0,0,0,0,0,0,0,0,1,0,1,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+    [1,1,0,1,0,1,1,1,1,0,1,0,1,1,0,1,1,0,1,1,1,1,0,1,1,0,1,1,1],
+    [0,1,1,0,1,0,0,0,1,1,0,0,1,0,1,0,0,1,0,1,0,0,1,0,0,1,0,0,1],
+    [1,0,1,1,0,1,1,0,0,1,0,1,0,1,1,1,0,1,1,0,1,1,0,1,1,0,1,0,1],
+    [1,1,0,0,1,0,1,1,1,0,1,0,0,0,0,0,1,0,0,1,0,0,1,0,0,1,0,1,0],
+    [0,0,1,1,0,1,0,0,0,1,0,0,0,0,0,0,0,1,1,0,1,1,0,1,0,0,1,0,1],
+    [1,0,0,1,1,0,1,1,1,0,1,0,0,0,0,0,0,0,1,0,1,0,1,0,1,1,0,1,0],
+    [0,1,1,0,0,1,0,0,0,1,0,1,0,0,0,0,0,1,0,1,0,1,0,1,0,0,1,0,1],
+    [1,0,1,1,1,0,1,1,1,0,1,0,0,0,0,0,1,0,1,0,1,0,1,0,1,1,0,1,0],
+    [0,1,0,0,1,1,0,0,0,1,0,0,1,1,0,1,0,1,0,1,0,1,0,1,0,0,1,0,1],
+    [1,1,0,1,0,0,1,1,1,0,1,0,1,0,1,0,1,0,1,0,1,0,1,0,1,1,0,1,0],
+    [0,0,0,0,0,0,0,0,1,1,0,1,0,1,0,1,0,1,0,1,1,0,0,1,0,0,1,0,1],
+    [1,1,1,1,1,1,1,0,1,0,1,0,1,0,1,0,1,0,1,0,0,1,1,0,1,1,0,1,0],
+    [1,0,0,0,0,0,1,0,0,1,0,1,0,1,0,1,0,1,0,1,1,0,1,0,0,0,1,0,1],
+    [1,0,1,1,1,0,1,0,1,0,1,0,1,0,1,0,1,0,1,0,1,1,0,1,1,0,1,1,0],
+    [1,0,1,1,1,0,1,0,0,1,0,1,0,1,0,1,0,1,0,1,0,0,1,0,0,1,0,0,1],
+    [1,0,1,1,1,0,1,0,1,0,1,0,1,0,1,0,1,0,1,0,1,1,0,1,1,0,1,1,0],
+    [1,0,0,0,0,0,1,0,1,1,0,1,0,1,0,1,0,1,0,1,0,0,1,0,0,1,0,0,1],
+    [1,1,1,1,1,1,1,0,0,1,1,0,1,0,1,0,1,0,1,0,1,1,0,1,1,0,1,1,0]
+  ];
+
+  return (
+    <div className="real-qr-card">
+      <div className="real-qr-header" style={{ background: '#742284' }}>
+        <span className="real-qr-header-title">ESCANEA Y YAPEA AQUÍ</span>
+        <span className="real-qr-header-subtitle">HOSTAL KIN S.A.C.</span>
+      </div>
+
+      <div className="real-qr-canvas-wrapper">
+        <svg className="real-qr-svg" viewBox="0 0 29 29" shapeRendering="crispEdges">
+          <rect width="29" height="29" fill="#FFFFFF" />
+          {qrModules.map((row, rIdx) =>
+            row.map((cell, cIdx) => {
+              if (rIdx >= 11 && rIdx <= 17 && cIdx >= 11 && cIdx <= 17) {
+                return null;
+              }
+              return cell === 1 ? (
+                <rect
+                  key={`${rIdx}-${cIdx}`}
+                  x={cIdx}
+                  y={rIdx}
+                  width="1"
+                  height="1"
+                  fill="#151414"
+                />
+              ) : null;
+            })
+          )}
+        </svg>
+
+        <div className="real-qr-center-badge" style={{ borderColor: '#742284' }}>
+          <img src={yapeImg} alt="Yape Logo" style={{ width: '38px', height: '38px', objectFit: 'contain' }} />
+        </div>
+      </div>
+
+      <div className="real-qr-details">
+        <div className="qr-detail-row">
+          <span className="qr-detail-label">Titular:</span>
+          <span className="qr-detail-val">Hostal Kin S.A.C.</span>
+        </div>
+        <div className="qr-detail-row">
+          <span className="qr-detail-label">Número:</span>
+          <span className="qr-detail-val">940 930 037</span>
+        </div>
+      </div>
+
+      <div className="real-qr-steps">
+        <div className="qr-step">
+          <span className="qr-step-num" style={{ background: '#742284' }}>1</span>
+          <span>Abre tu app Yape</span>
+        </div>
+        <div className="qr-step">
+          <span className="qr-step-num" style={{ background: '#742284' }}>2</span>
+          <span>Escanea el código QR</span>
+        </div>
+        <div className="qr-step">
+          <span className="qr-step-num" style={{ background: '#742284' }}>3</span>
+          <span>Confirma el pago</span>
+        </div>
+      </div>
+    </div>
+  );
+};
 
 const ROOM_GALLERIES: Record<number, { url: string; category: string; caption: string }[]> = {
   1: [
@@ -191,6 +306,15 @@ export function Booking({
 
   // Success states
   const [copied, setCopied] = useState(false);
+  const [codeRevealed, setCodeRevealed] = useState(false);
+  const BOOKING_CODE = '9XY384-586KLM';
+
+  useEffect(() => {
+    if (step === 'finalizado' && !codeRevealed) {
+      const timer = setTimeout(() => setCodeRevealed(true), 600);
+      return () => clearTimeout(timer);
+    }
+  }, [step, codeRevealed]);
 
   const openModal = (type: 'book' | 'cart', room: Room) => {
     setModalType(type);
@@ -588,14 +712,16 @@ export function Booking({
                         className={`method-logo-btn ${paymentMethod === 'card' ? 'active' : ''}`}
                         onClick={() => setPaymentMethod('card')}
                       >
+                        <CardLogosSVG />
                         <span className="method-btn-text">Tarjeta</span>
                       </button>
                       <button 
                         type="button" 
-                        className={`method-logo-btn ${paymentMethod === 'yape' ? 'active' : ''}`}
+                        className={`method-logo-btn method-yape-btn ${paymentMethod === 'yape' ? 'active' : ''}`}
                         onClick={() => setPaymentMethod('yape')}
                       >
-                        <span className="yape-pill-text">yape</span>
+                        <img src={yapeImg} alt="Yape" style={{ height: '32px', width: 'auto', objectFit: 'contain' }} />
+                        <span className="method-btn-text">Yape</span>
                       </button>
                     </div>
                   </div>
@@ -668,37 +794,16 @@ export function Booking({
 
                       {yapeTab === 'qr' ? (
                         <div className="yape-qr-content">
-                          <p className="yape-instruction">Escanee el codigo QR y complete el pago</p>
-                          <div className="yape-qr-box">
-                            <svg className="yape-qr-svg" viewBox="0 0 100 100">
-                              <rect width="100" height="100" fill="white" />
-                              {/* QR Code corners */}
-                              <rect x="10" y="10" width="25" height="25" fill="#151414" />
-                              <rect x="15" y="15" width="15" height="15" fill="white" />
-                              <rect x="18" y="18" width="9" height="9" fill="#151414" />
-                              
-                              <rect x="65" y="10" width="25" height="25" fill="#151414" />
-                              <rect x="70" y="15" width="15" height="15" fill="white" />
-                              <rect x="73" y="18" width="9" height="9" fill="#151414" />
-                              
-                              <rect x="10" y="65" width="25" height="25" fill="#151414" />
-                              <rect x="15" y="70" width="15" height="15" fill="white" />
-                              <rect x="18" y="73" width="9" height="9" fill="#151414" />
-                              
-                              {/* QR Code random points */}
-                              <rect x="45" y="20" width="10" height="10" fill="#151414" />
-                              <rect x="40" y="40" width="20" height="20" fill="#151414" />
-                              <rect x="45" y="45" width="10" height="10" fill="white" />
-                              <rect x="75" y="45" width="10" height="15" fill="#151414" />
-                              <rect x="15" y="45" width="15" height="10" fill="#151414" />
-                              <rect x="70" y="70" width="15" height="15" fill="#151414" />
-                              <rect x="75" y="75" width="5" height="5" fill="white" />
-                            </svg>
-                          </div>
+                          <p className="yape-instruction">
+                            Escanee el código QR con su app de Yape y complete el pago
+                          </p>
+                          <RealisticQRCode />
                         </div>
                       ) : (
                         <div className="yape-num-content">
-                          <h4 className="yape-num-heading">Ingresa tu numero de telefono</h4>
+                          <h4 className="yape-num-heading">
+                            Ingresa tu numero de telefono para pago con Yape
+                          </h4>
                           
                           <div className="form-field">
                             <label>Telefono</label>
@@ -764,69 +869,147 @@ export function Booking({
           })()}
 
           {step === 'finalizado' && (
-            <div className="success-container-card success-fade-in">
-              <div className="success-icon-wrapper check-draw">
+            <motion.div 
+              className="success-container-card"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
+            >
+              {/* Success Icon — Checkmark with Pulse Halo */}
+              <motion.div 
+                className="success-icon-wrapper"
+                initial={{ opacity: 0, scale: 0.5 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{ duration: 0.6, delay: 0.1, type: "spring", stiffness: 120, damping: 14 }}
+              >
+                <div className="success-circle-halo"></div>
                 <div className="success-circle">
                   <svg className="success-checkmark" viewBox="0 0 52 52">
                     <circle className="success-checkmark-circle" cx="26" cy="26" r="25" fill="none" />
                     <path className="success-checkmark-check" fill="none" d="M14.1 27.2l7.1 7.2 16.7-16.8" />
                   </svg>
                 </div>
-              </div>
+              </motion.div>
 
-              <h2 className="success-title text-stagger">Reserva Exitosa</h2>
+              {/* Badge */}
+              <motion.div 
+                className="success-header-badge"
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.4, delay: 0.35, ease: [0.16, 1, 0.3, 1] }}
+              >
+                RESERVA CONFIRMADA
+              </motion.div>
+
+              {/* Title */}
+              <motion.h2 
+                className="success-title"
+                initial={{ opacity: 0, y: 14 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.45, delay: 0.45, ease: [0.16, 1, 0.3, 1] }}
+              >
+                Reserva exitosa
+              </motion.h2>
               
-              <div className="success-code-box text-stagger">
-                <span className="code-box-label">Tu codigo de reserva es</span>
-                <span className="code-box-value">9XY384-586KLM</span>
+              {/* Code Box with Typewriter */}
+              <motion.div 
+                className={`success-code-box ${copied ? 'code-box-copied' : ''}`}
+                initial={{ opacity: 0, y: 14 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.45, delay: 0.55, ease: [0.16, 1, 0.3, 1] }}
+              >
+                <span className="code-box-label">Tu código de reserva es</span>
+                <span className="code-box-value" aria-label={BOOKING_CODE}>
+                  {BOOKING_CODE.split('').map((char, i) => (
+                    <span 
+                      key={i} 
+                      className="code-char"
+                      style={{ animationDelay: codeRevealed ? `${i * 50}ms` : '0ms', opacity: codeRevealed ? undefined : 0 }}
+                    >
+                      {char}
+                    </span>
+                  ))}
+                </span>
                 <button 
                   type="button" 
                   className={`copy-code-btn ${copied ? 'copied' : ''}`}
+                  aria-label="Copiar código de reserva"
                   onClick={() => {
-                    navigator.clipboard.writeText('9XY384-586KLM');
+                    navigator.clipboard.writeText(BOOKING_CODE);
                     setCopied(true);
-                    setTimeout(() => setCopied(false), 2000);
+                    setTimeout(() => setCopied(false), 2200);
                   }}
                 >
-                  <svg className="copy-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                    <rect x="9" y="9" width="13" height="13" rx="2" ry="2" />
-                    <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1" />
-                  </svg>
-                  <span>{copied ? '¡Copiado!' : 'Copiar código'}</span>
+                  {copied ? (
+                    <>
+                      <FaCheckCircle className="copy-icon" />
+                      <span>Copiado</span>
+                    </>
+                  ) : (
+                    <>
+                      <svg className="copy-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                        <rect x="9" y="9" width="13" height="13" rx="2" ry="2" />
+                        <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1" />
+                      </svg>
+                      <span>Copiar código</span>
+                    </>
+                  )}
                 </button>
-              </div>
+              </motion.div>
 
-              <p className="success-description text-stagger">
-                Con este codigo podras visualizar los detalles de tu reserva
-              </p>
-              <p className="success-urgency-note text-stagger">
-                ¡No lo olvides!
-              </p>
+              {/* Description */}
+              <motion.p 
+                className="success-description"
+                initial={{ opacity: 0, y: 12 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.4, delay: 0.7, ease: [0.16, 1, 0.3, 1] }}
+              >
+                Con este código podrás visualizar los detalles de tu reserva
+              </motion.p>
 
-              <div className="success-actions-row buttons-stagger">
+              {/* Urgency Note */}
+              <motion.p 
+                className="success-urgency-note"
+                initial={{ opacity: 0, y: 12 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.4, delay: 0.8, ease: [0.16, 1, 0.3, 1] }}
+              >
+                Conserve este código de reserva
+              </motion.p>
+
+              {/* Action Buttons */}
+              <motion.div 
+                className="success-actions-row"
+                initial={{ opacity: 0, y: 14 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.45, delay: 0.9, ease: [0.16, 1, 0.3, 1] }}
+              >
                 <button 
                   className="success-btn-outline" 
                   type="button"
                   onClick={() => setStep('fecha')}
                 >
-                  Descargar
+                  <FaDownload className="btn-action-icon" />
+                  <span>DESCARGAR</span>
                 </button>
                 <button 
                   className="success-btn-solid" 
                   type="button"
                   onClick={() => setStep('fecha')}
                 >
-                  Ver mi reserva
+                  <FaEye className="btn-action-icon" />
+                  <span>VER MI RESERVA</span>
                 </button>
                 <button 
                   className="success-btn-outline" 
                   type="button"
                   onClick={() => setStep('fecha')}
                 >
-                  Volver
+                  <FaArrowLeft className="btn-action-icon" />
+                  <span>VOLVER</span>
                 </button>
-              </div>
-            </div>
+              </motion.div>
+            </motion.div>
           )}
         </div>
       </div>
