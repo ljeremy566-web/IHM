@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { FaFacebookF, FaTwitter, FaTiktok, FaInstagram } from 'react-icons/fa';
+import logoKin from '../img/fbdfdabe-d455-4f4a-a1b9-a1799a8b2768.png';
 import './Footer.css';
 
 const QUICK_LINKS = [
@@ -63,7 +64,7 @@ export function Footer({
     <footer className="footer">
       <div className="container footer-container">
         <div className="footer-col brand-col footer-brand-col">
-          <h3 className="footer-logo">HOSTAL KIN</h3>
+          <img src={logoKin} alt="Hostal KIN" className="footer-logo-img" />
           <p className="footer-desc">
             Nos dedicamos a ofrecer servicios de hospedaje y alojamiento turístico. Nuestro principal objetivo es brindar a cada huésped una experiencia cómoda, organizada y llena de detalles que marcan la diferencia.
           </p>

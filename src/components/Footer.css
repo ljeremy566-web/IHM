@@ -7,6 +7,9 @@
 .footer-logo {
   font-family: var(--font-elegant); font-size: var(--text-h3); letter-spacing: 1px; margin-bottom: 0.5rem; color: var(--color-light);
 }
+.footer-logo-img {
+  height: 56px; width: auto; object-fit: contain; display: block; margin-bottom: 0.75rem;
+}
 .footer-desc {
   font-size: calc(var(--text-base) * 0.8); font-family: var(--font-base); line-height: 1.4;
   margin-bottom: 1.5rem; max-width: 350px; color: var(--color-light); opacity: 0.8;

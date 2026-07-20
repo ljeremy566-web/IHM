@@ -9,6 +9,7 @@ import {
   FaTiktok,
   FaDownload 
 } from 'react-icons/fa';
+import logoKin from '../img/fbdfdabe-d455-4f4a-a1b9-a1799a8b2768.png';
 import './Contact.css';
 
 type TabType = 'sobre-nosotros' | 'contacto' | 'cancelacion' | 'privacidad' | 'preguntas';
@@ -51,12 +52,7 @@ export function Contact({ initialTab = 'contacto' }: ContactProps) {
             </p>
             
             <div className="about-logo-wrapper">
-              <div className="about-logo">
-                <div className="about-logo-mark">
-                  <span className="about-logo-symbol">K</span>
-                </div>
-                <span className="about-logo-text">KIN</span>
-              </div>
+              <img src={logoKin} alt="Hostal KIN" className="about-logo-img" />
             </div>
           </div>
         );

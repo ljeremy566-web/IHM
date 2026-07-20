@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { FaShoppingCart, FaBars, FaBed, FaCalendarAlt, FaTrashAlt } from 'react-icons/fa';
 import type { CartItem } from '../App';
+import logoKin from '../img/fbdfdabe-d455-4f4a-a1b9-a1799a8b2768.png';
 import './Header.css';
 
 interface HeaderProps {
@@ -35,10 +36,7 @@ export function Header({
         </button>
 
         <div className="logo" onClick={onNavigateHome} style={{ cursor: 'pointer' }}>
-          <div className="logo-mark">
-            <span className="logo-symbol">K</span>
-          </div>
-          <span className="logo-text">KIN</span>
+          <img src={logoKin} alt="Hostal KIN" className="logo-img" />
         </div>
 
         <nav className="nav-links">

@@ -242,6 +242,13 @@
   margin-top: 3.5rem;
 }
 
+.about-logo-img {
+  height: 120px;
+  width: auto;
+  object-fit: contain;
+  display: block;
+}
+
 .about-logo {
   display: flex;
   align-items: center;
