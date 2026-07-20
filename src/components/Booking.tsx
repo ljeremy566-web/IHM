@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import type { ReactNode } from 'react';
 import { motion } from 'motion/react';
 import { 
@@ -23,6 +23,58 @@ import DatePicker from './DatePicker';
 import { RoomGalleryModal, type RoomGalleryData } from './RoomGalleryModal';
 import yapeImg from '../img/logo-yape.png';
 import './Booking.css';
+
+function numeroALetras(num: number): string {
+  const unidades = ['CERO', 'UNO', 'DOS', 'TRES', 'CUATRO', 'CINCO', 'SEIS', 'SIETE', 'OCHO', 'NUEVE'];
+  const decenas = ['', 'DIEZ', 'VEINTE', 'TREINTA', 'CUARENTA', 'CINCUENTA', 'SESENTA', 'SETENTA', 'OCHENTA', 'NOVENTA'];
+  const especiales = {
+    11: 'ONCE', 12: 'DOCE', 13: 'TRECE', 14: 'CATORCE', 15: 'QUINCE',
+    16: 'DIECISEIS', 17: 'DIECISIETE', 18: 'DIECIOCHO', 19: 'DIECINUEVE',
+    21: 'VEINTIUNO', 22: 'VEINTIDOS', 23: 'VEINTITRES', 24: 'VEINTICUATRO',
+    25: 'VEINTICINCO', 26: 'VEINTISEIS', 27: 'VEINTISIETE', 28: 'VEINTIOCHO', 29: 'VEINTINUEVE'
+  };
+  const centenas = ['', 'CIENTO', 'DOSCIENTOS', 'TRESCIENTOS', 'CUATROCIENTOS', 'QUINIENTOS', 'SEISCIENTOS', 'SIETECIENTOS', 'OCHOCIENTOS', 'NOVECIENTOS'];
+
+  const entero = Math.floor(num);
+  const centavos = Math.round((num - entero) * 100);
+
+  let letras = '';
+
+  if (entero === 100) {
+    letras = 'CIEN';
+  } else if (entero < 10) {
+    letras = unidades[entero];
+  } else if (entero < 30) {
+    letras = (especiales as any)[entero] || (decenas[Math.floor(entero / 10)] + ' Y ' + unidades[entero % 10]);
+  } else if (entero < 100) {
+    const d = Math.floor(entero / 10);
+    const u = entero % 10;
+    letras = decenas[d] + (u > 0 ? ' Y ' + unidades[u] : '');
+  } else if (entero < 1000) {
+    const c = Math.floor(entero / 100);
+    const resto = entero % 100;
+    let restoStr = '';
+    if (resto > 0) {
+      if (resto < 10) restoStr = ' ' + unidades[resto];
+      else if (resto < 30) restoStr = ' ' + ((especiales as any)[resto] || (decenas[Math.floor(resto / 10)] + ' Y ' + unidades[resto % 10]));
+      else {
+        const d = Math.floor(resto / 10);
+        const u = resto % 10;
+        restoStr = ' ' + decenas[d] + (u > 0 ? ' Y ' + unidades[u] : '');
+      }
+    }
+    letras = centenas[c] + restoStr;
+  } else if (entero < 1000000) {
+    const m = Math.floor(entero / 1000);
+    const resto = entero % 1000;
+    const miles = m === 1 ? 'MIL' : numeroALetras(m).split(' Y ')[0] + ' MIL';
+    letras = miles + (resto > 0 ? ' ' + numeroALetras(resto).split(' Y ')[0] : '');
+  } else {
+    letras = 'CIENTO';
+  }
+
+  return `${letras} Y ${centavos.toString().padStart(2, '0')}/100 SOLES`;
+}
 
 
 
@@ -211,6 +263,52 @@ interface Room {
   availableCount: number;
   icons: ReactNode[];
 }
+
+const ROOMS: Room[] = [
+  {
+    id: 1,
+    title: "Habitación Simple",
+    desc: "Pensada para quienes buscan comodidad y funcionalidad, nuestra Habitación Simple ofrece un espacio acogedor y bien equipado para disfrutar de una estadía tranquila. Perfecta para viajeros solos o estancias cortas.",
+    image: "https://images.unsplash.com/photo-1520250497591-112f2f40a3f4?q=80&w=2070&auto=format&fit=crop",
+    price: "70.00",
+    availableCount: 10,
+    icons: [
+      <FaWifi key="wifi" title="Wi-Fi de alta velocidad" />,
+      <FaTv key="tv" title="Televisor LED" />,
+      <FaBath key="bath" title="Ducha con agua caliente" />
+    ]
+  },
+  {
+    id: 2,
+    title: "Habitación Matrimonial",
+    desc: "Diseñada para ofrecer confort y privacidad, nuestra Habitación Matrimonial es el espacio perfecto para parejas o viajeros que buscan un ambiente acogedor y relajante. Ideal para disfrutar de momentos de descanso.",
+    image: "https://images.unsplash.com/photo-1611892440504-42a792e24d32?q=80&w=2070&auto=format&fit=crop",
+    price: "90.00",
+    availableCount: 10,
+    icons: [
+      <FaWifi key="wifi" title="Wi-Fi de alta velocidad" />,
+      <FaTv key="tv" title="Televisor LED" />,
+      <FaBath key="bath" title="Ducha con agua caliente" />,
+      <FaWind key="wind" title="Aire acondicionado" />
+    ]
+  },
+  {
+    id: 3,
+    title: "Habitación Doble",
+    desc: "Nuestra Habitación Doble está diseñada para ofrecer comodidad y amplitud, ideal para dos o hasta tres personas que buscan un espacio acogedor y funcional ya sea para amigos, familiares o pequeños grupos que viajan juntos.",
+    image: "https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?q=80&w=2070&auto=format&fit=crop",
+    price: "120.00",
+    availableCount: 10,
+    icons: [
+      <FaWifi key="wifi" title="Wi-Fi de alta velocidad" />,
+      <FaTv key="tv" title="Televisor LED" />,
+      <FaBath key="bath" title="Ducha con agua caliente" />,
+      <FaWind key="wind" title="Aire acondicionado" />,
+      <FaCoffee key="coffee" title="Cafetera / Desayuno" />
+    ]
+  }
+];
+
 interface BookingProps {
   onAddToCart?: (roomTitle: string, price: number, image: string, quantity: number) => void;
   onUpdateCartQuantity?: (roomTitle: string, newQuantity: number) => void;
@@ -314,6 +412,72 @@ export function Booking({
   const [formSubmitted, setFormSubmitted] = useState(false);
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [expandedItems, setExpandedItems] = useState<Record<number, boolean>>({});
+
+  const nights = useMemo(() => {
+    if (!fechaLlegada || !fechaSalida) return 1;
+    return Math.max(1, Math.ceil(
+      (new Date(fechaSalida).getTime() - new Date(fechaLlegada).getTime()) / (1000 * 60 * 60 * 24)
+    ));
+  }, [fechaLlegada, fechaSalida]);
+
+  const totalVal = useMemo(() => {
+    if (checkoutType === 'cart') {
+      const sumPerNight = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+      return sumPerNight * nights;
+    } else {
+      const room = selectedRoom || ROOMS[1];
+      const priceVal = parseFloat(room.price);
+      return priceVal * nights;
+    }
+  }, [checkoutType, cart, selectedRoom, nights]);
+
+  const [currentBoletaCode, setCurrentBoletaCode] = useState('');
+  const [boletaDate, setBoletaDate] = useState('');
+  const [lastSaleDetails, setLastSaleDetails] = useState<{
+    items: { title: string; price: number; quantity: number }[];
+    total: number;
+    nights: number;
+    payerName: string;
+    payerDocId: string;
+    payerDocType: string;
+    boletaCode: string;
+    boletaDate: string;
+  } | null>(null);
+
+  const loadHtml2Pdf = (): Promise<any> => {
+    return new Promise((resolve) => {
+      if ((window as any).html2pdf) {
+        resolve((window as any).html2pdf);
+        return;
+      }
+      const script = document.createElement('script');
+      script.src = 'https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js';
+      script.onload = () => resolve((window as any).html2pdf);
+      document.body.appendChild(script);
+    });
+  };
+
+  const generateBoletaPDF = async () => {
+    const html2pdf = await loadHtml2Pdf();
+    const element = document.getElementById('boleta-pdf-template');
+    if (!element) return;
+
+    const opt = {
+      margin: 0.3,
+      filename: `Boleta_${currentBoletaCode || 'EB01-138'}.pdf`,
+      image: { type: 'jpeg', quality: 0.98 },
+      html2canvas: { 
+        scale: 2.5, 
+        useCORS: true, 
+        logging: false,
+        scrollY: 0,
+        scrollX: 0
+      },
+      jsPDF: { unit: 'in', format: 'letter', orientation: 'portrait' }
+    };
+
+    html2pdf().set(opt).from(element).save();
+  };
 
   const toggleExpandItem = (id: number) => {
     setExpandedItems(prev => ({ ...prev, [id]: !prev[id] }));
@@ -613,51 +777,6 @@ export function Booking({
     setStep('habitacion');
   };
 
-  const ROOMS: Room[] = [
-    {
-      id: 1,
-      title: "Habitación Simple",
-      desc: "Pensada para quienes buscan comodidad y funcionalidad, nuestra Habitación Simple ofrece un espacio acogedor y bien equipado para disfrutar de una estadía tranquila. Perfecta para viajeros solos o estancias cortas.",
-      image: "https://images.unsplash.com/photo-1520250497591-112f2f40a3f4?q=80&w=2070&auto=format&fit=crop",
-      price: "70.00",
-      availableCount: 10,
-      icons: [
-        <FaWifi key="wifi" title="Wi-Fi de alta velocidad" />,
-        <FaTv key="tv" title="Televisor LED" />,
-        <FaBath key="bath" title="Ducha con agua caliente" />
-      ]
-    },
-    {
-      id: 2,
-      title: "Habitación Matrimonial",
-      desc: "Diseñada para ofrecer confort y privacidad, nuestra Habitación Matrimonial es el espacio perfecto para parejas o viajeros que buscan un ambiente acogedor y relajante. Ideal para disfrutar de momentos de descanso.",
-      image: "https://images.unsplash.com/photo-1611892440504-42a792e24d32?q=80&w=2070&auto=format&fit=crop",
-      price: "90.00",
-      availableCount: 10,
-      icons: [
-        <FaWifi key="wifi" title="Wi-Fi de alta velocidad" />,
-        <FaTv key="tv" title="Televisor LED" />,
-        <FaBath key="bath" title="Ducha con agua caliente" />,
-        <FaWind key="wind" title="Aire acondicionado" />
-      ]
-    },
-    {
-      id: 3,
-      title: "Habitación Doble",
-      desc: "Nuestra Habitación Doble está diseñada para ofrecer comodidad y amplitud, ideal para dos o hasta tres personas que buscan un espacio acogedor y funcional ya sea para amigos, familiares o pequeños grupos que viajan juntos.",
-      image: "https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?q=80&w=2070&auto=format&fit=crop",
-      price: "120.00",
-      availableCount: 10,
-      icons: [
-        <FaWifi key="wifi" title="Wi-Fi de alta velocidad" />,
-        <FaTv key="tv" title="Televisor LED" />,
-        <FaBath key="bath" title="Ducha con agua caliente" />,
-        <FaWind key="wind" title="Aire acondicionado" />,
-        <FaCoffee key="coffee" title="Cafetera / Desayuno" />
-      ]
-    }
-  ];
-
   return (
     <div className="booking-page">
       {/* Hero Section */}
@@ -856,21 +975,6 @@ export function Booking({
 
           {step === 'pago' && (() => {
             const room = selectedRoom || ROOMS[1];
-            const nights = fechaLlegada && fechaSalida
-              ? Math.max(1, Math.ceil(
-                  (new Date(fechaSalida).getTime() - new Date(fechaLlegada).getTime()) / (1000 * 60 * 60 * 24)
-                ))
-              : 1;
-            let totalVal = 0;
-            let sumPerNight = 0;
-
-            if (checkoutType === 'cart') {
-              sumPerNight = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
-              totalVal = sumPerNight * nights;
-            } else {
-              const priceVal = parseFloat(room.price);
-              totalVal = priceVal * nights;
-            }
             
             return (
               <div className="payment-step-wrapper fade-in">
@@ -1285,64 +1389,115 @@ export function Booking({
                     </>
                   )}
 
-                  {!(paymentMethod === 'yape' && yapeTab === 'qr') && (
-                    <button 
-                      type="button" 
-                      className="pay-now-btn"
-                      onClick={() => {
-                        setFormSubmitted(true);
-                        if (!validateAll()) {
-                          return;
-                        }
-                        setStep('finalizado');
-                        if (checkoutType === 'cart' && onClearCart) {
-                          onClearCart();
-                        }
-                        if (onBookingSuccess) {
-                          let bookedRooms = [];
-                          if (checkoutType === 'cart' && cart.length > 0) {
-                            bookedRooms = cart.map(item => {
-                              const matchedRoom = ROOMS.find(r => r.title.toLowerCase() === item.title.toLowerCase());
-                              return {
-                                id: item.id,
-                                title: item.title,
-                                desc: matchedRoom ? matchedRoom.desc : 'Pensada para ofrecer máximo confort y todas las comodidades.',
-                                image: item.image,
-                                price: item.price,
-                                quantity: item.quantity,
-                                nights: nights
-                              };
-                            });
-                          } else {
-                            const room = selectedRoom || ROOMS[1];
-                            bookedRooms = [{
-                              id: room.id,
-                              title: room.title,
-                              desc: room.desc,
-                              image: room.image,
-                              price: parseFloat(room.price),
-                              quantity: 1,
-                              nights: nights
-                            }];
-                          }
+                  {/* Render payment/pay now button for all payment options */}
+                  <button 
+                    type="button" 
+                    className="pay-now-btn"
+                    onClick={() => {
+                      setFormSubmitted(true);
+                      if (!validateAll()) {
+                        return;
+                      }
 
-                          onBookingSuccess({
-                            code: '9XY384-586KLM',
-                            checkIn: formatDateForDisplay(fechaLlegada) || '20/10/2025',
-                            checkOut: formatDateForDisplay(fechaSalida) || '25/10/2025',
-                            guests: huespedes.filter(h => h.trim()).length > 0 ? huespedes.filter(h => h.trim()) : ['Jorge Gonzalo Nina Retamozo'],
-                            total: totalVal,
-                            rooms: bookedRooms,
-                            roomTitle: bookedRooms[0]?.title || 'Habitación Matrimonial',
-                            roomDesc: bookedRooms[0]?.desc || '',
-                            roomImage: bookedRooms[0]?.image || ''
+                      const checkoutNights = nights;
+                      const checkoutTotal = totalVal;
+                      const checkoutPayerName = name || 'Jorge Gonzalo Nina Retamozo';
+                      const checkoutPayerDocId = docId || '002788537';
+                      const checkoutPayerDocType = docType || 'DNI';
+
+                      let checkoutItems: { title: string; price: number; quantity: number }[] = [];
+                      if (checkoutType === 'cart' && cart.length > 0) {
+                        checkoutItems = cart.map(item => ({
+                          title: item.title,
+                          price: item.price,
+                          quantity: item.quantity
+                        }));
+                      } else {
+                        const room = selectedRoom || ROOMS[1];
+                        checkoutItems = [{
+                          title: room.title,
+                          price: parseFloat(room.price),
+                          quantity: 1
+                        }];
+                      }
+
+                      // Increment boleta counter
+                      const currentNumStr = localStorage.getItem('ihm_boleta_number');
+                      const currentNum = currentNumStr ? parseInt(currentNumStr) : 137;
+                      const nextNum = currentNum + 1;
+                      localStorage.setItem('ihm_boleta_number', nextNum.toString());
+                      const fullBoletaNum = `EB01-${String(nextNum).padStart(3, '0')}`;
+                      setCurrentBoletaCode(fullBoletaNum);
+
+                      const now = new Date();
+                      const currentFormattedDate = `${now.toLocaleDateString('es-PE')} ${now.toLocaleTimeString('es-PE')}`;
+                      setBoletaDate(currentFormattedDate);
+
+                      setLastSaleDetails({
+                        items: checkoutItems,
+                        total: checkoutTotal,
+                        nights: checkoutNights,
+                        payerName: checkoutPayerName,
+                        payerDocId: checkoutPayerDocId,
+                        payerDocType: checkoutPayerDocType,
+                        boletaCode: fullBoletaNum,
+                        boletaDate: currentFormattedDate
+                      });
+
+                      setStep('finalizado');
+                      if (checkoutType === 'cart' && onClearCart) {
+                        onClearCart();
+                      }
+                      if (onBookingSuccess) {
+                        let bookedRooms = [];
+                        if (checkoutType === 'cart' && cart.length > 0) {
+                          bookedRooms = cart.map(item => {
+                            const matchedRoom = ROOMS.find(r => r.title.toLowerCase() === item.title.toLowerCase());
+                            return {
+                              id: item.id,
+                              title: item.title,
+                              desc: matchedRoom ? matchedRoom.desc : 'Pensada para ofrecer máximo confort y todas las comodidades.',
+                              image: item.image,
+                              price: item.price,
+                              quantity: item.quantity,
+                              nights: nights
+                            };
                           });
+                        } else {
+                          const room = selectedRoom || ROOMS[1];
+                          bookedRooms = [{
+                            id: room.id,
+                            title: room.title,
+                            desc: room.desc,
+                            image: room.image,
+                            price: parseFloat(room.price),
+                            quantity: 1,
+                            nights: nights
+                          }];
                         }
-                      }}
-                    >
-                      Pagar S/{totalVal.toFixed(0)}
-                    </button>
-                  )}
+
+                        onBookingSuccess({
+                          code: '9XY384-586KLM',
+                          checkIn: formatDateForDisplay(fechaLlegada) || '20/10/2025',
+                          checkOut: formatDateForDisplay(fechaSalida) || '25/10/2025',
+                          guests: huespedes.filter(h => h.trim()).length > 0 ? huespedes.filter(h => h.trim()) : ['Jorge Gonzalo Nina Retamozo'],
+                          total: totalVal,
+                          rooms: bookedRooms,
+                          roomTitle: bookedRooms[0]?.title || 'Habitación Matrimonial',
+                          roomDesc: bookedRooms[0]?.desc || '',
+                          roomImage: bookedRooms[0]?.image || '',
+                          payerName: name || 'Jorge Gonzalo Nina Retamozo',
+                          payerDocId: docId || '002788537',
+                          payerDocType: docType || 'DNI',
+                          phone: phone || '',
+                          email: email || '',
+                          paymentMethod: paymentMethod
+                        });
+                      }
+                    }}
+                  >
+                    {paymentMethod === 'yape' && yapeTab === 'qr' ? 'Confirmar Pago Yape' : `Pagar S/ ${totalVal.toFixed(0)}`}
+                  </button>
                 </div>
               </div>
             </div>
@@ -1468,7 +1623,7 @@ export function Booking({
                 <button 
                   className="success-btn-outline" 
                   type="button"
-                  onClick={() => window.print()}
+                  onClick={generateBoletaPDF}
                 >
                   <FaDownload className="btn-action-icon" />
                   <span>DESCARGAR</span>
@@ -1555,6 +1710,222 @@ export function Booking({
           if (found) openModal('book', found);
         }}
       />
+
+      {/* Hidden container using overflow:hidden (avoids opacity:0 capturing issues in html2canvas) */}
+      <div style={{ overflow: 'hidden', height: 0, width: 0, position: 'absolute', top: 0, left: 0 }}>
+        <div 
+          id="boleta-pdf-template" 
+          style={{ 
+            width: '740px', 
+            padding: '1.2rem', 
+            background: '#ffffff', 
+            color: '#000000',
+            fontFamily: 'system-ui, -apple-system, sans-serif',
+            fontSize: '11.5px',
+            lineHeight: '1.25',
+            boxSizing: 'border-box'
+          }}
+        >
+          {/* Main border box */}
+          <div style={{ border: '1.5px solid #000000', padding: '1rem', minHeight: '600px', position: 'relative', boxSizing: 'border-box' }}>
+            
+            {/* Header section */}
+            <table style={{ width: '100%', borderCollapse: 'collapse', marginBottom: '0.6rem', color: '#000000' }}>
+              <tbody>
+                <tr>
+                  <td style={{ width: '60%', verticalAlign: 'top' }}>
+                    <div style={{ fontWeight: 'bold', fontSize: '14px', marginBottom: '0.1rem' }}>HOSTAL KIN</div>
+                    <div style={{ fontWeight: 'bold', fontSize: '11px', marginBottom: '0.4rem' }}>HOSTAL KIN S.A.C.</div>
+                    <div style={{ fontSize: '10px', color: '#000000', lineHeight: '1.3' }}>
+                      MZ. A LT. 1 EL BOSQUE
+                      <br />
+                      NUEVO CHIMBOTE - ANCASH - PERU
+                    </div>
+                  </td>
+                  <td style={{ width: '40%', verticalAlign: 'top', paddingLeft: '1rem' }}>
+                    <div style={{ border: '1.5px solid #000000', borderRadius: '2px', padding: '0.6rem', textAlign: 'center' }}>
+                      <div style={{ fontWeight: 'bold', fontSize: '10px', letterSpacing: '0.5px' }}>BOLETA DE VENTA ELECTRONICA</div>
+                      <div style={{ fontWeight: 'bold', fontSize: '11px', margin: '0.2rem 0' }}>RUC: 20609476941</div>
+                      <div style={{ fontWeight: 'bold', fontSize: '12px' }}>{lastSaleDetails?.boletaCode || currentBoletaCode || 'EB01-138'}</div>
+                    </div>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+
+            {/* Separator Line */}
+            <hr style={{ border: 'none', borderTop: '1.5px solid #000000', margin: '0.5rem 0' }} />
+
+            {/* Metadata / Payer details */}
+            <table style={{ width: '100%', borderCollapse: 'collapse', marginBottom: '0.8rem', color: '#000000', fontSize: '11px' }}>
+              <tbody>
+                <tr>
+                  <td style={{ width: '135px', padding: '1px 0' }}>Fecha de Vencimiento</td>
+                  <td style={{ width: '15px', textAlign: 'center' }}>:</td>
+                  <td>-</td>
+                </tr>
+                <tr>
+                  <td style={{ padding: '1px 0' }}>Fecha de Emisión</td>
+                  <td style={{ textAlign: 'center' }}>:</td>
+                  <td style={{ fontWeight: 'bold' }}>{lastSaleDetails?.boletaDate || boletaDate || new Date().toLocaleString('es-PE')}</td>
+                </tr>
+                <tr>
+                  <td style={{ padding: '1px 0' }}>Señor(es)</td>
+                  <td style={{ textAlign: 'center' }}>:</td>
+                  <td style={{ fontWeight: 'bold', textTransform: 'uppercase' }}>{lastSaleDetails?.payerName || name || 'Jorge Gonzalo Nina Retamozo'}</td>
+                </tr>
+                <tr>
+                  <td style={{ padding: '1px 0' }}>{lastSaleDetails?.payerDocType || docType || 'DNI'}</td>
+                  <td style={{ textAlign: 'center' }}>:</td>
+                  <td style={{ fontWeight: 'bold' }}>{lastSaleDetails?.payerDocId || docId || '002788537'}</td>
+                </tr>
+                <tr>
+                  <td style={{ padding: '1px 0' }}>Tipo de Moneda</td>
+                  <td style={{ textAlign: 'center' }}>:</td>
+                  <td style={{ fontWeight: 'bold' }}>SOLES</td>
+                </tr>
+                <tr>
+                  <td style={{ padding: '1px 0' }}>Observación</td>
+                  <td style={{ textAlign: 'center' }}>:</td>
+                  <td>-</td>
+                </tr>
+              </tbody>
+            </table>
+
+            {/* Main Items Table */}
+            <table style={{ width: '100%', borderCollapse: 'collapse', marginBottom: '0.8rem', color: '#000000', fontSize: '11px' }}>
+              <thead>
+                <tr style={{ borderBottom: '1px solid #000000', borderTop: '1px solid #000000' }}>
+                  <th style={{ textAlign: 'right', padding: '0.2rem 0.4rem', width: '10%', fontWeight: 'bold' }}>Cantidad</th>
+                  <th style={{ textAlign: 'center', padding: '0.2rem 0.4rem', width: '15%', fontWeight: 'bold' }}>Unidad Medida</th>
+                  <th style={{ textAlign: 'left', padding: '0.2rem 0.4rem', width: '45%', fontWeight: 'bold' }}>Descripción</th>
+                  <th style={{ textAlign: 'right', padding: '0.2rem 0.4rem', width: '12%', fontWeight: 'bold' }}>Valor Unitario(*)</th>
+                  <th style={{ textAlign: 'right', padding: '0.2rem 0.4rem', width: '8%', fontWeight: 'bold' }}>Descuento(*)</th>
+                  <th style={{ textAlign: 'right', padding: '0.2rem 0.4rem', width: '10%', fontWeight: 'bold' }}>Importe de Venta(**)</th>
+                </tr>
+              </thead>
+              <tbody>
+                {(() => {
+                  const itemsToRender = lastSaleDetails?.items || [];
+                  const checkoutNights = lastSaleDetails?.nights || 1;
+                  
+                  if (itemsToRender.length > 0) {
+                    return itemsToRender.map((item, idx) => {
+                      const itemTotal = item.price * item.quantity * checkoutNights;
+                      const unitVal = (item.price * checkoutNights) / 1.18;
+                      return (
+                        <tr key={idx}>
+                          <td style={{ textAlign: 'right', padding: '0.2rem 0.4rem' }}>{item.quantity.toFixed(2)}</td>
+                          <td style={{ textAlign: 'center', padding: '0.2rem 0.4rem' }}>UNIDAD</td>
+                          <td style={{ textAlign: 'left', padding: '0.2rem 0.4rem', textTransform: 'uppercase' }}>{item.title} - {checkoutNights} {checkoutNights === 1 ? 'NOCHE' : 'NOCHES'}</td>
+                          <td style={{ textAlign: 'right', padding: '0.2rem 0.4rem' }}>{unitVal.toFixed(5)}</td>
+                          <td style={{ textAlign: 'right', padding: '0.2rem 0.4rem' }}>0.00</td>
+                          <td style={{ textAlign: 'right', padding: '0.2rem 0.4rem' }}>{itemTotal.toFixed(2)}</td>
+                        </tr>
+                      );
+                    });
+                  } else {
+                    const room = selectedRoom || ROOMS[1];
+                    const roomTotal = parseFloat(room.price) * checkoutNights;
+                    const unitVal = roomTotal / 1.18;
+                    return (
+                      <tr>
+                        <td style={{ textAlign: 'right', padding: '0.2rem 0.4rem' }}>1.00</td>
+                        <td style={{ textAlign: 'center', padding: '0.2rem 0.4rem' }}>UNIDAD</td>
+                        <td style={{ textAlign: 'left', padding: '0.2rem 0.4rem', textTransform: 'uppercase' }}>{room.title} - {checkoutNights} {checkoutNights === 1 ? 'NOCHE' : 'NOCHES'}</td>
+                        <td style={{ textAlign: 'right', padding: '0.2rem 0.4rem' }}>{unitVal.toFixed(5)}</td>
+                        <td style={{ textAlign: 'right', padding: '0.2rem 0.4rem' }}>0.00</td>
+                        <td style={{ textAlign: 'right', padding: '0.2rem 0.4rem' }}>{roomTotal.toFixed(2)}</td>
+                      </tr>
+                    );
+                  }
+                })()}
+              </tbody>
+            </table>
+
+            {/* Separator line after table */}
+            <hr style={{ border: 'none', borderTop: '1.5px solid #000000', margin: '0.4rem 0' }} />
+
+            {/* Tax info & Total Summary Grid */}
+            <table style={{ width: '100%', borderCollapse: 'collapse', color: '#000000', fontSize: '11px' }}>
+              <tbody>
+                <tr>
+                  <td style={{ width: '60%', verticalAlign: 'top' }}>
+                    <div style={{ fontSize: '9.5px', color: '#000000', marginBottom: '0.5rem', lineHeight: '1.3' }}>
+                      (*) Sin impuestos.
+                      <br />
+                      (**) Incluye impuestos, de ser Op. Gravada.
+                    </div>
+                    <div style={{ fontWeight: 'bold', fontSize: '10.5px' }}>
+                      SON: {numeroALetras(lastSaleDetails?.total || totalVal)}
+                    </div>
+                  </td>
+                  <td style={{ width: '40%', verticalAlign: 'top' }}>
+                    <table style={{ width: '100%', borderCollapse: 'collapse' }}>
+                      <tbody>
+                        {(() => {
+                          const checkoutTotal = lastSaleDetails?.total || totalVal;
+                          const opGravada = checkoutTotal / 1.18;
+                          const igv = checkoutTotal - opGravada;
+                          return (
+                            <>
+                              <tr>
+                                <td style={{ textAlign: 'right', padding: '2px 6px', fontWeight: 'bold' }}>Op. Gravada:</td>
+                                <td style={{ textAlign: 'right', padding: '2px 8px', border: '1px solid #000000', width: '110px' }}>S/ {opGravada.toFixed(2)}</td>
+                              </tr>
+                              <tr>
+                                <td style={{ textAlign: 'right', padding: '2px 6px', fontWeight: 'bold' }}>Op. Exonerada:</td>
+                                <td style={{ textAlign: 'right', padding: '2px 8px', border: '1px solid #000000' }}>S/ 0.00</td>
+                              </tr>
+                              <tr>
+                                <td style={{ textAlign: 'right', padding: '2px 6px', fontWeight: 'bold' }}>Op. Inafecta:</td>
+                                <td style={{ textAlign: 'right', padding: '2px 8px', border: '1px solid #000000' }}>S/ 0.00</td>
+                              </tr>
+                              <tr>
+                                <td style={{ textAlign: 'right', padding: '2px 6px', fontWeight: 'bold' }}>ISC:</td>
+                                <td style={{ textAlign: 'right', padding: '2px 8px', border: '1px solid #000000' }}>S/ 0.00</td>
+                              </tr>
+                              <tr>
+                                <td style={{ textAlign: 'right', padding: '2px 6px', fontWeight: 'bold' }}>IGV:</td>
+                                <td style={{ textAlign: 'right', padding: '2px 8px', border: '1px solid #000000' }}>S/ {igv.toFixed(2)}</td>
+                              </tr>
+                              <tr>
+                                <td style={{ textAlign: 'right', padding: '2px 6px', fontWeight: 'bold' }}>Otros Cargos:</td>
+                                <td style={{ textAlign: 'right', padding: '2px 8px', border: '1px solid #000000' }}>S/ 0.00</td>
+                              </tr>
+                              <tr>
+                                <td style={{ textAlign: 'right', padding: '2px 6px', fontWeight: 'bold' }}>Otros Tributos:</td>
+                                <td style={{ textAlign: 'right', padding: '2px 8px', border: '1px solid #000000' }}>S/ 0.00</td>
+                              </tr>
+                              <tr>
+                                <td style={{ textAlign: 'right', padding: '2px 6px', fontWeight: 'bold' }}>Monto de Redondeo:</td>
+                                <td style={{ textAlign: 'right', padding: '2px 8px', border: '1px solid #000000' }}>S/ 0.00</td>
+                              </tr>
+                              <tr>
+                                <td style={{ textAlign: 'right', padding: '2px 6px', fontWeight: 'bold' }}>Importe Total:</td>
+                                <td style={{ textAlign: 'right', padding: '2px 8px', border: '1.5px solid #000000', fontWeight: 'bold', backgroundColor: '#f5f5f5' }}>S/ {checkoutTotal.toFixed(2)}</td>
+                              </tr>
+                            </>
+                          );
+                        })()}
+                      </tbody>
+                    </table>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+
+            {/* Footer Legal message box */}
+            <div style={{ border: '1px solid #000000', padding: '0.4rem', fontSize: '9px', textAlign: 'center', lineHeight: '1.4', marginTop: '0.8rem', color: '#000000' }}>
+              Esta es una representación impresa de la Boleta de Venta Electrónica, generada en el Sistema de la SUNAT. El Emisor
+              Electrónico puede verificarla utilizando su clave SOL, el Adquirente o Usuario puede consultar su validez en SUNAT Virtual:
+              <br />
+              <span style={{ textDecoration: 'underline', color: '#0000ee' }}>www.sunat.gob.pe</span>, en Opciones sin Clave SOL/ Consulta de Validez del CPE.
+            </div>
+
+          </div>
+        </div>
+      </div>
     </div>
   );
 }
